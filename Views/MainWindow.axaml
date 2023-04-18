@@ -10,8 +10,33 @@
 		WindowState="Maximized"
 		WindowStartupLocation="CenterScreen">
 	
-	<Grid>
-		<TextBlock Text="{Binding MainDiskName}"/>
-	</Grid>    
+	<Grid ShowGridLines="True">
+		
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="0.15*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		
+		<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+				 Text="{Binding FilePath}"/>
 
+		<ListBox Grid.Row="1" Grid.Column="1"
+				 Items="{Binding DirectoriesAndFiles}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<TextBlock Text="{Binding Name}">
+							
+						</TextBlock>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid> 
+	
 </Window>
