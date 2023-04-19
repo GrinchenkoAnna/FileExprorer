@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
@@ -29,8 +30,8 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new ObservableCollection<FileEntityViewModel>();
-        public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
+        private ObservableCollection<string> directoriesAndFiles = new();
+        public ObservableCollection<string> DirectoriesAndFiles
         {
             get => directoriesAndFiles;
             set
@@ -40,39 +41,39 @@ namespace FileExplorer.ViewModels
             }
         } 
 
-        public ICommand OpenCommand { get; }
+        //public ICommand OpenCommand { get; }
 
         public MainWindowViewModel()
         {
-            OpenCommand = new DelegateCommand(Open);
+            //OpenCommand = new DelegateCommand(Open);
 
             foreach (var logicalDrive in Directory.GetLogicalDrives())
             {
-                DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
+                DirectoriesAndFiles.Add(logicalDrive);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void Open(object parameter)
-        {
-            if (parameter is DirectoryViewModel directoryViewModel)
-            {
-                FilePath = directoryViewModel.FullName;
-                DirectoriesAndFiles.Clear();
+        //private void Open(object parameter)
+        //{
+        //    if (parameter is DirectoryViewModel directoryViewModel)
+        //    {
+        //        FilePath = directoryViewModel.FullName;
+        //        DirectoriesAndFiles.Clear();
 
-                var directoryInfo = new DirectoryInfo(FilePath);
+        //        var directoryInfo = new DirectoryInfo(FilePath);
 
-                foreach (var directory in directoryInfo.GetDirectories())
-                {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
-                }
+        //        foreach (var directory in directoryInfo.GetDirectories())
+        //        {
+        //            DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+        //        }
 
-                foreach (var fileInfo in directoryInfo.GetFiles())
-                {
-                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
-                }
-            }
-        }
+        //        foreach (var fileInfo in directoryInfo.GetFiles())
+        //        {
+        //            DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+        //        }
+        //    }
+        //}
     }
 }

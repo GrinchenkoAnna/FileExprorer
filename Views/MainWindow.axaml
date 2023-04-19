@@ -27,15 +27,13 @@
 
 		<ListBox Grid.Row="1" Grid.Column="1"
 				 Items="{Binding DirectoriesAndFiles}">
-			<ListBox.ItemTemplate>
+			<!--<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
-						<TextBlock Text="{Binding Name}">
-							
-						</TextBlock>
+						<TextBlock Text="{Binding Name}"/>
 					</Grid>
 				</DataTemplate>
-			</ListBox.ItemTemplate>
+			</ListBox.ItemTemplate>-->
 		</ListBox>
 	</Grid> 
 	
