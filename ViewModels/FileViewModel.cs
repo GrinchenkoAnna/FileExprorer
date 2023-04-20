@@ -6,6 +6,6 @@ namespace FileExplorer.ViewModels
     {
         public FileViewModel(string name) : base(name) { }
 
-        //public FileViewModel(FileInfo fileInfo) : base(fileInfo.Name) { FullName = fileInfo.FullName; }
+        public FileViewModel(FileInfo fileInfo) : base(fileInfo.Name) { FullName = fileInfo.FullName; }
     }
 }

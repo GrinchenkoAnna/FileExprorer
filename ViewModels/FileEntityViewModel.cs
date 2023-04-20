@@ -6,7 +6,7 @@ namespace FileExplorer.ViewModels
     {
         public string Name { get; }
 
-        //public string FullName { get; set; }
+        public string FullName { get; set; }
         protected FileEntityViewModel(string name)
         {
             Name = name;

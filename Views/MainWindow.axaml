@@ -3,6 +3,8 @@
         xmlns:vm="using:FileExplorer.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+		xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -31,14 +33,25 @@
 				 Text="{Binding FilePath}"/>
 		
 		<ListBox Grid.Row="1" Grid.Column="1" 
-				 Items="{Binding DirectoriesAndFiles}">
+				 Items="{Binding DirectoriesAndFiles}"
+				 SelectedItem="{Binding SelectedFileEntity}">
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction 
+						Command="{Binding OpenCommand}"
+						CommandParameter="{Binding SelectedFileEntity}"/>					
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>
+			
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
-						<TextBlock Text="{Binding Name}"/>
+						<TextBlock Text="{Binding Name}" />
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
+		
 		</ListBox>
 
 		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,1,0"/>

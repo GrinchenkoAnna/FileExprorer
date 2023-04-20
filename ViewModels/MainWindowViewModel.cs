@@ -1,12 +1,14 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Reactive;
 using System.Windows.Input;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class MainWindowViewModel : INotifyPropertyChanged
+    public partial class MainWindowViewModel : INotifyPropertyChanged 
     {
         private string mainDiskName;
         public string MainDiskName
@@ -39,42 +41,52 @@ namespace FileExplorer.ViewModels
                 directoriesAndFiles = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoriesAndFiles)));
             }
-        } 
+        }
 
-        //public ICommand OpenCommand { get; }
-
-        public MainWindowViewModel()
-        {
-            //OpenCommand = new DelegateCommand(Open);
-
-            foreach (var logicalDrive in Directory.GetLogicalDrives())
+        private FileEntityViewModel selectFileEntity;
+        public FileEntityViewModel SelectFileEntity 
+        { 
+            get => selectFileEntity; 
+            set
             {
-                //DirectoriesAndFiles.Add(logicalDrive);
-                DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
+                selectFileEntity = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //private void Open(object parameter)
-        //{
-        //    if (parameter is DirectoryViewModel directoryViewModel)
-        //    {
-        //        FilePath = directoryViewModel.FullName;
-        //        DirectoriesAndFiles.Clear();
+        public MainWindowViewModel()
+        {
+            OpenCommand = new DelegateCommand(Open);
 
-        //        var directoryInfo = new DirectoryInfo(FilePath);
+            foreach (var logicalDrive in Directory.GetLogicalDrives())
+            {          
+                DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
+            }
+        }        
 
-        //        foreach (var directory in directoryInfo.GetDirectories())
-        //        {
-        //            DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
-        //        }
+        public ICommand OpenCommand { get; }
+        
+        private void Open(object parameter)
+        {
+            if (parameter is DirectoryViewModel directoryViewModel)
+            {
+                FilePath = directoryViewModel.FullName;
+                DirectoriesAndFiles.Clear();
 
-        //        foreach (var fileInfo in directoryInfo.GetFiles())
-        //        {
-        //            DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
-        //        }
-        //    }
-        //}       
+                var directoryInfo = new DirectoryInfo(FilePath);
+
+                foreach (var directory in directoryInfo.GetDirectories())
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                }
+
+                foreach (var fileInfo in directoryInfo.GetFiles())
+                {
+                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                }
+            }
+        }
     }
 }
