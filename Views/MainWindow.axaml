@@ -9,8 +9,9 @@
         Title="FileExplorer"
 		WindowState="Maximized"
 		WindowStartupLocation="CenterScreen">
+
 	
-	<Grid ShowGridLines="True">
+	<Grid>
 		
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -21,20 +22,26 @@
 			<ColumnDefinition Width="0.15*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
+
+		
+		<TextBlock Grid.Row="1" Grid.Column="0" Background="AliceBlue" />
+		
 		
 		<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
 				 Text="{Binding FilePath}"/>
-
-		<ListBox Grid.Row="1" Grid.Column="1"
+		
+		<ListBox Grid.Row="1" Grid.Column="1" 
 				 Items="{Binding DirectoriesAndFiles}">
-			<!--<ListBox.ItemTemplate>
+			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
 						<TextBlock Text="{Binding Name}"/>
 					</Grid>
 				</DataTemplate>
-			</ListBox.ItemTemplate>-->
+			</ListBox.ItemTemplate>
 		</ListBox>
-	</Grid> 
+
+		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,1,0"/>
+	</Grid>
 	
 </Window>

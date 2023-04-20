@@ -30,8 +30,8 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<string> directoriesAndFiles = new();
-        public ObservableCollection<string> DirectoriesAndFiles
+        private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new();
+        public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
         {
             get => directoriesAndFiles;
             set
@@ -49,7 +49,8 @@ namespace FileExplorer.ViewModels
 
             foreach (var logicalDrive in Directory.GetLogicalDrives())
             {
-                DirectoriesAndFiles.Add(logicalDrive);
+                //DirectoriesAndFiles.Add(logicalDrive);
+                DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
             }
         }
 
@@ -74,6 +75,6 @@ namespace FileExplorer.ViewModels
         //            DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
         //        }
         //    }
-        //}
+        //}       
     }
 }
