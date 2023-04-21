@@ -10,9 +10,6 @@ namespace FileExplorer.ViewModels
         protected FileEntityViewModel(string name)
         {
             Name = name;
-        }
-
-        //: INotifyPropertyChanged
-        //public event PropertyChangedEventHandler? PropertyChanged;
+        }       
     }
 }

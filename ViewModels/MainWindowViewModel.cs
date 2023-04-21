@@ -10,18 +10,7 @@ namespace FileExplorer.ViewModels
 {
     public partial class MainWindowViewModel : INotifyPropertyChanged 
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string mainDiskName;
-        public string MainDiskName
-        {
-            get => mainDiskName;
-            set
-            {
-                mainDiskName = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MainDiskName)));
-            }
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;        
 
         private string filePath;
         public string FilePath
@@ -31,6 +20,17 @@ namespace FileExplorer.ViewModels
             {
                 filePath = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilePath)));
+            }
+        }
+
+        private string name;
+        public string Name
+        {
+            get => name;
+            set
+            {
+                name = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
 
@@ -58,6 +58,8 @@ namespace FileExplorer.ViewModels
 
         public MainWindowViewModel()
         {
+            Name = "Мой компьютер";
+
             OpenCommand = new DelegateCommand(Open);
 
             foreach (var logicalDrive in Directory.GetLogicalDrives())
@@ -73,6 +75,8 @@ namespace FileExplorer.ViewModels
             if (parameter is DirectoryViewModel directoryViewModel)
             {
                 FilePath = directoryViewModel.FullName;
+                Name = "Мой компьютер - " + directoryViewModel.Name;
+
                 DirectoriesAndFiles.Clear();
 
                 var directoryInfo = new DirectoryInfo(FilePath);

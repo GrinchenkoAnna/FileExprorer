@@ -12,30 +12,30 @@
 	<!--WindowState="Maximized"
 		WindowStartupLocation="CenterScreen">-->
 
-
+	<Window.Title>
+		<Binding Path="Name"/>
+	</Window.Title>	
+	
 	<Grid>
-
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="0.15*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-
-
+					
 		<TextBlock Grid.Row="1" Grid.Column="0" Background="AliceBlue" />
-
-
+		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" 
+				BorderThickness="0,0,1,0"/>
+		
 		<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
 				 Text="{Binding FilePath}"/>
-
+		
 		<ListBox Grid.Row="1" Grid.Column="1"
 				 Items="{Binding DirectoriesAndFiles}"
 				 SelectedItem="{Binding SelectFileEntity}">
-
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
@@ -43,7 +43,7 @@
 						CommandParameter="{Binding SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
-
+			
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
@@ -51,10 +51,7 @@
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-
 		</ListBox>
-
-		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,1,0"/>
 	</Grid>
 
 </Window>
