@@ -8,42 +8,42 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="FileExplorer"
-		WindowState="Maximized"
-		WindowStartupLocation="CenterScreen">
+        Title="FileExplorer">
+	<!--WindowState="Maximized"
+		WindowStartupLocation="CenterScreen">-->
 
-	
+
 	<Grid>
-		
+
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		
+
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="0.15*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		
+
 		<TextBlock Grid.Row="1" Grid.Column="0" Background="AliceBlue" />
-		
-		
+
+
 		<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
 				 Text="{Binding FilePath}"/>
-		
-		<ListBox Grid.Row="1" Grid.Column="1" 
+
+		<ListBox Grid.Row="1" Grid.Column="1"
 				 Items="{Binding DirectoriesAndFiles}"
-				 SelectedItem="{Binding SelectedFileEntity}">
+				 SelectedItem="{Binding SelectFileEntity}">
 
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction 
+					<ia:InvokeCommandAction
 						Command="{Binding OpenCommand}"
-						CommandParameter="{Binding SelectedFileEntity}"/>					
+						CommandParameter="{Binding SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
-			
+
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
@@ -51,10 +51,10 @@
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-		
+
 		</ListBox>
 
 		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" BorderThickness="0,0,1,0"/>
 	</Grid>
-	
+
 </Window>

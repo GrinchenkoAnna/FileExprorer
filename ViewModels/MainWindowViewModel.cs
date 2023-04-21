@@ -10,6 +10,8 @@ namespace FileExplorer.ViewModels
 {
     public partial class MainWindowViewModel : INotifyPropertyChanged 
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private string mainDiskName;
         public string MainDiskName
         {
@@ -52,9 +54,7 @@ namespace FileExplorer.ViewModels
                 selectFileEntity = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        }       
 
         public MainWindowViewModel()
         {
@@ -64,7 +64,7 @@ namespace FileExplorer.ViewModels
             {          
                 DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
             }
-        }        
+        }
 
         public ICommand OpenCommand { get; }
         
@@ -87,6 +87,7 @@ namespace FileExplorer.ViewModels
                     DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
                 }
             }
+            else { throw new Exception(); }
         }
     }
 }

@@ -18,6 +18,6 @@ namespace FileExplorer.ViewModels
             _open?.Invoke(parameter);
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
     }
 }
