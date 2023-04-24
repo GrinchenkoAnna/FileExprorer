@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:FileExplorer.ViewModels"
+        xmlns:vm="using:FileExplorer.ViewModels"		
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
@@ -22,32 +22,46 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.15*"/>
+			<ColumnDefinition Width="0.075*"/>
+			<ColumnDefinition Width="0.075*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 					
-		<TextBlock Grid.Row="1" Grid.Column="0" Background="AliceBlue" />
-		<Border Grid.Column="0" Grid.Row="1" BorderBrush="Gray" 
+		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+				   Background="AliceBlue" />
+		<Border Grid.Column="1" Grid.Row="1" BorderBrush="Gray" 
 				BorderThickness="0,0,1,0"/>
+		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="2" 
+				BorderThickness="0,0,0,1"/>
 		
-		<TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-				 Text="{Binding FilePath}"/>
 		
-		<ListBox Grid.Row="1" Grid.Column="1"
-				 Items="{Binding DirectoriesAndFiles}"
-				 SelectedItem="{Binding SelectFileEntity}">
+		<Grid Grid.Row="0" Grid.Column="0">
+			<Button Content="&lt;-" Margin="2,2,0,2" Background="Thistle"
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>	
+		</Grid>
+		<Grid Grid.Row="0" Grid.Column="1">			
+			<Button Content="-&gt;" Margin="0,2,2,2"  Background="Thistle"
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+		</Grid>
+		
+		<TextBox Grid.Row="0" Grid.Column="2" 
+				 Text="{Binding CurrentDirectoryItem.FilePath}"/>
+		
+		<ListBox Grid.Row="1" Grid.Column="2"
+				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
-						Command="{Binding OpenCommand}"
-						CommandParameter="{Binding SelectFileEntity}"/>
+						Command="{Binding CurrentDirectoryItem.OpenCommand}"
+						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			
 			<ListBox.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate>					
 					<Grid>
-						<TextBlock Text="{Binding Name}" />
+						<TextBlock Text="{Binding Name}"/>
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>

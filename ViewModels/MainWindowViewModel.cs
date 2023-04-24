@@ -1,97 +1,40 @@
 ﻿using ReactiveUI;
+
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Reactive;
-using System.Windows.Input;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class MainWindowViewModel : INotifyPropertyChanged 
+    public class MainWindowViewModel : INotifyPropertyChanged 
     {
-        public event PropertyChangedEventHandler? PropertyChanged;        
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string filePath;
-        public string FilePath
+        private ObservableCollection<DirectoryItemViewModel> directoryItems = new();
+        public ObservableCollection<DirectoryItemViewModel> DirectoryItems
         {
-            get => filePath;
+            get => directoryItems;
             set
             {
-                filePath = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilePath)));
+                directoryItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoryItems)));
             }
         }
 
-        private string name;
-        public string Name
+        private DirectoryItemViewModel currentDirectoryItem = new();
+        public DirectoryItemViewModel CurrentDirectoryItem
         {
-            get => name;
+            get => currentDirectoryItem;
             set
             {
-                name = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                currentDirectoryItem = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDirectoryItem)));
             }
         }
-
-        private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new();
-        public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
-        {
-            get => directoriesAndFiles;
-            set
-            {
-                directoriesAndFiles = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoriesAndFiles)));
-            }
-        }
-
-        private FileEntityViewModel selectFileEntity;
-        public FileEntityViewModel SelectFileEntity 
-        { 
-            get => selectFileEntity; 
-            set
-            {
-                selectFileEntity = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
-            }
-        }       
 
         public MainWindowViewModel()
         {
-            Name = "Мой компьютер";
-
-            OpenCommand = new DelegateCommand(Open);
-
-            foreach (var logicalDrive in Directory.GetLogicalDrives())
-            {          
-                DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
-            }
-        }
-
-        public ICommand OpenCommand { get; }
-        
-        private void Open(object parameter)
-        {
-            if (parameter is DirectoryViewModel directoryViewModel)
-            {
-                FilePath = directoryViewModel.FullName;
-                Name = "Мой компьютер - " + directoryViewModel.Name;
-
-                DirectoriesAndFiles.Clear();
-
-                var directoryInfo = new DirectoryInfo(FilePath);
-
-                foreach (var directory in directoryInfo.GetDirectories())
-                {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
-                }
-
-                foreach (var fileInfo in directoryInfo.GetFiles())
-                {
-                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
-                }
-            }
-            else { throw new Exception(); }
-        }
+            DirectoryItems.Add(new DirectoryItemViewModel());
+        }        
     }
 }
