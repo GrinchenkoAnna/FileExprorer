@@ -13,7 +13,7 @@
 		WindowStartupLocation="CenterScreen">-->
 
 	<Window.Title>
-		<Binding Path="Name"/>
+		<Binding Path="CurrentDirectoryItem.Name"/>
 	</Window.Title>	
 	
 	<Grid>
@@ -34,16 +34,19 @@
 		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="2" 
 				BorderThickness="0,0,0,1"/>
 		
-		
+		<!--Buttons-->
 		<Grid Grid.Row="0" Grid.Column="0">
 			<Button Content="&lt;-" Margin="2,2,0,2" Background="Thistle"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>	
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					Command="{Binding CurrentDirectoryItem.MoveBackCommand}"/>			
 		</Grid>
 		<Grid Grid.Row="0" Grid.Column="1">			
 			<Button Content="-&gt;" Margin="0,2,2,2"  Background="Thistle"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
 		
+		<!--Main Panel-->
 		<TextBox Grid.Row="0" Grid.Column="2" 
 				 Text="{Binding CurrentDirectoryItem.FilePath}"/>
 		
@@ -58,6 +61,7 @@
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			
+		<!--Full Path-->
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
 					<Grid>
