@@ -14,7 +14,7 @@
 
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
-	</Window.Title>	
+	</Window.Title>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -36,12 +36,12 @@
 		
 		<!--Buttons-->
 		<Grid Grid.Row="0" Grid.Column="0">
-			<Button Content="&lt;-" Margin="2,2,0,2" Background="Thistle"
+			<Button Content="&lt;-" Margin="2,2,0,2" Background="LightSkyBlue"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					Command="{Binding CurrentDirectoryItem.MoveBackCommand}"/>			
+					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
 		<Grid Grid.Row="0" Grid.Column="1">			
-			<Button Content="-&gt;" Margin="0,2,2,2"  Background="Thistle"
+			<Button Content="-&gt;" Margin="0,2,2,2" Background="LightSkyBlue"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
@@ -52,24 +52,34 @@
 		
 		<ListBox Grid.Row="1" Grid.Column="2"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
+			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
+			</i:Interaction.Behaviors>		
 			
-		<!--Full Path-->
 			<ListBox.ItemTemplate>
-				<DataTemplate>					
-					<Grid>
-						<TextBlock Text="{Binding Name}"/>
-					</Grid>
+				<DataTemplate>
+					<StackPanel Orientation="Vertical" Width="70" Height="70" >
+						<Image Width="50" Height="50" Source="/Assets/folder_icon.ico"							   
+							   VerticalAlignment="Top" />
+						<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
+								   TextAlignment="Center" VerticalAlignment="Bottom" 
+								   FontSize="12"/>
+					</StackPanel>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
+			
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
 		</ListBox>
-	</Grid>
-
+		
+	</Grid>	
 </Window>
