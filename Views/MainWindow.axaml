@@ -14,7 +14,7 @@
 
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
-	</Window.Title>
+	</Window.Title>	
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -26,6 +26,11 @@
 			<ColumnDefinition Width="0.075*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
+		
+		<!--Background-->
+		<Image Grid.Row="1" Grid.Column="2" 
+			   Stretch="Fill" Opacity="0.8"
+			   Source="/Assets/winter.jpg"/>
 					
 		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
 				   Background="AliceBlue" />
@@ -51,6 +56,7 @@
 				 Text="{Binding CurrentDirectoryItem.FilePath}"/>
 		
 		<ListBox Grid.Row="1" Grid.Column="2"
+				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
 			
@@ -64,13 +70,13 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<StackPanel Orientation="Vertical" Width="70" Height="70" >
-						<Image Width="50" Height="50" Source="/Assets/folder_icon.ico"							   
-							   VerticalAlignment="Top" />
+					<StackPanel Orientation="Vertical" Width="70" Height="70">
+						<Image Width="50" Height="50" Source="/Assets/folder_icon_blue.ico"	
+								  VerticalAlignment="Top" />
 						<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
 								   TextAlignment="Center" VerticalAlignment="Bottom" 
-								   FontSize="12"/>
-					</StackPanel>
+								   FontSize="12"/>							
+					</StackPanel>					
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 			
