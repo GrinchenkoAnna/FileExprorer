@@ -3,8 +3,10 @@
         xmlns:vm="using:FileExplorer.ViewModels"		
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
 		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 		xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+		xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -14,7 +16,7 @@
 
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
-	</Window.Title>	
+	</Window.Title>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -30,7 +32,7 @@
 		<!--Background-->
 		<Image Grid.Row="1" Grid.Column="2" 
 			   Stretch="Fill" Opacity="0.8"
-			   Source="/Assets/winter.jpg"/>
+			   Source="/Assets/seascape.jpg"/>
 					
 		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
 				   Background="AliceBlue" />
@@ -58,7 +60,11 @@
 		<ListBox Grid.Row="1" Grid.Column="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">
+
+			<ListBox.Resources>
+				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+			</ListBox.Resources>
 			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -69,13 +75,15 @@
 			</i:Interaction.Behaviors>		
 			
 			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<StackPanel Orientation="Vertical" Width="70" Height="70">
-						<Image Width="50" Height="50" Source="/Assets/folder_icon_blue.ico"	
-								  VerticalAlignment="Top" />
+				<DataTemplate>					
+					<StackPanel Orientation="Vertical" Width="70" Height="90">
+						<DrawingPresenter Drawing="{Binding ., Converter={StaticResource FileEntityResource}}"
+										  Width="70" Height="70"
+									      VerticalAlignment="Top"
+										  HorizontalAlignment="Center"/>
 						<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
 								   TextAlignment="Center" VerticalAlignment="Bottom" 
-								   FontSize="12"/>							
+								   FontSize="11" FontWeight="Normal"/>							
 					</StackPanel>					
 				</DataTemplate>
 			</ListBox.ItemTemplate>
