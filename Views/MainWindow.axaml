@@ -24,15 +24,15 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="0.075*"/>
-			<ColumnDefinition Width="0.075*"/>
+			<ColumnDefinition Width="100"/>
+			<ColumnDefinition Width="100"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		
 		<!--Background-->
 		<Image Grid.Row="1" Grid.Column="2" 
 			   Stretch="Fill" Opacity="0.8"
-			   Source="/Assets/seascape.jpg"/>
+			   Source="/Assets/autumn.jpg"/>
 					
 		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
 				   Background="AliceBlue" />
@@ -43,19 +43,20 @@
 		
 		<!--Buttons-->
 		<Grid Grid.Row="0" Grid.Column="0">
-			<Button Content="&lt;-" Margin="2,2,0,2" Background="LightSkyBlue"
+			<Button Content="&lt;-" Margin="2,2,0,2" Background="Coral"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
 		<Grid Grid.Row="0" Grid.Column="1">			
-			<Button Content="-&gt;" Margin="0,2,2,2" Background="LightSkyBlue"
+			<Button Content="-&gt;" Margin="0,2,2,2" Background="Coral"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
 		
 		<!--Main Panel-->
 		<TextBox Grid.Row="0" Grid.Column="2" 
-				 Text="{Binding CurrentDirectoryItem.FilePath}"/>
+				 Text="{Binding CurrentDirectoryItem.FilePath}"
+				 Background="White" />
 		
 		<ListBox Grid.Row="1" Grid.Column="2"
 				 Background="Transparent"
@@ -76,14 +77,20 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Vertical" Width="70" Height="90">
+					<StackPanel Orientation="Vertical" Width="80" Height="100">
 						<DrawingPresenter Drawing="{Binding ., Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"
 									      VerticalAlignment="Top"
 										  HorizontalAlignment="Center"/>
-						<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
-								   TextAlignment="Center" VerticalAlignment="Bottom" 
-								   FontSize="11" FontWeight="Normal"/>							
+						<Border CornerRadius="7">
+							<Border.Background>
+								<SolidColorBrush Color="White" Opacity="0.7"/>
+							</Border.Background>
+							<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
+									 TextAlignment="Center" VerticalAlignment="Bottom"
+									 FontSize="11" FontWeight="Bold">							
+							</TextBlock>
+						</Border>
 					</StackPanel>					
 				</DataTemplate>
 			</ListBox.ItemTemplate>
