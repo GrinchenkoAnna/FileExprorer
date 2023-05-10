@@ -61,11 +61,7 @@
 		<ListBox Grid.Row="1" Grid.Column="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">
-
-			<ListBox.Resources>
-				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-			</ListBox.Resources>
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">			
 			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -73,15 +69,20 @@
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
+				
 			</i:Interaction.Behaviors>		
+			
+			<ListBox.Resources>
+				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+			</ListBox.Resources>			
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
 					<StackPanel Orientation="Vertical" Width="80" Height="100">
 						<DrawingPresenter Drawing="{Binding ., Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"
-									      VerticalAlignment="Top"
-										  HorizontalAlignment="Center"/>
+										  HorizontalAlignment="Center">
+						</DrawingPresenter>
 						<Border CornerRadius="7">
 							<Border.Background>
 								<SolidColorBrush Color="White" Opacity="0.7"/>

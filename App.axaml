@@ -12,23 +12,26 @@
 
 	<Application.Resources>
 		<DrawingGroup x:Key="FolderIconImage" ClipGeometry="M0,0 V40 H40 V0 H0 Z">
-			<GeometryDrawing Brush="Tomato" Geometry="F1 M40,40z M0,0z M1.5,35.5L1.5,4.5 11.793,4.5 14.793,7.5 38.5,7.5 38.5,35.5z" />
-			<GeometryDrawing Brush="Black" Geometry="F1 M40,40z M0,0z M11.586,5L14.293,7.707 14.586,8 15,8 38,8 38,35 2,35 2,5 11.586,5 M12,4L1,4 1,36 39,36 39,7 15,7 12,4 12,4z" />
-			<DrawingGroup Opacity="1">
-				<GeometryDrawing Brush="LightSalmon" Geometry="F1 M40,40z M0,0z M1.5,35.5L1.5,9.5 12.151,9.5 15.151,7.5 38.5,7.5 38.5,35.5z" />
-				<GeometryDrawing Brush="Black" Geometry="F1 M40,40z M0,0z M38,8L38,35 2,35 2,10 12,10 12.303,10 12.555,9.832 15.303,8 38,8 M39,7L15,7 12,9 1,9 1,36 39,36 39,7 39,7z" />
-			</DrawingGroup>
-		</DrawingGroup>
-
-		<DrawingGroup x:Key="FileIconImage" ClipGeometry="M0,0 V40 H40 V0 H0 Z">
-			<GeometryDrawing Brush="LightPink" Geometry="F1 M40,40z M0,0z M6.5,37.5L6.5,2.5 24.793,2.5 33.5,11.207 33.5,37.5z" />
-			<GeometryDrawing Brush="Black" Geometry="F1 M40,40z M0,0z M24.586,3L33,11.414 33,37 7,37 7,3 24.586,3 M25,2L6,2 6,38 34,38 34,11 25,2 25,2z" />
-			<DrawingGroup Opacity="1">
-				<GeometryDrawing Brush="PaleVioletRed" Geometry="F1 M40,40z M0,0z M24.5,11.5L24.5,2.5 24.793,2.5 33.5,11.207 33.5,11.5z" />
-				<GeometryDrawing Brush="Black" Geometry="F1 M40,40z M0,0z M25,3.414L32.586,11 25,11 25,3.414 M25,2L24,2 24,12 34,12 34,11 25,2 25,2z" />
-			</DrawingGroup>
+			<GeometryDrawing Geometry="F1 M48,48z M0,0z M24.414,10.414L21.878,7.878C21.316,7.316,20.553,7,19.757,7L5,7C3.895,7,3,7.895,3,9L3,39C3,40.105,3.895,41,5,41L43,41C44.105,41,45,40.105,45,39L45,13C45,11.895,44.105,11,43,11L25.828,11C25.298,11,24.789,10.789,24.414,10.414z">
+				<GeometryDrawing.Brush>
+					<SolidColorBrush Color="#FFEBA600"/>
+				</GeometryDrawing.Brush>
+			</GeometryDrawing>
+			<GeometryDrawing Geometry="F1 M48,48z M0,0z M21.586,14.414L24.854,11.146C24.947,11.053,25.074,11,25.207,11L43,11C44.105,11,45,11.895,45,13L45,39C45,40.105,44.105,41,43,41L5,41C3.895,41,3,40.105,3,39L3,15.5C3,15.224,3.224,15,3.5,15L20.172,15C20.702,15,21.211,14.789,21.586,14.414z">
+				<GeometryDrawing.Brush>
+					<SolidColorBrush Color="#FFFFD869"/>
+				</GeometryDrawing.Brush>
+			</GeometryDrawing>
 		</DrawingGroup>		
-		
+
+		<DrawingGroup x:Key="FileIconImage" ClipGeometry="M0,0 V48 H48 V0 H0 Z">
+			<GeometryDrawing Brush="LightSalmon" Geometry="F1 M48,48z M0,0z M39,16L39,41C39,42.105,38.105,43,37,43L11,43C9.895,43,9,42.105,9,41L9,7C9,5.895,9.895,5,11,5L28,5 31,13 39,16z" />
+			<GeometryDrawing Geometry="F1 M48,48z M0,0z M28,5L28,14C28,15.105,28.895,16,30,16L39,16 28,5z">
+				<GeometryDrawing.Brush>
+					<SolidColorBrush Color="Tomato"/>
+				</GeometryDrawing.Brush>
+			</GeometryDrawing>			
+		</DrawingGroup>		
 		
 	</Application.Resources>
 </Application>

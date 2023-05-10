@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\folder.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AvaloniaResource Update="Assets\folder.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AvaloniaResource>
