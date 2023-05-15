@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Input;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace FileExplorer.ViewModels
     internal interface IDirectoryHistory : IEnumerable<DirectoryNode>
     {
         event EventHandler HistoryChanged;
+        //event EventHandler<KeyEventArgs> KeyPress;
 
         DirectoryNode Current { get; }
         

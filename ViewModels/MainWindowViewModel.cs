@@ -32,6 +32,17 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        private DirectoryItemViewModel treeDirectoryItem = new();
+        public DirectoryItemViewModel TreeDirectoryItem
+        {
+            get => treeDirectoryItem;
+            set
+            {
+                treeDirectoryItem = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDirectoryItem)));
+            }
+        }
+
         public MainWindowViewModel()
         {
             DirectoryItems.Add(new DirectoryItemViewModel());

@@ -24,22 +24,22 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="100"/>
-			<ColumnDefinition Width="100"/>
+			<ColumnDefinition Width="150"/>
+			<ColumnDefinition Width="150"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		
+
 		<!--Background-->
 		<Image Grid.Row="1" Grid.Column="2" 
 			   Stretch="Fill" Opacity="0.8"
 			   Source="/Assets/autumn.jpg"/>
 					
 		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-				   Background="AliceBlue" />
+				   Background="White" />
 		<Border Grid.Column="1" Grid.Row="1" BorderBrush="Gray" 
 				BorderThickness="0,0,1,0"/>
 		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="2" 
-				BorderThickness="0,0,0,1"/>
+				BorderThickness="0,0,0,1"/>		
 		
 		<!--Buttons-->
 		<Grid Grid.Row="0" Grid.Column="0">
@@ -52,6 +52,37 @@
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
+		
+		<!--Tree View-->		
+		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				  Items="{Binding TreeDirectoryItem.DirectoriesAndFiles}" 	
+				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
+				  Width="300" HorizontalAlignment="Left">
+			
+			<TreeView.Resources>
+				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+			</TreeView.Resources>
+			
+			<TreeView.DataTemplates>
+				<TreeDataTemplate>
+					<StackPanel Orientation="Horizontal" Height="40">
+						<DrawingPresenter Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"
+										  Width="40" Height="40"
+										  HorizontalAlignment="Left">
+						</DrawingPresenter>
+						<TextBlock Width="50" Text="{Binding Name}"
+									 TextAlignment="Left" VerticalAlignment="Center"
+									 FontSize="12" FontWeight="Normal">
+						</TextBlock>
+					</StackPanel>
+				</TreeDataTemplate>
+			</TreeView.DataTemplates>
+			
+			<TreeView.ItemTemplate>
+				<!--<TreeDataTemplate />-->
+			</TreeView.ItemTemplate>
+		</TreeView>
 		
 		<!--Main Panel-->
 		<TextBox Grid.Row="0" Grid.Column="2" 
@@ -69,7 +100,11 @@
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
-				
+				<!--<ia:EventTriggerBehavior EventName="KeyDown">
+					<ia:InvokeCommandAction
+						Command="{Binding CurrentDirectoryItem.KeyPressed}"
+						/>
+				</ia:EventTriggerBehavior>-->
 			</i:Interaction.Behaviors>		
 			
 			<ListBox.Resources>
@@ -78,8 +113,9 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Vertical" Width="80" Height="100">
-						<DrawingPresenter Drawing="{Binding ., Converter={StaticResource FileEntityResource}}"
+					<StackPanel Orientation="Vertical" Width="80" Height="100">						
+						<DrawingPresenter Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"
 										  HorizontalAlignment="Center">
 						</DrawingPresenter>

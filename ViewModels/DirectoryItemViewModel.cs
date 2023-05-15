@@ -1,7 +1,23 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
+using Avalonia.Interactivity;
+using Avalonia.Xaml.Interactions.Core;
+
+using FileExplorer.Views;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.VisualBasic;
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Common;
+using System.Drawing.Text;
 using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Windows.Input;
 
 namespace FileExplorer.ViewModels
@@ -54,22 +70,25 @@ namespace FileExplorer.ViewModels
                 selectFileEntity = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
-        }        
+        }
 
         public DirectoryItemViewModel()
         {
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
 
             OpenCommand = new DelegateCommand(Open);
+            //OpenBranchCommand = new DelegateCommand(OpenBranch);
+            //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
 
-            Name = _history.Current.DirectoryPathName;  
+            Name = _history.Current.DirectoryPathName;
             FilePath = _history.Current.DirectoryPath;
 
             OpenDirectory();
 
-            _history.HistoryChanged += History_HistoryChanged;
+            _history.HistoryChanged += History_HistoryChanged;            
+            //_history.KeyPress += KeyPressed;
         }
 
         private void History_HistoryChanged(object? sender, EventArgs e)
@@ -78,7 +97,28 @@ namespace FileExplorer.ViewModels
             MoveForwardCommand?.RaiseCanExecuteChanged();
         }
 
+        #region KeyNavigation
+        //private Key pressed = Key.Enter;
+        //public void KeyPressed(object? sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        pressed = Key.Enter;
+        //    }
+        //}
+        //private void KeyNavigation(object parameter)
+        //{
+        //    if (pressed == Key.Enter)
+        //    {
+        //        Open(parameter);
+        //    }
+
+        //}
+        #endregion
+
         public DelegateCommand OpenCommand { get; }
+        //public DelegateCommand OpenBranchCommand { get; }
+        //public DelegateCommand KeyNavigationCommand { get; }
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
 
@@ -102,11 +142,13 @@ namespace FileExplorer.ViewModels
 
             if (Name == "Мой компьютер")
             {
-                foreach (var logicalDrive in Directory.GetLogicalDrives())
+                foreach (var logicalDrive in Directory.GetLogicalDrives()) 
+                {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
-
+                    //Tree.Items.Add(DirectoryViewModel(logicalDrive));
+                }
                 return;
-            }           
+            }
 
             var directoryInfo = new DirectoryInfo(FilePath);
 
@@ -120,7 +162,7 @@ namespace FileExplorer.ViewModels
                 DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
             }
         }
-
+        
         private void OnMoveBack(object obj)
         {
             _history.MoveBack();
@@ -146,5 +188,5 @@ namespace FileExplorer.ViewModels
         }
 
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
-    }    
+    }       
 }

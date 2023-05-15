@@ -1,5 +1,9 @@
 using Avalonia.Controls;
+using Avalonia.Input;
+
 using FileExplorer.ViewModels;
+
+using System;
 
 namespace FileExplorer.Views
 {

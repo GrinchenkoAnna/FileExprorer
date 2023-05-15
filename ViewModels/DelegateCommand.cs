@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Input;
+
+using System;
 using System.Windows.Input;
 
 namespace FileExplorer.ViewModels

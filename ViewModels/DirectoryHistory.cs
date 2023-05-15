@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Input;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
@@ -8,6 +10,7 @@ namespace FileExplorer.ViewModels
     internal class DirectoryHistory : IDirectoryHistory
     {
         public event EventHandler HistoryChanged;
+        //public event EventHandler<KeyEventArgs> KeyPress;
 
         public DirectoryNode Current { get; private set; }
 
@@ -55,6 +58,6 @@ namespace FileExplorer.ViewModels
             RaiseHistoryChanged();
         }
 
-        private void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, EventArgs.Empty);
+        private void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, EventArgs.Empty);        
     }
 }
