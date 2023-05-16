@@ -9,6 +9,8 @@ using FileExplorer.Views;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualBasic;
 
+using SkiaSharp;
+
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -24,6 +26,22 @@ namespace FileExplorer.ViewModels
 {
     public class DirectoryItemViewModel : INotifyPropertyChanged
     {
+        public class Node
+        {
+            public ObservableCollection<Node> Subfolders { get; set; }
+            public string strNodeText { get; }
+            public string strFullPath { get; }
+
+            public Node(string _strFullPath)
+            {
+                strFullPath = _strFullPath;
+                strNodeText = Path.GetFileName(_strFullPath);
+            }
+        }
+        public ObservableCollection<Node> Items { get; }
+        public ObservableCollection<Node> SelectedItems { get; }
+        //public string strFolder { get; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly IDirectoryHistory _history;
@@ -72,23 +90,51 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        public ObservableCollection<Node> GetSubfolders(string strPath)
+        {
+            ObservableCollection<Node> subfolders = new();
+            string[] subdirs = Directory.GetDirectories(strPath);
+
+            foreach (string subdir in subdirs)
+            {
+                Node _node = new(subdir);
+                if (Directory.GetDirectories(subdir).Length > 0)
+                {
+                    _node.Subfolders = new ObservableCollection<Node>();
+                    _node.Subfolders = GetSubfolders(subdir);
+                }
+                subfolders.Add(_node);
+            }
+
+            return subfolders;
+        }        
+
         public DirectoryItemViewModel()
         {
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
+
+            Name = _history.Current.DirectoryPathName;
+            FilePath = _history.Current.DirectoryPath;
+
+            //string[] strFolder = Directory.GetLogicalDrives();
+            Items = new ObservableCollection<Node>();
+            foreach (string strFolder in Directory.GetLogicalDrives())
+            {
+                Node rootNode = new Node (strFolder);
+                rootNode.Subfolders = GetSubfolders(strFolder);
+                Items.Add(rootNode);
+            }
 
             OpenCommand = new DelegateCommand(Open);
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
-            MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
-
-            Name = _history.Current.DirectoryPathName;
-            FilePath = _history.Current.DirectoryPath;
+            MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);            
 
             OpenDirectory();
 
-            _history.HistoryChanged += History_HistoryChanged;            
-            //_history.KeyPress += KeyPressed;
+            _history.HistoryChanged += History_HistoryChanged;
+            //_history.KeyPress += KeyPressed;           
         }
 
         private void History_HistoryChanged(object? sender, EventArgs e)
@@ -116,6 +162,7 @@ namespace FileExplorer.ViewModels
         //}
         #endregion
 
+        #region Commands
         public DelegateCommand OpenCommand { get; }
         //public DelegateCommand OpenBranchCommand { get; }
         //public DelegateCommand KeyNavigationCommand { get; }
@@ -138,7 +185,7 @@ namespace FileExplorer.ViewModels
 
         private void OpenDirectory()
         {
-            DirectoriesAndFiles.Clear();
+            DirectoriesAndFiles.Clear();            
 
             if (Name == "Мой компьютер")
             {
@@ -188,5 +235,6 @@ namespace FileExplorer.ViewModels
         }
 
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
+        #endregion        
     }       
 }

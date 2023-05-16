@@ -55,15 +55,14 @@
 		
 		<!--Tree View-->		
 		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-				  Items="{Binding TreeDirectoryItem.DirectoriesAndFiles}" 	
-				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
+				  Items="{Binding TreeDirectoryItem.Items}" 
 				  Width="300" HorizontalAlignment="Left">
 			
-			<TreeView.Resources>
+			<!--<TreeView.Resources>
 				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-			</TreeView.Resources>
+			</TreeView.Resources>-->
 			
-			<TreeView.DataTemplates>
+			<!--<TreeView.DataTemplates>
 				<TreeDataTemplate>
 					<StackPanel Orientation="Horizontal" Height="40">
 						<DrawingPresenter Drawing="{Binding ., 
@@ -77,10 +76,12 @@
 						</TextBlock>
 					</StackPanel>
 				</TreeDataTemplate>
-			</TreeView.DataTemplates>
+			</TreeView.DataTemplates>-->
 			
 			<TreeView.ItemTemplate>
-				<!--<TreeDataTemplate />-->
+				<TreeDataTemplate ItemsSource="{Binding TreeDirectoryItem.Subfolders}">
+					<TextBlock Text="{Binding TreeDirectoryItem.strNodeText}"/>
+				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>
 		

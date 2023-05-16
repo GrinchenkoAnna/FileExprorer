@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace FileExplorer.ViewModels
     {
         public DirectoryNode PreviousNode { get; set; }
         public DirectoryNode NextNode { get; set; }
+        
        
         public string DirectoryPath { get; }
         public string DirectoryPathName { get; }

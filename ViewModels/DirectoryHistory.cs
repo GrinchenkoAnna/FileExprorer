@@ -3,11 +3,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Reactive.Concurrency;
 
 namespace FileExplorer.ViewModels
 {
-    internal class DirectoryHistory : IDirectoryHistory
+    internal class DirectoryHistory : IDirectoryHistory 
     {
         public event EventHandler HistoryChanged;
         //public event EventHandler<KeyEventArgs> KeyPress;
@@ -41,6 +43,8 @@ namespace FileExplorer.ViewModels
 
             RaiseHistoryChanged();
         }
+
+        
 
         public void MoveBack()
         {
