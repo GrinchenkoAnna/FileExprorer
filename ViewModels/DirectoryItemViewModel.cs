@@ -1,8 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
+using Avalonia.Input.TextInput;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactions.Core;
+
+using DynamicData;
 
 using FileExplorer.Views;
 
@@ -19,29 +22,15 @@ using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace FileExplorer.ViewModels
 {
     public class DirectoryItemViewModel : INotifyPropertyChanged
     {
-        public class Node
-        {
-            public ObservableCollection<Node> Subfolders { get; set; }
-            public string strNodeText { get; }
-            public string strFullPath { get; }
-
-            public Node(string _strFullPath)
-            {
-                strFullPath = _strFullPath;
-                strNodeText = Path.GetFileName(_strFullPath);
-            }
-        }
-        public ObservableCollection<Node> Items { get; }
-        public ObservableCollection<Node> SelectedItems { get; }
-        //public string strFolder { get; }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly IDirectoryHistory _history;
@@ -90,24 +79,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        public ObservableCollection<Node> GetSubfolders(string strPath)
-        {
-            ObservableCollection<Node> subfolders = new();
-            string[] subdirs = Directory.GetDirectories(strPath);
-
-            foreach (string subdir in subdirs)
-            {
-                Node _node = new(subdir);
-                if (Directory.GetDirectories(subdir).Length > 0)
-                {
-                    _node.Subfolders = new ObservableCollection<Node>();
-                    _node.Subfolders = GetSubfolders(subdir);
-                }
-                subfolders.Add(_node);
-            }
-
-            return subfolders;
-        }        
+        
 
         public DirectoryItemViewModel()
         {
@@ -116,24 +88,16 @@ namespace FileExplorer.ViewModels
             Name = _history.Current.DirectoryPathName;
             FilePath = _history.Current.DirectoryPath;
 
-            //string[] strFolder = Directory.GetLogicalDrives();
-            Items = new ObservableCollection<Node>();
-            foreach (string strFolder in Directory.GetLogicalDrives())
-            {
-                Node rootNode = new Node (strFolder);
-                rootNode.Subfolders = GetSubfolders(strFolder);
-                Items.Add(rootNode);
-            }
-
-            OpenCommand = new DelegateCommand(Open);
-            //OpenBranchCommand = new DelegateCommand(OpenBranch);
-            //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
+            OpenCommand = new DelegateCommand(Open);            
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);            
 
             OpenDirectory();
 
             _history.HistoryChanged += History_HistoryChanged;
+
+            //OpenBranchCommand = new DelegateCommand(OpenBranch);
+            //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
             //_history.KeyPress += KeyPressed;           
         }
 
@@ -144,6 +108,9 @@ namespace FileExplorer.ViewModels
         }
 
         #region KeyNavigation
+        //public DelegateCommand OpenBranchCommand { get; }
+        //public DelegateCommand KeyNavigationCommand { get; }
+
         //private Key pressed = Key.Enter;
         //public void KeyPressed(object? sender, KeyEventArgs e)
         //{
@@ -163,9 +130,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Commands
-        public DelegateCommand OpenCommand { get; }
-        //public DelegateCommand OpenBranchCommand { get; }
-        //public DelegateCommand KeyNavigationCommand { get; }
+        public DelegateCommand OpenCommand { get; }        
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
 
@@ -191,8 +156,7 @@ namespace FileExplorer.ViewModels
             {
                 foreach (var logicalDrive in Directory.GetLogicalDrives()) 
                 {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
-                    //Tree.Items.Add(DirectoryViewModel(logicalDrive));
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));                    
                 }
                 return;
             }
@@ -201,13 +165,13 @@ namespace FileExplorer.ViewModels
 
             foreach (var directory in directoryInfo.GetDirectories())
             {
-                DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                DirectoriesAndFiles.Add(new DirectoryViewModel(directory));                
             }
 
             foreach (var fileInfo in directoryInfo.GetFiles())
             {
                 DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
-            }
+            }        
         }
         
         private void OnMoveBack(object obj)
@@ -235,6 +199,6 @@ namespace FileExplorer.ViewModels
         }
 
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
-        #endregion        
+        #endregion            
     }       
 }

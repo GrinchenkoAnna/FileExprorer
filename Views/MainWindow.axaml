@@ -12,7 +12,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="FileExplorer">
 	<!--WindowState="Maximized"
-		WindowStartupLocation="CenterScreen">-->
+		WindowStartupLocation="CenterScreen">-->	
 
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
@@ -54,10 +54,10 @@
 		</Grid>
 		
 		<!--Tree View-->		
-		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-				  Items="{Binding TreeDirectoryItem.Items}" 
+		<TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				  Items="{Binding Nodes}"
 				  Width="300" HorizontalAlignment="Left">
-			
+						
 			<!--<TreeView.Resources>
 				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 			</TreeView.Resources>-->
@@ -76,11 +76,11 @@
 						</TextBlock>
 					</StackPanel>
 				</TreeDataTemplate>
-			</TreeView.DataTemplates>-->
-			
+			</TreeView.DataTemplates>-->		
+
 			<TreeView.ItemTemplate>
-				<TreeDataTemplate ItemsSource="{Binding TreeDirectoryItem.Subfolders}">
-					<TextBlock Text="{Binding TreeDirectoryItem.strNodeText}"/>
+				<TreeDataTemplate ItemsSource="{Binding Nodes}">
+					<TextBlock Text="{Binding Data}"/>
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>

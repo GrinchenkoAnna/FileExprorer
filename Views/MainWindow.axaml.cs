@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 
 using FileExplorer.ViewModels;
 
-using System;
+using System.IO;
 
 namespace FileExplorer.Views
 {
@@ -13,6 +12,6 @@ namespace FileExplorer.Views
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
-        }
+        }        
     }
 }
