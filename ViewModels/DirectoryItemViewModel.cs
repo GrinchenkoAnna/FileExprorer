@@ -1,31 +1,7 @@
-﻿using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
-using Avalonia.Input.TextInput;
-using Avalonia.Interactivity;
-using Avalonia.Xaml.Interactions.Core;
-
-using DynamicData;
-
-using FileExplorer.Views;
-
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.VisualBasic;
-
-using SkiaSharp;
-
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Common;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Windows.Input;
-using System.Xml.Linq;
 
 namespace FileExplorer.ViewModels
 {
@@ -77,9 +53,7 @@ namespace FileExplorer.ViewModels
                 selectFileEntity = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
-        }
-
-        
+        }        
 
         public DirectoryItemViewModel()
         {

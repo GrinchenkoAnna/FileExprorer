@@ -1,9 +1,11 @@
 ﻿using ReactiveUI;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 
 namespace FileExplorer.ViewModels
 {
@@ -42,20 +44,15 @@ namespace FileExplorer.ViewModels
         {
             get => nodes;
             set { this.RaiseAndSetIfChanged(ref nodes, value); }
-        }
-        public ObservableCollection<Node> GetChildren()
+        }        
+        public ObservableCollection<Node> GetChildren(string path)
         {            
-            ObservableCollection<Node> children = new ObservableCollection<Node>();
+            ObservableCollection<Node> children = new ObservableCollection<Node>();            
 
-            for (int i = 0; i < 5; ++i)
-            {
-                children.Add(new Node { Data = "123", });
-                children[children.Count - 1].Nodes = new ObservableCollection<Node>(new Node[]
-                {
-                    new Node { Data = "456", },
-                    new Node { Data = "789", },
-                });
-            }
+            foreach (var subfolders in Directory.GetDirectories(path))
+            {                
+                children.Add(new Node { Data = subfolders,});
+            }            
             return children;
         }
         #endregion
@@ -71,7 +68,7 @@ namespace FileExplorer.ViewModels
                 nodes.Add(new Node
                 {
                     Data = logicaldrive.ToString(),
-                    Nodes = GetChildren(),
+                    Nodes = GetChildren(logicaldrive.ToString()),
                 });
             }           
         }       
