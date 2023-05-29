@@ -35,7 +35,7 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDirectoryItem)));
             }
         }
-        #endregion
+        #endregion        
 
         #region Tree View
         private ObservableCollection<Node> nodes;
@@ -44,15 +44,35 @@ namespace FileExplorer.ViewModels
         {
             get => nodes;
             set { this.RaiseAndSetIfChanged(ref nodes, value); }
-        }        
-        public ObservableCollection<Node> GetChildren(string path)
-        {            
-            ObservableCollection<Node> children = new ObservableCollection<Node>();            
+        }
 
-            foreach (var subfolders in Directory.GetDirectories(path))
-            {                
-                children.Add(new Node { Data = subfolders,});
-            }            
+        public ObservableCollection<Node> GetChildren(string path)
+        {
+            ObservableCollection<Node> children = new ObservableCollection<Node>();
+
+            try
+            {
+                foreach (var subfolders in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
+                {
+                    if ((File.GetAttributes(subfolders) & (FileAttributes.System | FileAttributes.Hidden))
+                       != (FileAttributes.System | FileAttributes.Hidden))
+                    {
+                        children.Add(new Node { Data = subfolders});
+                        children[children.Count - 1].Nodes = new ObservableCollection<Node>(new Node[]
+                        {
+                            new Node
+                            {
+                                Data = "123",
+                            }
+                        }
+                        );
+                    }
+                    //GetChildren(subfolders); //висит
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (DirectoryNotFoundException) { }
+            
             return children;
         }
         #endregion
@@ -61,16 +81,16 @@ namespace FileExplorer.ViewModels
         {
             DirectoryItems.Add(new DirectoryItemViewModel());
 
-
             nodes = new ObservableCollection<Node>();
             foreach (var logicaldrive in Directory.GetLogicalDrives())
             {
                 nodes.Add(new Node
-                {
+                {                    
                     Data = logicaldrive.ToString(),
                     Nodes = GetChildren(logicaldrive.ToString()),
-                });
-            }           
-        }       
+                }
+                );
+            }
+        }
     }
 }

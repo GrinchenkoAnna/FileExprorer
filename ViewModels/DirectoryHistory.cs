@@ -24,6 +24,12 @@ namespace FileExplorer.ViewModels
             Current = _head;
         }
 
+        public DirectoryHistory(string directoryPathName)
+        {
+            _head = new DirectoryNode( directoryPathName);
+            Current = _head;
+        }
+
         public IEnumerator<DirectoryNode> GetEnumerator()
         {
             yield return Current;
@@ -43,8 +49,6 @@ namespace FileExplorer.ViewModels
 
             RaiseHistoryChanged();
         }
-
-        
 
         public void MoveBack()
         {

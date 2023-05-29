@@ -43,7 +43,7 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoriesAndFiles)));
             }
         }
-
+        
         private FileEntityViewModel selectFileEntity;
         public FileEntityViewModel SelectFileEntity
         {
@@ -53,14 +53,15 @@ namespace FileExplorer.ViewModels
                 selectFileEntity = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
-        }        
-
+        }
+        
+        
         public DirectoryItemViewModel()
         {
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
 
             Name = _history.Current.DirectoryPathName;
-            FilePath = _history.Current.DirectoryPath;
+            FilePath = _history.Current.DirectoryPath;           
 
             OpenCommand = new DelegateCommand(Open);            
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
@@ -69,6 +70,7 @@ namespace FileExplorer.ViewModels
             OpenDirectory();
 
             _history.HistoryChanged += History_HistoryChanged;
+            
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);

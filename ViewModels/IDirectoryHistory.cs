@@ -33,11 +33,16 @@ namespace FileExplorer.ViewModels
        
         public string DirectoryPath { get; }
         public string DirectoryPathName { get; }
-        
+
         public DirectoryNode(string directoryPath, string directoryPathName)
         {
             DirectoryPath = directoryPath;
             DirectoryPathName = directoryPathName;
-        }       
+        }
+
+        public DirectoryNode(string directoryPathName)
+        {          
+            DirectoryPathName = directoryPathName;
+        }
     }
 }
