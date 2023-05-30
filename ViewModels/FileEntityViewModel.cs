@@ -1,13 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace FileExplorer.ViewModels
 {
-    public abstract class FileEntityViewModel
+    public class FileEntityViewModel //abstract
     {
         public string Name { get; }
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; } //added
 
         public string FullName { get; set; }
-        protected FileEntityViewModel(string name)
+        public FileEntityViewModel(string name)
         {
             Name = name;
         }       

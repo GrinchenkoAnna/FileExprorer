@@ -22,13 +22,7 @@ namespace FileExplorer.ViewModels
         {
             _head = new DirectoryNode(directoryPath, directoryPathName);
             Current = _head;
-        }
-
-        public DirectoryHistory(string directoryPathName)
-        {
-            _head = new DirectoryNode( directoryPathName);
-            Current = _head;
-        }
+        }               
 
         public IEnumerator<DirectoryNode> GetEnumerator()
         {

@@ -55,7 +55,7 @@
 		
 		<!--Tree View-->		
 		<TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-				  Items="{Binding Nodes}"
+				  Items="{Binding TreeDirectoryItem.Items}"
 				  Width="300" HorizontalAlignment="Left">
 						
 			<!--<TreeView.Resources>
@@ -79,8 +79,8 @@
 			</TreeView.DataTemplates>-->		
 
 			<TreeView.ItemTemplate>
-				<TreeDataTemplate ItemsSource="{Binding Nodes}">
-					<TextBlock Text="{Binding Data}"/>
+				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
+					<TextBlock Text="{Binding Name}"/>
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>

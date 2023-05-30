@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Controls;
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -42,8 +44,8 @@ namespace FileExplorer.ViewModels
                 directoriesAndFiles = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoriesAndFiles)));
             }
-        }
-        
+        }           
+
         private FileEntityViewModel selectFileEntity;
         public FileEntityViewModel SelectFileEntity
         {
@@ -55,7 +57,10 @@ namespace FileExplorer.ViewModels
             }
         }
         
-        
+        public ObservableCollection<FileEntityViewModel> Items { get; set; }
+
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
+
         public DirectoryItemViewModel()
         {
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
@@ -68,6 +73,7 @@ namespace FileExplorer.ViewModels
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);            
 
             OpenDirectory();
+            OpenTree();
 
             _history.HistoryChanged += History_HistoryChanged;
             
@@ -124,6 +130,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }
 
+        //TODO: добавить обход защищенных папок
         private void OpenDirectory()
         {
             DirectoriesAndFiles.Clear();            
@@ -149,7 +156,44 @@ namespace FileExplorer.ViewModels
                 DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
             }        
         }
-        
+
+
+        //TODO: делать объекты классов File/DirectoryViewModel вместо FileEntityViewModel?
+        private void OpenTree() 
+        {
+            Items = new ObservableCollection<FileEntityViewModel>();
+
+            foreach (var logicalDrive in Directory.GetLogicalDrives())
+            {
+                FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
+                root.Subfolders = GetSubfolders(logicalDrive);
+                Items.Add(root);
+                
+            }
+        }
+
+        private ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
+        {
+            ObservableCollection<FileEntityViewModel> subfolders = new ObservableCollection<FileEntityViewModel>();
+            string[] subdirs = Directory.GetDirectories(strPath, "*", SearchOption.TopDirectoryOnly);
+
+            
+            foreach (string dir in subdirs)
+            {
+                FileEntityViewModel thisnode = new FileEntityViewModel(dir);
+                if (((File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
+                    != (FileAttributes.System | FileAttributes.Hidden)) && Directory.GetDirectories(dir).Length > 0 && Directory.Exists(dir))
+                {
+                    thisnode.Subfolders = new ObservableCollection<FileEntityViewModel>();
+                    try { thisnode.Subfolders = GetSubfolders(dir); }
+                    catch (UnauthorizedAccessException) { }
+                }
+                subfolders.Add(thisnode);
+            }
+            return subfolders;
+        }
+
+
         private void OnMoveBack(object obj)
         {
             _history.MoveBack();
