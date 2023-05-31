@@ -57,9 +57,28 @@ namespace FileExplorer.ViewModels
             }
         }
         
-        public ObservableCollection<FileEntityViewModel> Items { get; set; }
+        private ObservableCollection<FileEntityViewModel> items = new();
+        public ObservableCollection<FileEntityViewModel> Items
+        {
+            get => items;
+            set
+            {
+                items = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
+            }
+        }
 
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
+        //public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
+        private ObservableCollection<FileEntityViewModel> subfolders = new();
+        public ObservableCollection<FileEntityViewModel> Subfolders
+        {
+            get => subfolders;
+            set
+            {
+                subfolders = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Subfolders)));
+            }
+        }
 
         public DirectoryItemViewModel()
         {
@@ -75,8 +94,7 @@ namespace FileExplorer.ViewModels
             OpenDirectory();
             OpenTree();
 
-            _history.HistoryChanged += History_HistoryChanged;
-            
+            _history.HistoryChanged += History_HistoryChanged;            
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
@@ -157,8 +175,6 @@ namespace FileExplorer.ViewModels
             }        
         }
 
-
-        //TODO: делать объекты классов File/DirectoryViewModel вместо FileEntityViewModel?
         private void OpenTree() 
         {
             Items = new ObservableCollection<FileEntityViewModel>();
@@ -167,29 +183,43 @@ namespace FileExplorer.ViewModels
             {
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.Subfolders = GetSubfolders(logicalDrive);
-                Items.Add(root);
-                
+                Items.Add(root);                
             }
         }
 
         private ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
         {
-            ObservableCollection<FileEntityViewModel> subfolders = new ObservableCollection<FileEntityViewModel>();
-            string[] subdirs = Directory.GetDirectories(strPath, "*", SearchOption.TopDirectoryOnly);
+            ObservableCollection<FileEntityViewModel> subfolders = new();
 
-            
-            foreach (string dir in subdirs)
+            foreach (var dir in Directory.GetDirectories(strPath))
             {
                 FileEntityViewModel thisnode = new FileEntityViewModel(dir);
                 if (((File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
-                    != (FileAttributes.System | FileAttributes.Hidden)) && Directory.GetDirectories(dir).Length > 0 && Directory.Exists(dir))
+                    != (FileAttributes.System | FileAttributes.Hidden)) /*&& Directory.GetDirectories(dir).Length > 0*/
+                    && Directory.Exists(dir))
                 {
+                    thisnode.Name = Path.GetFileName(dir);
                     thisnode.Subfolders = new ObservableCollection<FileEntityViewModel>();
+                    subfolders.Add(thisnode);
                     try { thisnode.Subfolders = GetSubfolders(dir); }
                     catch (UnauthorizedAccessException) { }
                 }
-                subfolders.Add(thisnode);
+                
             }
+            
+            foreach (var file in Directory.GetFiles(strPath))
+            {
+                FileEntityViewModel thisnode = new FileEntityViewModel(file);
+                if (((File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
+                    != (FileAttributes.System | FileAttributes.Hidden)))
+                {
+                    thisnode.Name = Path.GetFileName(file);
+                    thisnode.Subfolders = new ObservableCollection<FileEntityViewModel>();
+                    subfolders.Add(thisnode);
+                }
+                
+            }
+
             return subfolders;
         }
 

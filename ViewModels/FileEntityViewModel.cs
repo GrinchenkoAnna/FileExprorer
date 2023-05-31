@@ -3,10 +3,11 @@ using System.ComponentModel;
 
 namespace FileExplorer.ViewModels
 {
-    public class FileEntityViewModel //abstract
+    public class FileEntityViewModel 
     {
-        public string Name { get; }
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; } //added
+        public string Name { get; set; }
+
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; } 
 
         public string FullName { get; set; }
         public FileEntityViewModel(string name)

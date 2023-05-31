@@ -26,10 +26,10 @@ namespace FileExplorer.ViewModels
                 switch (entityViewModel)
                 {
                     case DirectoryViewModel directoryViewModel:
-                        return Application.Current.FindResource("FolderIconImage");
+                        return Application.Current.FindResource("FolderIconImage");                    
 
-                    case FileEntityViewModel fileEntityViewModel:
-                        return Application.Current.FindResource("FileIconImage");
+                    case FileViewModel fileEntityViewModel:
+                        return Application.Current.FindResource("FileIconImage");                    
                 }
             }
 

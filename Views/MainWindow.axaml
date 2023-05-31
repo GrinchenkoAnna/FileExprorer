@@ -56,31 +56,13 @@
 		<!--Tree View-->		
 		<TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
 				  Items="{Binding TreeDirectoryItem.Items}"
-				  Width="300" HorizontalAlignment="Left">
-						
-			<!--<TreeView.Resources>
-				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-			</TreeView.Resources>-->
+				  Width="300" HorizontalAlignment="Left"
+				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">	
 			
-			<!--<TreeView.DataTemplates>
-				<TreeDataTemplate>
-					<StackPanel Orientation="Horizontal" Height="40">
-						<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"
-										  Width="40" Height="40"
-										  HorizontalAlignment="Left">
-						</DrawingPresenter>
-						<TextBlock Width="50" Text="{Binding Name}"
-									 TextAlignment="Left" VerticalAlignment="Center"
-									 FontSize="12" FontWeight="Normal">
-						</TextBlock>
-					</StackPanel>
-				</TreeDataTemplate>
-			</TreeView.DataTemplates>-->		
-
 			<TreeView.ItemTemplate>
 				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
-					<TextBlock Text="{Binding Name}"/>
+					<TextBlock Text="{Binding Name}" FontSize="14"
+							   VerticalAlignment="Center" TextWrapping="Wrap"/>					
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>
