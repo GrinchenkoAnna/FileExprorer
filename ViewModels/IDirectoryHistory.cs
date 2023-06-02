@@ -19,9 +19,11 @@ namespace FileExplorer.ViewModels
         
         bool CanMoveBack { get; }
         bool CanMoveForward { get; }
+        bool CanMoveUp { get; }
 
         void MoveBack();
         void MoveForward();
+        void MoveUp();
         void Add(string filePath, string name);
     }
 
@@ -29,8 +31,9 @@ namespace FileExplorer.ViewModels
     {
         public DirectoryNode PreviousNode { get; set; }
         public DirectoryNode NextNode { get; set; }
-        
-       
+        public DirectoryNode UpNode { get; set; }
+
+
         public string DirectoryPath { get; }
         public string DirectoryPathName { get; }
 

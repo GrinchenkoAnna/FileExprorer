@@ -96,18 +96,6 @@ namespace FileExplorer.ViewModels
         public MainWindowViewModel()
         {
             DirectoryItems.Add(new DirectoryItemViewModel());
-
-            //nodes = new ObservableCollection<Node>();
-            //foreach (var logicaldrive in Directory.GetLogicalDrives())
-            //{
-            //    nodes.Add(new Node
-            //    {
-            //        Data = logicaldrive.ToString(),
-            //        Nodes = GetChildren(logicaldrive.ToString()),
-            //    }
-            //    );
-            //}
-
         }
     }
 }

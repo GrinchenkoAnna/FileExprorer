@@ -2,6 +2,7 @@ using Avalonia.Controls;
 
 using FileExplorer.ViewModels;
 
+using System;
 using System.IO;
 
 namespace FileExplorer.Views

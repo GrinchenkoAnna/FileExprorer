@@ -31,7 +31,8 @@ namespace FileExplorer.ViewModels
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public bool CanMoveBack => Current.PreviousNode != null;
-        public bool CanMoveForward => Current.NextNode != null;   
+        public bool CanMoveForward => Current.NextNode != null;
+        public bool CanMoveUp => Current.UpNode != null;
 
         public void Add(string filePath, string name)
         {
@@ -39,6 +40,7 @@ namespace FileExplorer.ViewModels
 
             Current.NextNode = node;
             node.PreviousNode = Current;
+            node.UpNode = _head;
             Current = node;
 
             RaiseHistoryChanged();
@@ -60,6 +62,13 @@ namespace FileExplorer.ViewModels
             RaiseHistoryChanged();
         }
 
+        public void MoveUp()
+        {
+            var up = Current.UpNode;
+            Current = up;
+
+            RaiseHistoryChanged();
+        }
         private void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, EventArgs.Empty);        
     }
 }

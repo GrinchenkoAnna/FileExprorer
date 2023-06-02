@@ -24,58 +24,77 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="150"/>
-			<ColumnDefinition Width="150"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="80"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
 		<!--Background-->
-		<Image Grid.Row="1" Grid.Column="2" 
+		<Image Grid.Row="1" Grid.Column="3"  Grid.ColumnSpan="2" 
 			   Stretch="Fill" Opacity="0.8"
 			   Source="/Assets/autumn.jpg"/>
 					
-		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
 				   Background="White" />
-		<Border Grid.Column="1" Grid.Row="1" BorderBrush="Gray" 
+		<Border Grid.Column="2" Grid.Row="1" BorderBrush="Gray" 
 				BorderThickness="0,0,1,0"/>
-		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="2" 
+		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="3" 
 				BorderThickness="0,0,0,1"/>		
 		
 		<!--Buttons-->
 		<Grid Grid.Row="0" Grid.Column="0">
 			<Button Content="&lt;-" Margin="2,2,0,2" Background="Coral"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
 		<Grid Grid.Row="0" Grid.Column="1">			
-			<Button Content="-&gt;" Margin="0,2,2,2" Background="Coral"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			<Button Content="⇧" Margin="0,2,2,2" Background="IndianRed"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
 		
+		<Grid Grid.Row="0" Grid.Column="2">
+			<Button Content="-&gt;" Margin="0,2,2,2" Background="Coral"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
+					Command="{Binding CurrentDirectoryItem.MoveUpCommand}" />
+		</Grid>
+		
 		<!--Tree View-->		
-		<TreeView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-				  Items="{Binding TreeDirectoryItem.Items}"
-				  Width="300" HorizontalAlignment="Left"
-				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">	
+		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+				  Items="{Binding TreeDirectoryItem.Items}"	
+				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
+				  Width="240" HorizontalAlignment="Left"
+				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+			
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction
+						Command="{Binding CurrentDirectoryItem.OpenCommand}"
+						CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
+				</ia:EventTriggerBehavior>				
+			</i:Interaction.Behaviors>
 			
 			<TreeView.ItemTemplate>
 				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
 					<TextBlock Text="{Binding Name}" FontSize="14"
-							   VerticalAlignment="Center" TextWrapping="Wrap"/>					
+							   VerticalAlignment="Center" TextWrapping="Wrap"/>		
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
 		</TreeView>
 		
 		<!--Main Panel-->
-		<TextBox Grid.Row="0" Grid.Column="2" 
+		<TextBox Grid.Row="0" Grid.Column="3"  Grid.ColumnSpan="2" 
 				 Text="{Binding CurrentDirectoryItem.FilePath}"
 				 Background="White" />
 		
-		<ListBox Grid.Row="1" Grid.Column="2"
+		<ListBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">			
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
 			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">

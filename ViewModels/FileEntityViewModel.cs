@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 
 namespace FileExplorer.ViewModels
 {
@@ -13,6 +14,16 @@ namespace FileExplorer.ViewModels
         public FileEntityViewModel(string name)
         {
             Name = name;
-        }       
+        }
+
+        public FileEntityViewModel(DirectoryInfo directoryName)
+        {
+            FullName = directoryName.FullName;
+        }
+
+        public FileEntityViewModel(FileInfo fileName)
+        {
+            FullName = fileName.FullName;
+        }
     }
 }
