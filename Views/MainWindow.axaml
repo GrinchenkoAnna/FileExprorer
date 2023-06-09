@@ -17,6 +17,10 @@
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
 	</Window.Title>
+
+	<Window.Resources>
+		<local:LevelPaddingConverter x:Key="PaddingConverter"/>
+	</Window.Resources>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -64,18 +68,26 @@
 		</Grid>
 		
 		<!--Tree View-->		
-		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+		<!--<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
 				  Items="{Binding TreeDirectoryItem.Items}"	
 				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
 				  Width="240" HorizontalAlignment="Left"
 				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 			
-			<i:Interaction.Behaviors>
+			--><!--<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>				
+			</i:Interaction.Behaviors>--><!--
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction
+						Command="{Binding TreeDirectoryItem.OpenTreeItemCommand}"
+						CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
+				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 			
 			<TreeView.ItemTemplate>
@@ -84,7 +96,53 @@
 							   VerticalAlignment="Center" TextWrapping="Wrap"/>		
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
-		</TreeView>
+		</TreeView>-->
+
+		<!--<i:Interaction.Behaviors>
+			<ia:EventTriggerBehavior EventName="DoubleTapped">
+				<ia:InvokeCommandAction
+					Command="{Binding TreeDirectoryItem.OpenTreeItemCommand}"
+					CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
+			</ia:EventTriggerBehavior>
+		</i:Interaction.Behaviors>-->
+
+		<!--<ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+				 Items="{Binding TreeDirectoryItem.DirectoriesAndFiles}"
+				 SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						--><!--<Button Content="+" Margin="0, -5, 5, -5"/>--><!--
+						<TextBlock Text="{Binding Name}" 
+								   VerticalAlignment="Center"/>
+					</StackPanel>					
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>-->
+
+		<DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">		
+			</StackPanel>
+			<Border BorderThickness="1" BorderBrush="Gray">
+				<ScrollViewer
+							  HorizontalScrollBarVisibility="Auto"
+							  VerticalScrollBarVisibility="Auto">
+					<ItemsRepeater Items="{Binding TreeDirectoryItem.TreeRoot.VisibleChildren}">
+						<ItemsRepeater.ItemTemplate>
+							<DataTemplate>
+								<Border Padding="{Binding Level, Converter={StaticResource PaddingConverter}}">
+									<StackPanel Orientation="Horizontal">
+										<CheckBox IsChecked="{Binding IsExpanded}" IsEnabled="{Binding IsDirectory}" 
+												  Opacity="{Binding IsDirectory}" CornerRadius="10" />
+										<TextBlock Text="{Binding ItemName}" Margin="5 0 0 0" VerticalAlignment="Center"/>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsRepeater.ItemTemplate>
+					</ItemsRepeater>
+				</ScrollViewer>
+			</Border>
+		</DockPanel>
 		
 		<!--Main Panel-->
 		<TextBox Grid.Row="0" Grid.Column="3"  Grid.ColumnSpan="2" 

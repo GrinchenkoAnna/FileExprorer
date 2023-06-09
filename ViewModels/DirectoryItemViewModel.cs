@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.IO;
 
 namespace FileExplorer.ViewModels
-{
+{    
     public class DirectoryItemViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -70,17 +70,8 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
             }
         }
-        
-        private ObservableCollection<FileEntityViewModel> subfolders = new();
-        public ObservableCollection<FileEntityViewModel> Subfolders
-        {
-            get => subfolders;
-            set
-            {
-                subfolders = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Subfolders)));
-            }
-        }
+       
+        public RootTreeNodeModel TreeRoot { get; }
 
         public DirectoryItemViewModel()
         {
@@ -92,16 +83,41 @@ namespace FileExplorer.ViewModels
             OpenCommand = new DelegateCommand(Open);            
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
-            MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
+            MoveUpCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp); //FIX!
+            OpenTreeItemCommand = new DelegateCommand(OpenTreeItem);
 
             OpenDirectory();
-            OpenTree();
+            //OpenTree();
 
-            _history.HistoryChanged += History_HistoryChanged;            
+            _history.HistoryChanged += History_HistoryChanged;
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
-            //_history.KeyPress += KeyPressed;           
+            //_history.KeyPress += KeyPressed;
+            
+            var root = new RootTreeNodeModel()
+            {
+                ItemName = "Мой компьютер",
+                ItemPath = "Мой компьютер",
+                IsExpanded = true,
+                IsDirectory = true
+            };
+
+            foreach (var logicalDrive in Directory.GetLogicalDrives())
+            {
+                var ch = new TreeNodeModel
+                {
+                    ItemName = Path.GetFullPath(logicalDrive),
+                    ItemPath = logicalDrive,
+                    IsExpanded = true,
+                    IsDirectory = true
+                };
+                root.AddChild(ch);
+                Populate(root, logicalDrive, 2);
+            }
+            root.ForceResync();
+            TreeRoot = root;    
+        
         }
 
         private void History_HistoryChanged(object? sender, EventArgs e)
@@ -137,6 +153,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
         public DelegateCommand MoveUpCommand { get; }
+        public DelegateCommand OpenTreeItemCommand { get; }
 
         private void Open(object parameter)
         {
@@ -150,6 +167,76 @@ namespace FileExplorer.ViewModels
                 OpenDirectory();
             }
             else { throw new Exception(); }
+        }
+
+        void Populate(TreeNodeModel node, string itemPath, int levels)
+        {
+            if (levels == 0) return;
+
+            foreach (var dir in Directory.GetDirectories(itemPath))
+            {
+                if (((File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
+                    != (FileAttributes.System | FileAttributes.Hidden)) && Directory.Exists(dir))
+                {
+                    var ch = new TreeNodeModel
+                    {
+                        ItemName = Path.GetFileName(dir),
+                        ItemPath = dir,
+                        IsExpanded = false,
+                        IsDirectory = true
+                    };
+                    node.AddChild(ch);
+
+                    try { Populate(ch, dir, levels - 1); }
+                    catch (UnauthorizedAccessException) { }
+                }
+            }
+
+            foreach (var file in Directory.GetFiles(itemPath))
+            {
+                if (((File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
+                    != (FileAttributes.System | FileAttributes.Hidden)))
+                {
+                    var f = new TreeNodeModel
+                    {
+                        ItemName = Path.GetFileName(file),
+                        ItemPath = file,
+                        IsExpanded = false,
+                        IsDirectory = false
+                    };
+                    node.AddChild(f);
+                }
+            }
+        }
+
+        private void OpenTreeItem(object parameter)
+        {
+            if (parameter is FileEntityViewModel directoryViewModel)
+            {
+                FilePath = directoryViewModel.FullName;
+                Name = "Мой компьютер - " + directoryViewModel.Name;
+
+                if (Name == "Мой компьютер")
+                {
+                    foreach (var logicalDrive in Directory.GetLogicalDrives())
+                    {
+                        DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
+                    }
+                    return;
+                }
+
+                var directoryInfo = new DirectoryInfo(FilePath);
+
+                foreach (var directory in directoryInfo.GetDirectories())
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                }
+
+                foreach (var fileInfo in directoryInfo.GetFiles())
+                {
+                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                }
+            }
         }
 
         //TODO: добавить обход защищенных папок
@@ -177,57 +264,7 @@ namespace FileExplorer.ViewModels
             {
                 DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
             }
-        }
-
-        private void OpenTree() 
-        {
-            Items = new ObservableCollection<FileEntityViewModel>();
-
-            foreach (var logicalDrive in Directory.GetLogicalDrives())
-            {
-                FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
-                root.FullName = Path.GetFullPath(logicalDrive);
-                root.Subfolders = GetSubfolders(logicalDrive);
-                Items.Add(root);                
-            }
-        }
-
-        private static ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
-        {
-            ObservableCollection<FileEntityViewModel> subfolders = new();
-
-            foreach (var dir in Directory.GetDirectories(strPath))
-            {
-                FileEntityViewModel thisnode = new FileEntityViewModel(dir);
-                if (((File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
-                    != (FileAttributes.System | FileAttributes.Hidden)) /*&& Directory.GetDirectories(dir).Length > 0*/
-                    && Directory.Exists(dir))
-                {
-                    thisnode.Name = Path.GetFileName(dir);
-                    thisnode.FullName = Path.GetFullPath(dir);
-                    thisnode.Subfolders = new ObservableCollection<FileEntityViewModel>();
-                    subfolders.Add(thisnode);
-                    //try { thisnode.Subfolders = GetSubfolders(dir); }
-                    //catch (UnauthorizedAccessException) { }
-                }
-                
-            }
-            
-            foreach (var file in Directory.GetFiles(strPath))
-            {
-                FileEntityViewModel thisnode = new FileEntityViewModel(file);
-                if ((File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
-                    != (FileAttributes.System | FileAttributes.Hidden))
-                {
-                    thisnode.Name = Path.GetFileName(file);
-                    thisnode.Subfolders = new ObservableCollection<FileEntityViewModel>();
-                    subfolders.Add(thisnode);
-                }
-                
-            }
-
-            return subfolders;
-        }        
+        }  
 
         private void OnMoveBack(object obj)
         {
