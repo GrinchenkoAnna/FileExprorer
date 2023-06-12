@@ -64,19 +64,19 @@
 		</Grid>
 		
 		<!--Tree View-->		
-		<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+		<!--<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
 				  Items="{Binding TreeDirectoryItem.Items}"	
 				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
 				  Width="240" HorizontalAlignment="Left"
 				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 			
-			<i:Interaction.Behaviors>
+			--><!--<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>				
-			</i:Interaction.Behaviors>
+			</i:Interaction.Behaviors>--><!--
 			
 			<TreeView.ItemTemplate>
 				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
@@ -84,8 +84,15 @@
 							   VerticalAlignment="Center" TextWrapping="Wrap"/>		
 				</TreeDataTemplate>
 			</TreeView.ItemTemplate>
-		</TreeView>
-		
+		</TreeView>-->
+
+		<ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding TreeDirectoryItem.Items}"/>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 		<!--Main Panel-->
 		<TextBox Grid.Row="0" Grid.Column="3"  Grid.ColumnSpan="2" 
 				 Text="{Binding CurrentDirectoryItem.FilePath}"
