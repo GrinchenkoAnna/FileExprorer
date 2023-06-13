@@ -20,7 +20,8 @@
 	
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="33"/>
+			<RowDefinition Height="33"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -31,74 +32,109 @@
 		</Grid.ColumnDefinitions>
 
 		<!--Background-->
-		<Image Grid.Row="1" Grid.Column="3"  Grid.ColumnSpan="2" 
-			   Stretch="Fill" Opacity="0.8"
+		<Border Grid.Row="2" Grid.Column="3"  Grid.ColumnSpan="2"
+				CornerRadius="3">
+			<Border.Background>
+				<ImageBrush Stretch="Fill" Opacity="0.8"
 			   Source="/Assets/autumn.jpg"/>
-					
-		<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-				   Background="White" />
-		<Border Grid.Column="2" Grid.Row="1" BorderBrush="Gray" 
-				BorderThickness="0,0,1,0"/>
-		<Border Grid.Column="0" Grid.Row="0" BorderBrush="Gray" Grid.ColumnSpan="3" 
-				BorderThickness="0,0,0,1"/>		
+			</Border.Background>
+		</Border>		
 		
 		<!--Buttons-->
-		<Grid Grid.Row="0" Grid.Column="0">
-			<Button Content="&lt;-" Margin="2,2,0,2" Background="Coral"
+		<Grid Grid.Row="1" Grid.Column="0">
+			<Button Content="&lt;-" Background="Coral"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
-		<Grid Grid.Row="0" Grid.Column="1">			
-			<Button Content="⇧" Margin="0,2,2,2" Background="IndianRed"
+		<Grid Grid.Row="1" Grid.Column="1">			
+			<Button Content="⇧" Background="IndianRed"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
 		</Grid>
 		
-		<Grid Grid.Row="0" Grid.Column="2">
-			<Button Content="-&gt;" Margin="0,2,2,2" Background="Coral"
+		<Grid Grid.Row="1" Grid.Column="2">
+			<Button Content="-&gt;" Background="Coral"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveUpCommand}" />
-		</Grid>
-		
-		<!--Tree View-->		
-		<!--<TreeView Name="tree" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-				  Items="{Binding TreeDirectoryItem.Items}"	
-				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
-				  Width="240" HorizontalAlignment="Left"
-				  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-			
-			--><!--<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.OpenCommand}"
-						CommandParameter="{Binding TreeDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>				
-			</i:Interaction.Behaviors>--><!--
-			
-			<TreeView.ItemTemplate>
-				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
-					<TextBlock Text="{Binding Name}" FontSize="14"
-							   VerticalAlignment="Center" TextWrapping="Wrap"/>		
-				</TreeDataTemplate>
-			</TreeView.ItemTemplate>
-		</TreeView>-->
+		</Grid>		
 
-		<ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+			<Menu>
+				<MenuItem Header="Главная" HorizontalAlignment="Stretch"
+						  Margin="0,0,2,0"
+						  Background="PeachPuff" CornerRadius="3">
+					<MenuItem Header="Закрепить на панели быстрого доступа"/>
+					<MenuItem Header="Копировать"/>
+					<MenuItem Header="Вставить"/>
+					<MenuItem Header="Вырезать"/>
+					<MenuItem Header="Скопировать путь"/>
+					<MenuItem Header="Переместить в"/>
+					<MenuItem Header="Скопировать в"/>
+					<MenuItem Header="Удалить"/>
+					<MenuItem Header="Переименовать"/>
+					<MenuItem Header="Новая папка"/>
+					<MenuItem Header="Свойства"/>
+					<MenuItem Header="Выделить все"/>
+					<MenuItem Header="Снять выделение"/>
+					<MenuItem Header="Обратить выделение"/>
+				</MenuItem>
+
+				<MenuItem Header="Вид" HorizontalAlignment="Stretch"
+						  Margin="2,0,0,0"
+						  Background="PeachPuff" CornerRadius="3">
+					<MenuItem Header="Область навигации"/>
+					<MenuItem Header="Область сведений"/>
+					<MenuItem Header="Вид">
+						<MenuItem Header="Огромные значки"/>
+						<MenuItem Header="Крупные значки"/>
+						<MenuItem Header="Обычные значки"/>
+						<MenuItem Header="Мелкие значки"/>
+						<MenuItem Header="Список"/>
+						<MenuItem Header="Плитка"/>
+						<MenuItem Header="Таблица"/>
+						<MenuItem Header="Содержимое"/>
+					</MenuItem>
+					<MenuItem Header="Сортировка">
+						<MenuItem Header="Имя"/>
+						<MenuItem Header="Дата изменения"/>
+						<MenuItem Header="Тип"/>
+						<MenuItem Header="Размер"/>
+						<MenuItem Header="По возрастанию"/>
+						<MenuItem Header="По убыванию"/>
+					</MenuItem>
+				</MenuItem>
+			</Menu>
+		</Grid>
+
+		<TextBox Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3" 
+				 Margin="2,5,0,5" Text="Поиск: "
+				 Background="White" BorderThickness="0.5" 
+				 BorderBrush="RosyBrown"/>
+		
+		<!--Tree View-->
+		<!--Сделать углы через Border!-->		
+		<ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding TreeDirectoryItem.Items}"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-		<!--Main Panel-->
-		<TextBox Grid.Row="0" Grid.Column="3"  Grid.ColumnSpan="2" 
-				 Text="{Binding CurrentDirectoryItem.FilePath}"
-				 Background="White" />
 		
-		<ListBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+		<!--Main Panel-->
+		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+				CornerRadius="3" Background="PapayaWhip" Margin="2,3,0,2"
+				BorderThickness="0.5" BorderBrush="RosyBrown">
+			<TextBlock Grid.Row="1" Grid.Column="3"  Grid.ColumnSpan="2"
+				   Margin="5,0,0,0"
+				   Text="{Binding CurrentDirectoryItem.FilePath}"
+				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</Border>
+
+		<ListBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
@@ -109,12 +145,32 @@
 						Command="{Binding CurrentDirectoryItem.OpenCommand}"
 						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
-				<!--<ia:EventTriggerBehavior EventName="KeyDown">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.KeyPressed}"
-						/>
-				</ia:EventTriggerBehavior>-->
-			</i:Interaction.Behaviors>		
+			</i:Interaction.Behaviors>
+
+			<ListBox.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Вид">
+						<MenuItem Header="Огромные значки"/>
+						<MenuItem Header="Крупные значки"/>
+						<MenuItem Header="Обычные значки"/>
+						<MenuItem Header="Мелкие значки"/>
+						<MenuItem Header="Список"/>
+						<MenuItem Header="Плитка"/>
+						<MenuItem Header="Таблица"/>
+						<MenuItem Header="Содержимое"/>
+					</MenuItem>
+					<MenuItem Header="Сортировка">
+						<MenuItem Header="Имя"/>
+						<MenuItem Header="Дата изменения"/>
+						<MenuItem Header="Тип"/>
+						<MenuItem Header="Размер"/>
+						<MenuItem Header="По возрастанию"/>
+						<MenuItem Header="По убыванию"/>
+					</MenuItem>
+					<MenuItem Header="Группировка"/>
+					<MenuItem Header="Свойства"/>
+				</ContextMenu>
+			</ListBox.ContextMenu>
 			
 			<ListBox.Resources>
 				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
@@ -122,7 +178,16 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Vertical" Width="80" Height="100">						
+					<StackPanel Orientation="Vertical" Width="80" Height="100">
+						<StackPanel.ContextMenu>
+							<ContextMenu>
+								<MenuItem Header="Вырезать"/>
+								<MenuItem Header="Копировать"/>
+								<MenuItem Header="Удалить"/>
+								<MenuItem Header="Переименовать"/>
+								<MenuItem Header="Свойства"/>
+							</ContextMenu>
+						</StackPanel.ContextMenu>
 						<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"
