@@ -18,7 +18,7 @@ namespace FileExplorer.ViewModels
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute.Invoke(parameter);
+            return _canExecute == null || _canExecute.Invoke(parameter);            
         }
 
         public void Execute(object parameter)

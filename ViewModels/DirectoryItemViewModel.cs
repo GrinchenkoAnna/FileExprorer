@@ -72,17 +72,17 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
             }
         }
-        
-        private ObservableCollection<FileEntityViewModel> subfolders = new();
-        public ObservableCollection<FileEntityViewModel> Subfolders
+
+        private ObservableCollection<FileEntityViewModel> quickAccessItems = new();
+        public ObservableCollection<FileEntityViewModel> QuickAccessItems
         {
-            get => subfolders;
+            get => quickAccessItems;
             set
             {
-                subfolders = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Subfolders)));
+                quickAccessItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessItems)));
             }
-        }
+        }                
 
         public DirectoryItemViewModel()
         {
@@ -92,6 +92,8 @@ namespace FileExplorer.ViewModels
             FilePath = _history.Current.DirectoryPath;           
 
             OpenCommand = new DelegateCommand(Open);
+            AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
+            DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
             MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
@@ -100,7 +102,8 @@ namespace FileExplorer.ViewModels
             _ = OpenTree();
             //CreateTree();
 
-            _history.HistoryChanged += History_HistoryChanged;            
+            _history.HistoryChanged += History_HistoryChanged;
+            QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
@@ -137,10 +140,13 @@ namespace FileExplorer.ViewModels
 
         #region Commands
         public DelegateCommand OpenCommand { get; }
+        public DelegateCommand AddToQuickAccessCommand { get; }
+        public DelegateCommand DeleteCommand { get; }
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
         public DelegateCommand MoveUpCommand { get; }
 
+        #region OpenDirectory
         private void Open(object parameter)
         {
             if (parameter is FileEntityViewModel directoryViewModel)
@@ -181,8 +187,44 @@ namespace FileExplorer.ViewModels
             {
                 DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
             }
+            
+            //catch (FileNotFoundException) { }
+            //catch (DirectoryNotFoundException) { }
         }
+        #endregion
 
+        #region Delete
+        private void Delete(object parameter)
+        {
+            if (parameter is FileEntityViewModel directory)
+            {
+                FilePath = directory.FullName;
+                Directory.Delete(FilePath);
+
+                //тупое обновление страницы
+                OnMoveBack(parameter);
+                OnMoveForward(parameter);
+                OpenDirectory();
+            }
+            else { throw new Exception(); }
+        }        
+
+        private bool OnCanDelete(object obj) => _history.CanDelete;
+        #endregion
+
+        #region AddToQuickAccess
+        private void AddToQuickAccess(object parameter)
+        {
+            if (parameter is FileEntityViewModel item)
+            {                
+                QuickAccessItems.Add(item);
+                //добавить запись директорий в файл
+            }
+            else { throw new Exception(); }
+        }
+        #endregion
+
+        #region Tree
         private async Task OpenTree() 
         {
             Items = new ObservableCollection<FileEntityViewModel>();
@@ -195,7 +237,6 @@ namespace FileExplorer.ViewModels
                 Items.Add(root);                
             }
         }
-
         
         private static ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
         {
@@ -213,8 +254,10 @@ namespace FileExplorer.ViewModels
                             thisnode.Name = Path.GetFileName(dir);
                             thisnode.FullName = Path.GetFullPath(dir);
                             subfolders.Add(thisnode);
-                            try { thisnode.Subfolders = GetSubfolders(dir); }
-                            catch (UnauthorizedAccessException) { }
+                            //try { thisnode.Subfolders = GetSubfolders(dir); }
+                            //catch (UnauthorizedAccessException) { }
+                            //catch (FileNotFoundException) { }
+                            //catch (DirectoryNotFoundException) { }
                         }
                     }
 
@@ -232,10 +275,14 @@ namespace FileExplorer.ViewModels
                 }                
             }
             catch (UnauthorizedAccessException) { }
-            
+            //catch (FileNotFoundException) { }
+            //catch (DirectoryNotFoundException) { }
+
             return subfolders;
         }
+        #endregion
 
+        #region Buttons
         private void OnMoveBack(object obj)
         {
             _history.MoveBack();
@@ -274,6 +321,7 @@ namespace FileExplorer.ViewModels
         }
 
         private bool OnCanMoveUp(object obj) => _history.CanMoveUp;
-        #endregion            
-    }       
+        #endregion
+        #endregion
+    }
 }

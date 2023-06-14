@@ -22,6 +22,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="33"/>
 			<RowDefinition Height="33"/>
+			<RowDefinition Height="0.4*"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -32,7 +33,8 @@
 		</Grid.ColumnDefinitions>
 
 		<!--Background-->
-		<Border Grid.Row="2" Grid.Column="3"  Grid.ColumnSpan="2"
+		<Border Grid.Row="2" Grid.RowSpan="2"
+				Grid.Column="3" Grid.ColumnSpan="2"
 				CornerRadius="3">
 			<Border.Background>
 				<ImageBrush Stretch="Fill" Opacity="0.8"
@@ -66,14 +68,21 @@
 				<MenuItem Header="Главная" HorizontalAlignment="Stretch"
 						  Margin="0,0,2,0"
 						  Background="PeachPuff" CornerRadius="3">
-					<MenuItem Header="Закрепить на панели быстрого доступа"/>
+					<MenuItem Header="Открыть" 
+							  Command="{Binding CurrentDirectoryItem.OpenCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+					<MenuItem Header="Закрепить на панели быстрого доступа"
+							  Command="{Binding QuickDirectoryItem.AddToQuickAccessCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>					
 					<MenuItem Header="Копировать"/>
 					<MenuItem Header="Вставить"/>
 					<MenuItem Header="Вырезать"/>
 					<MenuItem Header="Скопировать путь"/>
 					<MenuItem Header="Переместить в"/>
 					<MenuItem Header="Скопировать в"/>
-					<MenuItem Header="Удалить"/>
+					<MenuItem Header="Удалить"
+							  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Переименовать"/>
 					<MenuItem Header="Новая папка"/>
 					<MenuItem Header="Свойства"/>
@@ -114,15 +123,56 @@
 				 Background="White" BorderThickness="0.5" 
 				 BorderBrush="RosyBrown"/>
 		
-		<!--Tree View-->
-		<!--Сделать углы через Border!-->		
-		<ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+		<!--QuickAccess-->
+		<ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+				 Items="{Binding QuickDirectoryItem.QuickAccessItems}"
+				 Background="#FFE0D1">
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction
+						Command="{Binding CurrentDirectoryItem.OpenCommand}"
+						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>
+
+			<ListBox.Resources>
+				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+			</ListBox.Resources>
+			
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding TreeDirectoryItem.Items}"/>
+					<StackPanel Orientation="Horizontal" MaxHeight="35">
+						<DrawingPresenter Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"
+										  Width="35" Height="35"
+										  HorizontalAlignment="Left"
+										  VerticalAlignment="Center">
+						</DrawingPresenter>
+						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
+								   VerticalAlignment="Center" FontSize="12"/>
+					</StackPanel>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+		
+		<!--Tree View-->
+		<!--Сделать углы через Border!-->
+		<TreeView Name="tree" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+				  Items="{Binding TreeDirectoryItem.Items}"	
+				  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
+				  Width="240" HorizontalAlignment="Left"
+				  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				  Background="PapayaWhip" BorderBrush="RosyBrown" BorderThickness="0,1,0,0">
+			<TreeView.ItemTemplate>
+				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
+					<TextBlock Text="{Binding Name}" FontSize="14"
+							   VerticalAlignment="Center" TextWrapping="Wrap"/>
+				</TreeDataTemplate>
+			</TreeView.ItemTemplate>
+		</TreeView>
+		
+		<!---->
 		
 		<!--Main Panel-->
 		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
@@ -134,7 +184,8 @@
 				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Border>
 
-		<ListBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
+		<ListBox Grid.Row="2" Grid.RowSpan="2"
+				 Grid.Column="3" Grid.ColumnSpan="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
@@ -183,7 +234,9 @@
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
 								<MenuItem Header="Копировать"/>
-								<MenuItem Header="Удалить"/>
+								<MenuItem Header="Удалить" 
+										  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+										  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 								<MenuItem Header="Переименовать"/>
 								<MenuItem Header="Свойства"/>
 							</ContextMenu>

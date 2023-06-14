@@ -93,6 +93,19 @@ namespace FileExplorer.ViewModels
         //}
         #endregion
 
+        #region QuickAccess
+        private DirectoryItemViewModel quickDirectoryItem = new();
+        public DirectoryItemViewModel QuickDirectoryItem
+        {
+            get => quickDirectoryItem;
+            set
+            {
+                quickDirectoryItem = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickDirectoryItem)));
+            }
+        }
+        #endregion
+
         public MainWindowViewModel()
         {
             DirectoryItems.Add(new DirectoryItemViewModel());
