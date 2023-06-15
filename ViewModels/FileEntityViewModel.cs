@@ -16,6 +16,8 @@ namespace FileExplorer.ViewModels
             Name = name;
         }
 
+        //public FileEntityViewModel() { }
+
         public FileEntityViewModel(DirectoryInfo directoryName)
         {
             FullName = directoryName.FullName;

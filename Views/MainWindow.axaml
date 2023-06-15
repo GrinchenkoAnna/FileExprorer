@@ -83,7 +83,9 @@
 					<MenuItem Header="Удалить"
 							  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-					<MenuItem Header="Переименовать"/>
+					<MenuItem Header="Переименовать"
+							  Command="{Binding CurrentDirectoryItem.RenameCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Новая папка"/>
 					<MenuItem Header="Свойства"/>
 					<MenuItem Header="Выделить все"/>
@@ -142,7 +144,7 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<StackPanel Orientation="Horizontal" MaxHeight="35">
+					<StackPanel Orientation="Horizontal">
 						<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 										  Width="35" Height="35"

@@ -8,7 +8,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace FileExplorer.ViewModels
 {
@@ -94,6 +96,7 @@ namespace FileExplorer.ViewModels
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
+            RenameCommand = new DelegateCommand(Rename);
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
             MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
@@ -142,6 +145,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }
         public DelegateCommand DeleteCommand { get; }
+        public DelegateCommand RenameCommand { get; }
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
         public DelegateCommand MoveUpCommand { get; }
@@ -196,10 +200,13 @@ namespace FileExplorer.ViewModels
         #region Delete
         private void Delete(object parameter)
         {
-            if (parameter is FileEntityViewModel directory)
+            if (parameter is FileEntityViewModel item)
             {
-                FilePath = directory.FullName;
-                Directory.Delete(FilePath);
+                FilePath = item.FullName;
+                if (item is DirectoryViewModel) 
+                    Directory.Delete(FilePath);
+                else if (item is FileViewModel)
+                    File.Delete(FilePath);
 
                 //тупое обновление страницы
                 OnMoveBack(parameter);
@@ -212,15 +219,45 @@ namespace FileExplorer.ViewModels
         private bool OnCanDelete(object obj) => _history.CanDelete;
         #endregion
 
-        #region AddToQuickAccess
-        private void AddToQuickAccess(object parameter)
+        #region Delete
+        private void Rename(object parameter)
         {
             if (parameter is FileEntityViewModel item)
-            {                
-                QuickAccessItems.Add(item);
-                //добавить запись директорий в файл
+            {
+                FilePath = item.FullName;                
+                //if (item is DirectoryViewModel)
+
+                //else if (item is FileViewModel)
+
+
+                //тупое обновление страницы
+                OnMoveBack(parameter);
+                OnMoveForward(parameter);
+                OpenDirectory();
             }
             else { throw new Exception(); }
+        }        
+        #endregion
+
+        #region AddToQuickAccess
+        private void AddToQuickAccess(object parameter) //!!Разобраться с сохранением коллекции
+        {
+            //XmlSerializer xsr = new XmlSerializer(typeof(ObservableCollection<FileEntityViewModel>));
+            //StreamReader sr = new StreamReader(@"C:\Users\Anna\Documents\GitHub\FileExplorer\ViewModels\QuickAccessElements.xml");
+            //quickAccessItems = xsr.Deserialize(sr) as ObservableCollection<FileEntityViewModel>;
+
+            if (parameter is FileEntityViewModel item)
+            {
+                //bool append = true;
+                //XmlSerializer xsw = new XmlSerializer(typeof(ObservableCollection<FileEntityViewModel>));
+                //StreamWriter sw = new StreamWriter(@"C:\Users\Anna\Documents\GitHub\FileExplorer\ViewModels\QuickAccessElements.xml");
+                if (!QuickAccessItems.Contains(item))
+                {
+                    QuickAccessItems.Add(item);
+                    //xsw.Serialize(sw, quickAccessItems);
+                }      
+            }
+            else { }
         }
         #endregion
 

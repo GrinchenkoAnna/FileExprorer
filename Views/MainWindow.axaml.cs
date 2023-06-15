@@ -14,6 +14,6 @@ namespace FileExplorer.Views
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
-        }        
+        }            
     }
 }
