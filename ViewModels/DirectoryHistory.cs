@@ -34,6 +34,7 @@ namespace FileExplorer.ViewModels
         public bool CanMoveForward => Current.NextNode != null;
         public bool CanMoveUp => Current.UpNode != null;
         public bool CanDelete => Current.PreviousNode != null;
+        public bool CanReplace => Current.PreviousNode != null;
 
         public void Add(string filePath, string name)
         {

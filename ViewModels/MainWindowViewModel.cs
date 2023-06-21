@@ -7,11 +7,27 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
+using static FileExplorer.ViewModels.DirectoryItemViewModel;
+
 namespace FileExplorer.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged 
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly ISynchronizationHelper _synchronizationHelper;
+
+        private string path;
+        public string Path
+        {
+            get
+            {
+                return path;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref path, value);
+            }
+        }
 
         #region Main Panel
         private ObservableCollection<DirectoryItemViewModel> directoryItems = new();
@@ -25,7 +41,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private DirectoryItemViewModel currentDirectoryItem = new();
+        private DirectoryItemViewModel currentDirectoryItem;
         public DirectoryItemViewModel CurrentDirectoryItem
         {
             get => currentDirectoryItem;
@@ -38,7 +54,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Tree View
-        private DirectoryItemViewModel treeDirectoryItem = new();
+        private DirectoryItemViewModel treeDirectoryItem;
         public DirectoryItemViewModel TreeDirectoryItem
         {
             get => treeDirectoryItem;
@@ -48,53 +64,10 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TreeDirectoryItem)));
             }
         }
-
-        //private ObservableCollection<Node> nodes;
-
-        //public ObservableCollection<Node> Nodes
-        //{
-        //    get => nodes;
-        //    set { this.RaiseAndSetIfChanged(ref nodes, value); }
-        //}
-
-        //public ObservableCollection<Node> GetChildren(string path)
-        //{
-        //    ObservableCollection<Node> children = new ObservableCollection<Node>();
-
-        //    try
-        //    {
-        //        foreach (var subfolders in Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly))
-        //        {
-        //            if ((File.GetAttributes(subfolders) & (FileAttributes.System | FileAttributes.Hidden))
-        //               != (FileAttributes.System | FileAttributes.Hidden))
-        //            {
-        //                children.Add(new Node { Data = subfolders });
-
-        //                children[children.Count - 1].Nodes = new ObservableCollection<Node>(new Node[]
-        //                {
-        //                    new Node
-        //                    {
-        //                        Data = "123",
-        //                    },
-        //                    new Node
-        //                    {
-        //                        Data = "123",
-        //                    }
-        //                }
-        //                );
-        //            }
-        //            //GetChildren(subfolders); //висит
-        //        }
-        //    }
-        //    catch (UnauthorizedAccessException) { }
-        //    catch (DirectoryNotFoundException) { }
-
-        //    return children;
-        //}
         #endregion
 
         #region QuickAccess
-        private DirectoryItemViewModel quickDirectoryItem = new();
+        private DirectoryItemViewModel quickDirectoryItem;
         public DirectoryItemViewModel QuickDirectoryItem
         {
             get => quickDirectoryItem;
@@ -106,9 +79,16 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
         {
-            DirectoryItems.Add(new DirectoryItemViewModel());
+            _synchronizationHelper = synchronizationHelper;
+
+            var vm = new DirectoryItemViewModel(_synchronizationHelper);
+            
+            DirectoryItems.Add(vm);
+            CurrentDirectoryItem = vm;
+            TreeDirectoryItem = vm;
+            QuickDirectoryItem = vm;
         }
     }
 }

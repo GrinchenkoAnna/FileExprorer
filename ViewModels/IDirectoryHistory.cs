@@ -21,6 +21,7 @@ namespace FileExplorer.ViewModels
         bool CanMoveForward { get; }
         bool CanMoveUp { get; }
         bool CanDelete { get; }
+        bool CanReplace { get; }
 
         void MoveBack();
         void MoveForward();
