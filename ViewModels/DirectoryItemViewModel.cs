@@ -123,6 +123,7 @@ namespace FileExplorer.ViewModels
 
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
+            RemoveFromQuickAccessCommand = new DelegateCommand(RemoveFromQuickAccess);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
             ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
@@ -176,6 +177,7 @@ namespace FileExplorer.ViewModels
         #region Commands
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }
+        public DelegateCommand RemoveFromQuickAccessCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
         public DelegateCommand ReplaceCommand { get; }
@@ -326,7 +328,7 @@ namespace FileExplorer.ViewModels
             IncludeFields = true,
         };
 
-        private void AddToQuickAccess(object parameter) 
+        private void AddToQuickAccess(object parameter) //закрепить дефолтные папки
         {      
             if (parameter is DirectoryViewModel fol_item)
             {
@@ -387,7 +389,49 @@ namespace FileExplorer.ViewModels
                     }
                 }
             }
-        }       
+        }
+
+        private void RemoveFromQuickAccess(object parameter)
+        {
+            FileInfo folderInfo = new FileInfo(QuickAccessFolderName);
+            FileInfo fileInfo = new FileInfo(QuickAccessFileName);
+
+            if (parameter is DirectoryViewModel fol_item)
+            {
+                foreach (var item in QuickAccessItems)
+                {
+                    if (item.FullName == fol_item.FullName) 
+                    {
+                        QuickAccessItems.Remove(fol_item);
+                        QuickAccessDirectoryItems.Remove(fol_item);
+
+                        string fol_itemJson = JsonSerializer.Serialize<ObservableCollection<DirectoryViewModel>>(QuickAccessDirectoryItems, options);
+                        folderInfo.Delete();
+                        File.WriteAllText(QuickAccessFolderName, fol_itemJson);
+
+                        return;
+                    }
+                } 
+            }
+            else if (parameter is FileViewModel file_item)
+            {
+                foreach (var item in QuickAccessItems)
+                {
+                    if (item.FullName == file_item.FullName)
+                    {
+                        QuickAccessItems.Remove(file_item);
+                        QuickAccessFileItems.Remove(file_item);
+
+                        string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
+                        fileInfo.Delete();
+                        File.WriteAllText(QuickAccessFileName, file_itemJson);
+
+                        return;
+                    }
+                }                
+            }
+            else { throw new Exception(); }
+        }
         #endregion
 
         #region Tree

@@ -26,7 +26,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="33"/>
 			<RowDefinition Height="33"/>
-			<RowDefinition Height="0.4*"/>
+			<RowDefinition Height="0.8*"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -86,7 +86,10 @@
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Закрепить на панели быстрого доступа"
 							  Command="{Binding QuickDirectoryItem.AddToQuickAccessCommand}"
-							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>					
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+					<MenuItem Header="Открепить от панели быстрого доступа"
+							  Command="{Binding QuickDirectoryItem.RemoveFromQuickAccessCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Копировать"/>
 					<MenuItem Header="Вставить"/>
 					<MenuItem Header="Вырезать"/>
@@ -147,11 +150,11 @@
 
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3" BorderThickness="0,0,0,1"
-				BorderBrush="RosyBrown" Margin="0" Background="#FFE0D1">			
-			<ListBox Items="{Binding QuickDirectoryItem.QuickAccessItems}"
-					 SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
-					 Background="Transparent">
+				CornerRadius="3" Background="#FFE0D1">			
+			<ListBox Name="QuickPanel" 
+				Items="{Binding QuickDirectoryItem.QuickAccessItems}"
+				SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
+				Background="Transparent">
 				
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -163,19 +166,18 @@
 
 				<ListBox.Resources>
 					<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-				</ListBox.Resources>
+				</ListBox.Resources>				
 
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
 							<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
-											  Width="35" Height="35"
 											  HorizontalAlignment="Left"
 											  VerticalAlignment="Center">
 							</DrawingPresenter>
 							<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
-									   VerticalAlignment="Center" FontSize="12"/>
+									   VerticalAlignment="Center" FontSize="14"/>
 						</StackPanel>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
@@ -184,9 +186,7 @@
 
 		<!--Tree View-->
 		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3" BorderThickness="0,1,0,0" 
-				BorderBrush="RosyBrown"
-				Margin="0" Background="PapayaWhip">
+				CornerRadius="3" Background="PapayaWhip">
 			<TreeView Name="tree"
 					  Items="{Binding TreeDirectoryItem.Items}"
 					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
