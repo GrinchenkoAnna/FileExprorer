@@ -150,13 +150,14 @@
 				CornerRadius="3" BorderThickness="0,0,0,1"
 				BorderBrush="RosyBrown" Margin="0" Background="#FFE0D1">			
 			<ListBox Items="{Binding QuickDirectoryItem.QuickAccessItems}"
+					 SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
 					 Background="Transparent">
 				
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="DoubleTapped">
 						<ia:InvokeCommandAction
 							Command="{Binding CurrentDirectoryItem.OpenCommand}"
-							CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+							CommandParameter="{Binding QuickDirectoryItem.SelectFileEntity}"/>
 					</ia:EventTriggerBehavior>
 				</i:Interaction.Behaviors>
 

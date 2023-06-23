@@ -1,16 +1,19 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Text.Json.Serialization;
 
 namespace FileExplorer.ViewModels
 {
     public class FileEntityViewModel 
     {
+        [JsonInclude]
         public string Name { get; set; }
-
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; } 
-
+        [JsonIgnore]
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
+        [JsonInclude]
         public string FullName { get; set; }
+
         public FileEntityViewModel(string name)
         {
             Name = name;
@@ -27,5 +30,7 @@ namespace FileExplorer.ViewModels
         {
             FullName = fileName.FullName;
         }
+
+        public FileEntityViewModel() { }
     }
 }

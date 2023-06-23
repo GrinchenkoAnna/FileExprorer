@@ -1,18 +1,10 @@
-﻿using Avalonia.Controls;
-using Avalonia.Interactivity;
-
-using SkiaSharp;
-
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace FileExplorer.ViewModels
 {
@@ -90,8 +82,9 @@ namespace FileExplorer.ViewModels
                 quickAccessItems = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessItems)));
             }
-        }                
+        }
 
+        #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
         {
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
@@ -114,12 +107,15 @@ namespace FileExplorer.ViewModels
             //CreateTree();
 
             _history.HistoryChanged += History_HistoryChanged;
+
             QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
-            
+            ReadQuickAccessItem();
+
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
             //_history.KeyPress += KeyPressed;           
-        }        
+        }
+        #endregion
 
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
@@ -180,6 +176,10 @@ namespace FileExplorer.ViewModels
                         UseShellExecute = true
                     }
                 }.Start();
+            }
+            else if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
             }
         }
         
@@ -283,21 +283,77 @@ namespace FileExplorer.ViewModels
                 OpenDirectory();
             }
             else { throw new Exception(); }
-        }      
+        }
         #endregion
 
         #region AddToQuickAccess
-        private void AddToQuickAccess(object parameter) //!!Разобраться с сохранением коллекции
-        {            
-            if (parameter is FileEntityViewModel item)
-            {                
-                if (!QuickAccessItems.Contains(item))
+
+        private const string QuickAccessFolderName = "quickAccessFolders.json";
+        private const string QuickAccessFileName = "quickAccessFiles.json";
+
+        JsonSerializerOptions options = new JsonSerializerOptions()
+        { 
+            AllowTrailingCommas = true,
+            WriteIndented = true,
+            IncludeFields = true,
+        };
+
+        private void AddToQuickAccess(object parameter) 
+        {  
+            if (parameter is DirectoryViewModel fol_item)
+            {  
+                if (!QuickAccessItems.Contains(fol_item))
                 {
-                    QuickAccessItems.Add(item);
-                }      
+                    QuickAccessItems.Add(fol_item);
+                    string fol_itemJson = JsonSerializer.Serialize<FileEntityViewModel>(fol_item, options);
+                    File.WriteAllText(QuickAccessFolderName, fol_itemJson);
+                }                                    
             }
-            else { }
-        }        
+            else if (parameter is FileViewModel file_item)
+            {
+                if (!QuickAccessItems.Contains(file_item))
+                {
+                    QuickAccessItems.Add(file_item);
+                    string file_itemJson = JsonSerializer.Serialize<FileEntityViewModel>(file_item, options);
+                    File.WriteAllText(QuickAccessFileName, file_itemJson);
+                }
+            }
+        }
+
+        private void ReadQuickAccessItem()
+        {
+            FileInfo folderInfo = new FileInfo(QuickAccessFolderName);
+            FileInfo fileInfo = new FileInfo(QuickAccessFileName);
+
+            if (!fileInfo.Exists) 
+            {
+                fileInfo.Create();
+            }
+            if (!folderInfo.Exists)
+            {
+                folderInfo.Create();
+            }
+
+            if (folderInfo.Length > 2)
+            {
+                string fol_dataJson = File.ReadAllText(QuickAccessFolderName);
+                DirectoryViewModel? fol_item = JsonSerializer.Deserialize<DirectoryViewModel>(fol_dataJson);
+                if (!QuickAccessItems.Contains(fol_item))
+                {
+                    QuickAccessItems.Add(fol_item);
+                }
+            }
+
+            if (fileInfo.Length > 2)
+            {
+                string file_dataJson = File.ReadAllText(QuickAccessFileName);
+                FileViewModel? file_item = JsonSerializer.Deserialize<FileViewModel>(file_dataJson);
+                if (!QuickAccessItems.Contains(file_item))
+                {
+                    QuickAccessItems.Add(file_item);
+                }
+            }
+        }       
         #endregion
 
         #region Tree

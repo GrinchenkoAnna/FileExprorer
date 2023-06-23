@@ -7,7 +7,7 @@ namespace FileExplorer.ViewModels
     {
         //public ObservableCollection<DirectoryViewModel> Subfolders { get; set; }
 
-        //public DirectoryViewModel() { }
+        public DirectoryViewModel() { }
         public DirectoryViewModel(string directoryName) : base(directoryName) { FullName = directoryName; }
         public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name) { FullName = directoryName.FullName; }
     }
