@@ -1,8 +1,12 @@
-﻿using System;
+﻿using DynamicData;
+using DynamicData.Binding;
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -81,6 +85,30 @@ namespace FileExplorer.ViewModels
             {
                 quickAccessItems = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessItems)));
+            }
+        }
+
+        private ObservableCollection<DirectoryViewModel> quickAccessDirectoryItems = new();
+
+        public ObservableCollection<DirectoryViewModel> QuickAccessDirectoryItems
+        {
+            get => quickAccessDirectoryItems;
+            private set
+            {
+                quickAccessDirectoryItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessDirectoryItems)));
+            }
+        }
+
+        private ObservableCollection<FileViewModel> quickAccessFileItems = new();
+
+        public ObservableCollection<FileViewModel> QuickAccessFileItems
+        {
+            get => quickAccessFileItems;
+            private set
+            {
+                quickAccessFileItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessFileItems)));
             }
         }
 
@@ -286,7 +314,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        #region AddToQuickAccess
+        #region AddToQuickAccess & Delete
 
         private const string QuickAccessFolderName = "quickAccessFolders.json";
         private const string QuickAccessFileName = "quickAccessFiles.json";
@@ -299,24 +327,28 @@ namespace FileExplorer.ViewModels
         };
 
         private void AddToQuickAccess(object parameter) 
-        {  
+        {      
             if (parameter is DirectoryViewModel fol_item)
-            {  
-                if (!QuickAccessItems.Contains(fol_item))
+            {
+                foreach (var item in QuickAccessItems)
                 {
-                    QuickAccessItems.Add(fol_item);
-                    string fol_itemJson = JsonSerializer.Serialize<FileEntityViewModel>(fol_item, options);
-                    File.WriteAllText(QuickAccessFolderName, fol_itemJson);
-                }                                    
+                    if (item.FullName == fol_item.FullName) { return; }
+                }
+                QuickAccessItems.Add(fol_item);
+                QuickAccessDirectoryItems.Add(fol_item);
+                string fol_itemJson = JsonSerializer.Serialize<ObservableCollection<DirectoryViewModel>>(QuickAccessDirectoryItems, options);
+                File.WriteAllText(QuickAccessFolderName, fol_itemJson);
             }
             else if (parameter is FileViewModel file_item)
             {
-                if (!QuickAccessItems.Contains(file_item))
+                foreach (var item in QuickAccessItems)
                 {
-                    QuickAccessItems.Add(file_item);
-                    string file_itemJson = JsonSerializer.Serialize<FileEntityViewModel>(file_item, options);
-                    File.WriteAllText(QuickAccessFileName, file_itemJson);
+                    if (item.FullName == file_item.FullName) { return; }
                 }
+                QuickAccessItems.Add(file_item);
+                QuickAccessFileItems.Add(file_item);
+                string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
+                File.WriteAllText(QuickAccessFileName, file_itemJson);
             }
         }
 
@@ -325,32 +357,34 @@ namespace FileExplorer.ViewModels
             FileInfo folderInfo = new FileInfo(QuickAccessFolderName);
             FileInfo fileInfo = new FileInfo(QuickAccessFileName);
 
-            if (!fileInfo.Exists) 
-            {
-                fileInfo.Create();
-            }
-            if (!folderInfo.Exists)
-            {
-                folderInfo.Create();
-            }
+            if (!fileInfo.Exists) { fileInfo.Create(); }
+            if (!folderInfo.Exists) { folderInfo.Create(); }
 
             if (folderInfo.Length > 2)
             {
                 string fol_dataJson = File.ReadAllText(QuickAccessFolderName);
-                DirectoryViewModel? fol_item = JsonSerializer.Deserialize<DirectoryViewModel>(fol_dataJson);
-                if (!QuickAccessItems.Contains(fol_item))
+                ObservableCollection<DirectoryViewModel>? fol_item = JsonSerializer.Deserialize<ObservableCollection<DirectoryViewModel>>(fol_dataJson);
+                foreach (var item in fol_item)
                 {
-                    QuickAccessItems.Add(fol_item);
-                }
+                    if (!QuickAccessItems.Contains(item))
+                    {
+                        QuickAccessItems.Add(item);
+                        QuickAccessDirectoryItems.Add(item);
+                    }
+                }                
             }
 
             if (fileInfo.Length > 2)
             {
                 string file_dataJson = File.ReadAllText(QuickAccessFileName);
-                FileViewModel? file_item = JsonSerializer.Deserialize<FileViewModel>(file_dataJson);
-                if (!QuickAccessItems.Contains(file_item))
+                ObservableCollection<FileViewModel>? file_item = JsonSerializer.Deserialize<ObservableCollection<FileViewModel>>(file_dataJson);
+                foreach (var item in file_item)
                 {
-                    QuickAccessItems.Add(file_item);
+                    if (!QuickAccessItems.Contains(item))
+                    {
+                        QuickAccessItems.Add(item);
+                        QuickAccessFileItems.Add(item);
+                    }
                 }
             }
         }       
