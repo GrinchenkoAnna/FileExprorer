@@ -16,10 +16,16 @@ namespace FileExplorer.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private BackgroundWorker _backgroundWorker;
+        //private BackgroundWorker _backgroundWorker;
 
         private readonly IDirectoryHistory _history;
+
         private readonly ISynchronizationHelper _synchronizationHelper;
+
+        private const string QuickAccessFolderName = "quickAccessFolders.json";
+        private const string QuickAccessFileName = "quickAccessFiles.json";
+        FileInfo quickAccessFolderInfo = new FileInfo(QuickAccessFolderName);
+        FileInfo quickAccessFileInfo = new FileInfo(QuickAccessFileName);
 
         private string filePath;
         public string FilePath
@@ -76,8 +82,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<FileEntityViewModel> quickAccessItems = new();        
-
+        private ObservableCollection<FileEntityViewModel> quickAccessItems = new();  
         public ObservableCollection<FileEntityViewModel> QuickAccessItems
         {
             get => quickAccessItems;
@@ -89,27 +94,17 @@ namespace FileExplorer.ViewModels
         }
 
         private ObservableCollection<DirectoryViewModel> quickAccessDirectoryItems = new();
-
         public ObservableCollection<DirectoryViewModel> QuickAccessDirectoryItems
         {
             get => quickAccessDirectoryItems;
-            private set
-            {
-                quickAccessDirectoryItems = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessDirectoryItems)));
-            }
+            private set { quickAccessDirectoryItems = value; }
         }
 
         private ObservableCollection<FileViewModel> quickAccessFileItems = new();
-
         public ObservableCollection<FileViewModel> QuickAccessFileItems
         {
             get => quickAccessFileItems;
-            private set
-            {
-                quickAccessFileItems = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickAccessFileItems)));
-            }
+            private set { quickAccessFileItems = value; }
         }
 
         #region Constructor
@@ -138,6 +133,7 @@ namespace FileExplorer.ViewModels
             _history.HistoryChanged += History_HistoryChanged;
 
             QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
+            
             ReadQuickAccessItem();
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
@@ -183,7 +179,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand ReplaceCommand { get; }
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
-        public DelegateCommand MoveUpCommand { get; }
+        public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой
 
         #region OpenDirectory
         private void Open(object parameter)
@@ -318,9 +314,6 @@ namespace FileExplorer.ViewModels
 
         #region AddToQuickAccess & Delete
 
-        private const string QuickAccessFolderName = "quickAccessFolders.json";
-        private const string QuickAccessFileName = "quickAccessFiles.json";
-
         JsonSerializerOptions options = new JsonSerializerOptions()
         { 
             AllowTrailingCommas = true,
@@ -328,7 +321,7 @@ namespace FileExplorer.ViewModels
             IncludeFields = true,
         };
 
-        private void AddToQuickAccess(object parameter) //закрепить дефолтные папки
+        private void AddToQuickAccess(object parameter)
         {      
             if (parameter is DirectoryViewModel fol_item)
             {
@@ -356,33 +349,29 @@ namespace FileExplorer.ViewModels
 
         private void ReadQuickAccessItem()
         {
-            FileInfo folderInfo = new FileInfo(QuickAccessFolderName);
-            FileInfo fileInfo = new FileInfo(QuickAccessFileName);
+            if (!quickAccessFolderInfo.Exists) { quickAccessFolderInfo.Create(); }
+            if (!quickAccessFolderInfo.Exists) { quickAccessFolderInfo.Create(); }
 
-            if (!fileInfo.Exists) { fileInfo.Create(); }
-            if (!folderInfo.Exists) { folderInfo.Create(); }
-
-            if (folderInfo.Length > 2)
+            if (quickAccessFolderInfo.Length > 2)
             {
                 string fol_dataJson = File.ReadAllText(QuickAccessFolderName);
                 ObservableCollection<DirectoryViewModel>? fol_item = JsonSerializer.Deserialize<ObservableCollection<DirectoryViewModel>>(fol_dataJson);
                 foreach (var item in fol_item)
                 {
-                    if (!QuickAccessItems.Contains(item))
+                    if (!QuickAccessItems.Contains(item) && Directory.Exists(item.FullName))
                     {
                         QuickAccessItems.Add(item);
                         QuickAccessDirectoryItems.Add(item);
                     }
                 }                
             }
-
-            if (fileInfo.Length > 2)
+            if (quickAccessFileInfo.Length > 2)
             {
                 string file_dataJson = File.ReadAllText(QuickAccessFileName);
                 ObservableCollection<FileViewModel>? file_item = JsonSerializer.Deserialize<ObservableCollection<FileViewModel>>(file_dataJson);
                 foreach (var item in file_item)
                 {
-                    if (!QuickAccessItems.Contains(item))
+                    if (!QuickAccessItems.Contains(item) && File.Exists(item.FullName))
                     {
                         QuickAccessItems.Add(item);
                         QuickAccessFileItems.Add(item);
@@ -392,10 +381,7 @@ namespace FileExplorer.ViewModels
         }
 
         private void RemoveFromQuickAccess(object parameter)
-        {
-            FileInfo folderInfo = new FileInfo(QuickAccessFolderName);
-            FileInfo fileInfo = new FileInfo(QuickAccessFileName);
-
+        {            
             if (parameter is DirectoryViewModel fol_item)
             {
                 foreach (var item in QuickAccessItems)
@@ -406,7 +392,7 @@ namespace FileExplorer.ViewModels
                         QuickAccessDirectoryItems.Remove(fol_item);
 
                         string fol_itemJson = JsonSerializer.Serialize<ObservableCollection<DirectoryViewModel>>(QuickAccessDirectoryItems, options);
-                        folderInfo.Delete();
+                        quickAccessFolderInfo.Delete();
                         File.WriteAllText(QuickAccessFolderName, fol_itemJson);
 
                         return;
@@ -423,7 +409,7 @@ namespace FileExplorer.ViewModels
                         QuickAccessFileItems.Remove(file_item);
 
                         string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
-                        fileInfo.Delete();
+                        quickAccessFileInfo.Delete();
                         File.WriteAllText(QuickAccessFileName, file_itemJson);
 
                         return;
@@ -481,8 +467,6 @@ namespace FileExplorer.ViewModels
                             //catch (DirectoryNotFoundException) { }
                         }
                     }
-
-
                     foreach (var file in Directory.GetFiles(strPath))
                     {
                         FileEntityViewModel thisnode = new FileEntityViewModel(file);
