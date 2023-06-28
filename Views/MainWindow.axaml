@@ -107,9 +107,12 @@
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Новая папка"/>
 					<MenuItem Header="Свойства"/>
-					<MenuItem Header="Выделить все"/>
-					<MenuItem Header="Снять выделение"/>
-					<MenuItem Header="Обратить выделение"/>
+					<MenuItem Header="Выделить все"
+							  Click="SelectAllItems"/>
+					<MenuItem Header="Снять выделение"
+							  Click="DeselectAllItems"/>
+					<MenuItem Header="Обратить выделение"
+							  Click="ReverseItemsSelection"/>
 				</MenuItem>
 
 				<MenuItem HorizontalAlignment="Stretch"
@@ -205,7 +208,8 @@
 		<!--Main Panel-->
 		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
 				CornerRadius="3" Background="PapayaWhip" Margin="2,3,0,2"
-				BorderThickness="0.5" BorderBrush="RosyBrown">
+				BorderThickness="0.5" BorderBrush="RosyBrown"
+				>
 			<TextBlock Grid.Row="1" Grid.Column="3"  Grid.ColumnSpan="2"
 				   Margin="5,0,0,0"
 				   Text="{Binding CurrentDirectoryItem.FilePath}"
@@ -216,7 +220,8 @@
 				 Grid.Column="3" Grid.ColumnSpan="2"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}">	
+				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
+				 SelectionMode="Multiple" x:Name="listbox">	
 			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -257,7 +262,7 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Vertical" Width="80" Height="100">
+					<StackPanel Orientation="Vertical" Width="80" Height="100" x:Name = "itemListBox">
 						<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>

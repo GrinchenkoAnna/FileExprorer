@@ -1,4 +1,7 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Controls.Selection;
+using Avalonia.Xaml.Interactions.Draggable;
+
+using ReactiveUI;
 
 using System;
 using System.Collections.Generic;
@@ -77,7 +80,7 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickDirectoryItem)));
             }
         }
-        #endregion
+        #endregion        
 
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
         {
@@ -88,7 +91,7 @@ namespace FileExplorer.ViewModels
             DirectoryItems.Add(vm);
             CurrentDirectoryItem = vm;
             TreeDirectoryItem = vm;
-            QuickDirectoryItem = vm;
+            QuickDirectoryItem = vm;            
         }
     }
 }

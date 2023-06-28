@@ -1,18 +1,17 @@
-﻿using DynamicData;
-using DynamicData.Binding;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Generators;
 
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class DirectoryItemViewModel : INotifyPropertyChanged
+    public partial class DirectoryItemViewModel : ListBox, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -105,7 +104,7 @@ namespace FileExplorer.ViewModels
         {
             get => quickAccessFileItems;
             private set { quickAccessFileItems = value; }
-        }
+        }     
 
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
@@ -121,19 +120,19 @@ namespace FileExplorer.ViewModels
             RemoveFromQuickAccessCommand = new DelegateCommand(RemoveFromQuickAccess);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
-            ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
+            //ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
+
+
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
             MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
 
             OpenDirectory();
             _ = OpenTree();
-            //CreateTree();
 
             _history.HistoryChanged += History_HistoryChanged;
 
-            QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
-            
+            QuickAccessItems = new ObservableCollection<FileEntityViewModel>();            
             ReadQuickAccessItem();
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
@@ -176,7 +175,9 @@ namespace FileExplorer.ViewModels
         public DelegateCommand RemoveFromQuickAccessCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
-        public DelegateCommand ReplaceCommand { get; }
+        //public DelegateCommand ReplaceCommand { get; }
+
+
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
         public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой
@@ -418,7 +419,7 @@ namespace FileExplorer.ViewModels
             }
             else { throw new Exception(); }
         }
-        #endregion
+        #endregion       
 
         #region Tree
         public interface ISynchronizationHelper
