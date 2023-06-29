@@ -15,33 +15,33 @@ namespace FileExplorer.Views
             //ReplaceCommand = new DelegateCommand(Replace);
         }
 
-        private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs) 
-        {
-            foreach (var item in listbox.Items)
-            {
-                listbox.SelectedItems.Add(item);
-            }
-        }
+        //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs) 
+        //{
+        //    foreach (var item in listbox.Items)
+        //    {
+        //        listbox.SelectedItems.Add(item);
+        //    }
+        //}
 
-        private void DeselectAllItems(object sender, RoutedEventArgs routedEventArgs)
-        {
-            listbox.SelectedItems.Clear();
-        }
+        //private void DeselectAllItems(object sender, RoutedEventArgs routedEventArgs)
+        //{
+        //    listbox.SelectedItems.Clear();
+        //}
 
-        private void ReverseItemsSelection(object sender, RoutedEventArgs routedEventArgs)
-        {
-            foreach (var item in listbox.Items)
-            {
-                if (listbox.SelectedItems.Contains(item))
-                {
-                    listbox.SelectedItems.Remove(item);
-                }
-                else
-                {
-                    listbox.SelectedItems.Add(item);
-                }
-            }
-        }        
+        //private void ReverseItemsSelection(object sender, RoutedEventArgs routedEventArgs)
+        //{
+        //    foreach (var item in listbox.Items)
+        //    {
+        //        if (listbox.SelectedItems.Contains(item))
+        //        {
+        //            listbox.SelectedItems.Remove(item);
+        //        }
+        //        else
+        //        {
+        //            listbox.SelectedItems.Add(item);
+        //        }
+        //    }
+        //}        
 
         //public DelegateCommand ReplaceCommand { get; }
 
