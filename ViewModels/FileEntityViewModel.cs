@@ -9,17 +9,28 @@ namespace FileExplorer.ViewModels
     {
         [JsonInclude]
         public string Name { get; set; }
-        [JsonIgnore]
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
+
         [JsonInclude]
         public string FullName { get; set; }
+
+        [JsonIgnore]
+        public string DateOfChange { get; set; }
+
+        [JsonIgnore]
+        public string Type { get; set; }
+
+        [JsonIgnore]
+        public string Size { get; set; }
+
+        [JsonIgnore]
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }        
 
         public FileEntityViewModel(string name)
         {
             Name = name;
         }
 
-        //public FileEntityViewModel() { }
+        public FileEntityViewModel() { }
 
         public FileEntityViewModel(DirectoryInfo directoryName)
         {
@@ -29,8 +40,6 @@ namespace FileExplorer.ViewModels
         public FileEntityViewModel(FileInfo fileName)
         {
             FullName = fileName.FullName;
-        }
-
-        public FileEntityViewModel() { }
+        }        
     }
 }

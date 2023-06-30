@@ -46,7 +46,7 @@ namespace FileExplorer.ViewModels
                 name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
-        }
+        }        
 
         private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new();
         public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
@@ -128,7 +128,7 @@ namespace FileExplorer.ViewModels
             MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
 
             OpenDirectory();
-            _ = OpenTree();
+            OpenTree();
 
             _history.HistoryChanged += History_HistoryChanged;
 
@@ -426,7 +426,8 @@ namespace FileExplorer.ViewModels
         {
             Task InvokeAsync(Action action);
         }
-        private async Task OpenTree() 
+        //private async Task OpenTree()
+        private void OpenTree()
         {
             Items = new ObservableCollection<FileEntityViewModel>();
 
@@ -434,14 +435,15 @@ namespace FileExplorer.ViewModels
             {                
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.FullName = Path.GetFullPath(logicalDrive);
-                await Task.Run(() =>
-                {
-                    _synchronizationHelper.InvokeAsync(() =>
-                    {
-                        root.Subfolders = GetSubfolders(logicalDrive);
-                    });
-                });
-                //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));                    
+                //await Task.Run(() =>
+                //{
+                //    _synchronizationHelper.InvokeAsync(() =>
+                //    {
+                //        root.Subfolders = GetSubfolders(logicalDrive);
+                //    });
+                //});
+                //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
+                root.Subfolders = GetSubfolders(logicalDrive);
                 Items.Add(root);                
             }
         }
