@@ -7,6 +7,7 @@
 		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 		xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 		xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
+		xmlns:views="clr-namespace:FileExplorer.Views.Pages;assembly=FileExplorer"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -33,6 +34,7 @@
 			<RowDefinition Height="33"/>
 			<RowDefinition Height="0.8*"/>
 			<RowDefinition Height="*"/>
+			<RowDefinition Height="0.4*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="80"/>
@@ -68,7 +70,9 @@
 						<MenuItem Header="Мелкие значки"/>
 						<MenuItem Header="Список"/>
 						<MenuItem Header="Плитка"/>
-						<MenuItem Header="Таблица"/>
+						<MenuItem Header="Таблица"
+								  Items="{Binding VmbaseCollection}"
+								  SelectedItem="{Binding Content}"/>
 						<MenuItem Header="Содержимое"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
@@ -236,272 +240,30 @@
 		</Border>
 		
 		<!--Main Panel-->
-		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+		<Border Grid.Row="1" Grid.Column="3"
 				CornerRadius="3" Background="PapayaWhip" Margin="2,3,0,2"
-				BorderThickness="0.5" BorderBrush="RosyBrown"
-				>
-			<TextBlock Grid.Row="1" Grid.Column="3"  Grid.ColumnSpan="2"
+				BorderThickness="0.5" BorderBrush="RosyBrown">
+			<TextBlock Grid.Row="1" Grid.Column="3"
 				   Margin="5,0,0,0"
 				   Text="{Binding CurrentDirectoryItem.FilePath}"
 				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-		</Border>	
-
-		<DataGrid Grid.Row="2" Grid.RowSpan="2"
-				  Grid.Column="3" Grid.ColumnSpan="2"
-				  Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-				  CanUserResizeColumns="false"
-				  GridLinesVisibility="All"
-				  Margin="10,0,0,0">
-			
-			<DataGrid.ContextMenu>
-				<ContextMenu>
-					<MenuItem Header="Вырезать"/>
-					<MenuItem Header="Копировать"/>
-					<MenuItem Header="Удалить"
-							  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
-							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-					<MenuItem Header="Переименовать"/>
-					<MenuItem Header="Свойства"/>
-				</ContextMenu>
-			</DataGrid.ContextMenu>
-			
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.OpenCommand}"
-						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
-			
-			<DataGrid.Columns>	
-				
-				<DataGridTemplateColumn>				
-					<DataGridTemplateColumn.Header>						
-						<Border CornerRadius="7" HorizontalAlignment="Left"
-								Margin="-4,0,0,0" Height="25" MinWidth="50">
-							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
-							</Border.Background>
-							<TextBlock Text="Имя" VerticalAlignment="Center" 
-									   Margin="8,0,8,0"/>
-						</Border>
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>							
-							<StackPanel Orientation="Horizontal"
-										HorizontalAlignment="Left">					
-								<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"
-										  Width="35" Height="35"
-										  HorizontalAlignment="Center">
-								</DrawingPresenter>
-								<Border CornerRadius="7" HorizontalAlignment="Left"
-										Width="200">
-									<Border.Background>
-										<SolidColorBrush Color="White"
-														 Opacity="0.8"/>
-									</Border.Background>
-									<TextBlock Text="{Binding Name}"
-											   TextWrapping="Wrap"
-											   HorizontalAlignment="Left"
-											   VerticalAlignment="Center"
-											   FontSize="14"
-											   Margin="8,0,8,0">
-									</TextBlock>
-								</Border>
-							</StackPanel>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>						
-
-				<DataGridTemplateColumn>
-					<DataGridTemplateColumn.Header>
-						<Border CornerRadius="7" HorizontalAlignment="Left"
-								Margin="-4,0,0,0" Height="25">
-							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
-							</Border.Background>
-							<TextBlock Text="Дата изменения" 
-									   VerticalAlignment="Center"
-									   Margin="8,0,8,0"/>
-						</Border>
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Border CornerRadius="7"
-									HorizontalAlignment="Left"
-									Width="132">
-								<Border.Background>
-									<SolidColorBrush Color="White"
-													 Opacity="0.8"/>
-								</Border.Background>
-								<TextBlock Text="{Binding DateOfChange}"
-										   TextWrapping="Wrap"
-										   HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   FontSize="14"
-										   Margin="8,0,8,0">
-								</TextBlock>
-							</Border>								
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-
-				<DataGridTemplateColumn>
-					<DataGridTemplateColumn.Header>
-						<Border CornerRadius="7" HorizontalAlignment="Left"
-								Margin="-4,0,0,0" Height="25">
-							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
-							</Border.Background>
-							<TextBlock Text="Тип"
-									   VerticalAlignment="Center"
-									   Margin="8,0,8,0"/>
-						</Border>
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Border CornerRadius="7"
-									HorizontalAlignment="Left"
-									Width="135">
-								<Border.Background>
-									<SolidColorBrush Color="White"
-													 Opacity="0.8"/>
-								</Border.Background>
-								<TextBlock Text="{Binding Type}"
-										   TextWrapping="Wrap"
-										   HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   FontSize="14"
-										   Margin="8,0,8,0">
-								</TextBlock>
-							</Border>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-
-				<DataGridTemplateColumn>
-					<DataGridTemplateColumn.Header>
-						<Border CornerRadius="7" HorizontalAlignment="Left"
-								Margin="-4,0,0,0" Height="25">
-							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
-							</Border.Background>
-							<TextBlock Text="Размер"
-									   VerticalAlignment="Center"
-									   Margin="8,0,8,0"/>
-						</Border>
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Border CornerRadius="7"
-									HorizontalAlignment="Left"
-									Width="100">
-								<Border.Background>
-									<SolidColorBrush Color="White"
-													 Opacity="0.8"/>
-								</Border.Background>
-								<TextBlock Text="{Binding Size}"
-										   TextWrapping="Wrap"
-										   HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   FontSize="14"
-										   Margin="8,0,8,0">
-								</TextBlock>
-							</Border>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-			</DataGrid.Columns>
-		</DataGrid>		
-
-		<!--<ListBox Grid.Row="2" Grid.RowSpan="2"
-				 Grid.Column="3" Grid.ColumnSpan="2"
-				 Background="Transparent"
-				 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
-				 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-				 SelectionMode="Multiple" x:Name="listbox">	
-			
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.OpenCommand}"
-						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
-
-			<ListBox.ContextMenu>
-				<ContextMenu>
-					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"/>
-						<MenuItem Header="Крупные значки"/>
-						<MenuItem Header="Обычные значки"/>
-						<MenuItem Header="Мелкие значки"/>
-						<MenuItem Header="Список"/>
-						<MenuItem Header="Плитка"/>
-						<MenuItem Header="Таблица"/>
-						<MenuItem Header="Содержимое"/>
-					</MenuItem>
-					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"/>
-						<MenuItem Header="Дата изменения"/>
-						<MenuItem Header="Тип"/>
-						<MenuItem Header="Размер"/>
-						<MenuItem Header="По возрастанию"/>
-						<MenuItem Header="По убыванию"/>
-					</MenuItem>
-					<MenuItem Header="Группировка"/>
-					<MenuItem Header="Свойства"/>
-				</ContextMenu>
-			</ListBox.ContextMenu>
-			
-			<ListBox.Resources>
-				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-			</ListBox.Resources>			
-			
+		</Border>		
+		
+		<ListBox Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2"
+				 SelectionMode="Single"
+				 SelectedItem="{Binding Content}"
+				 Items="{Binding VmbaseCollection}">
 			<ListBox.ItemTemplate>
-				<DataTemplate>					
-					<StackPanel Orientation="Vertical" Width="80" Height="100" x:Name = "itemListBox">
-						<StackPanel.ContextMenu>
-							<ContextMenu>
-								<MenuItem Header="Вырезать"/>
-								<MenuItem Header="Копировать"/>
-								<MenuItem Header="Удалить" 
-										  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
-										  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-								<MenuItem Header="Переименовать"/>
-								<MenuItem Header="Свойства"/>
-							</ContextMenu>
-						</StackPanel.ContextMenu>
-						<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"
-										  Width="70" Height="70"
-										  HorizontalAlignment="Center">
-						</DrawingPresenter>
-						<Border CornerRadius="7">
-							<Border.Background>
-								<SolidColorBrush Color="White" Opacity="0.8"/>
-							</Border.Background>
-							<TextBlock Width="50" Text="{Binding Name}" TextWrapping="Wrap"
-									 TextAlignment="Center" VerticalAlignment="Bottom"
-									 FontSize="11" FontWeight="Bold">				
-							</TextBlock>
-						</Border>
-					</StackPanel>					
+				<DataTemplate>
+					<TextBlock Text="{Binding Header}"/>					
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-			
-			<ListBox.ItemsPanel>
-				<ItemsPanelTemplate>
-					<WrapPanel Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
-			</ListBox.ItemsPanel>
-		</ListBox>-->
+		</ListBox>
+		
+		<ContentControl Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
+								Grid.RowSpan="2" Content="{Binding Content}">
+			<!--<views:TabsView />-->
+		</ContentControl>
 		
 	</Grid>	
 </Window>

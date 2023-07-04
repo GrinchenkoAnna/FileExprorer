@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls.Selection;
 using Avalonia.Xaml.Interactions.Draggable;
+using FileExplorer.ViewModels;
+using FileExplorer.ViewModels.Pages;
 
 using ReactiveUI;
 
@@ -54,6 +56,27 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDirectoryItem)));
             }
         }
+
+        private object content;
+        public object Content
+        {
+            get => content;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref content, value);
+            }
+        }
+
+        private ObservableCollection<ViewModelBase> vmbaseCollection;
+        public ObservableCollection<ViewModelBase> VmbaseCollection
+        {
+            get => vmbaseCollection;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref vmbaseCollection, value);
+            }
+        }
+
         #endregion
 
         #region Tree View
@@ -83,7 +106,7 @@ namespace FileExplorer.ViewModels
         #endregion        
 
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
-        {
+        { 
             _synchronizationHelper = synchronizationHelper;
 
             var vm = new DirectoryItemViewModel(_synchronizationHelper);
@@ -91,7 +114,15 @@ namespace FileExplorer.ViewModels
             DirectoryItems.Add(vm);
             CurrentDirectoryItem = vm;
             TreeDirectoryItem = vm;
-            QuickDirectoryItem = vm;            
+            QuickDirectoryItem = vm;
+
+            vmbaseCollection = new ObservableCollection<ViewModelBase>
+            {
+                new TabsViewModel(),
+                new TilesViewModel()
+            };
+
+            Content = vmbaseCollection[0];
         }
     }
 }
