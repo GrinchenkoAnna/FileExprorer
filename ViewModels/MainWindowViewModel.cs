@@ -77,6 +77,9 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        public static bool TabsViewModelVisible { get; set; }
+        public static bool TilesViewModelVisible { get; set; }
+
         #endregion
 
         #region Tree View
@@ -106,11 +109,11 @@ namespace FileExplorer.ViewModels
         #endregion        
 
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
-        { 
+        {
             _synchronizationHelper = synchronizationHelper;
 
             var vm = new DirectoryItemViewModel(_synchronizationHelper);
-            
+
             DirectoryItems.Add(vm);
             CurrentDirectoryItem = vm;
             TreeDirectoryItem = vm;
@@ -123,6 +126,9 @@ namespace FileExplorer.ViewModels
             };
 
             Content = vmbaseCollection[0];
+
+            TabsViewModelVisible = true;
+            TilesViewModelVisible = false;
         }
     }
 }

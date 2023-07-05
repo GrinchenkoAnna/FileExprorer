@@ -16,6 +16,18 @@ namespace FileExplorer.Views
             //ReplaceCommand = new DelegateCommand(Replace);
         }
 
+        private void SwitchToTabView(object sender, RoutedEventArgs routedEventArgs)
+        {
+            MainWindowViewModel.TabsViewModelVisible = true;
+            MainWindowViewModel.TilesViewModelVisible = false;
+        }
+
+        private void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
+        {
+            MainWindowViewModel.TabsViewModelVisible = false;
+            MainWindowViewModel.TilesViewModelVisible = true;
+        }
+
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs) 
         //{
         //    foreach (var item in listbox.Items)
