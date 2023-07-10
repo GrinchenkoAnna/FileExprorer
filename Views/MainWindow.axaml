@@ -69,10 +69,10 @@
 						<MenuItem Header="Обычные значки"/>
 						<MenuItem Header="Мелкие значки"/>
 						<MenuItem Header="Список"/>
-						<MenuItem Header="Плитка"/>
+						<MenuItem Header="Плитка"
+								  Click="SwitchToTilesView"/>
 						<MenuItem Header="Таблица"
-								  Items="{Binding VmbaseCollection}"
-								  SelectedItem="{Binding Content}"/>
+								  Click="SwitchToTabsView"/>
 						<MenuItem Header="Содержимое"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
@@ -164,9 +164,12 @@
 						<MenuItem Header="Крупные значки"/>
 						<MenuItem Header="Обычные значки"/>
 						<MenuItem Header="Мелкие значки"/>
-						<MenuItem Header="Список"/>
-						<MenuItem Header="Плитка"/>
-						<MenuItem Header="Таблица"/>
+						<MenuItem Header="Список"
+								  Click="SwitchToListView"/>
+						<MenuItem Header="Плитка"
+								  Click="SwitchToTilesView"/>
+						<MenuItem Header="Таблица"
+								  Click="SwitchToTabsView"/>
 						<MenuItem Header="Содержимое"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
@@ -248,33 +251,22 @@
 				   Text="{Binding CurrentDirectoryItem.FilePath}"
 				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Border>		
-		
-		<!--<ListBox Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2"
-				 SelectionMode="Single"
-				 SelectedItem="{Binding Content}"
-				 Items="{Binding VmbaseCollection}">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Header}"/>					
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>-->
 
 		<Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
-			  Grid.RowSpan="2">
-			<ContentControl >
-				<views:TabsView
-					IsVisible="{Binding DataContext.TabsViewModelVisible,
-					RelativeSource={RelativeSource Mode=FindAncestor,
-					AncestorType={x:Type Window}}}"/>
+			  Grid.RowSpan="2">		
+
+			<ContentControl>
+				<views:TilesView Name="tiles" IsVisible="true"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:TabsView Name="tabs" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:ListView Name="list" IsVisible="false"/>
 			</ContentControl>
 			
-			<ContentControl >
-				<views:TilesView
-					IsVisible="{Binding DataContext.TilesViewModelVisible,
-					RelativeSource={RelativeSource Mode=FindAncestor,
-					AncestorType={x:Type Window}}}"/>
-			</ContentControl>
 		</Grid>	
 	</Grid>	
 </Window>

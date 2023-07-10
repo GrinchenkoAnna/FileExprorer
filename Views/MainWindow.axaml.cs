@@ -2,6 +2,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using FileExplorer.ViewModels;
+using FileExplorer.ViewModels.Pages;
+using FileExplorer.Views.Pages;
+
+using ReactiveUI;
+
+using System.ComponentModel;
 
 namespace FileExplorer.Views
 {
@@ -10,51 +16,60 @@ namespace FileExplorer.Views
 
         public MainWindow()
         {
-            InitializeComponent();
-            DataContext = new MainWindowViewModel(new SynchronizationHelper());
+            InitializeComponent();            
+            DataContext = new MainWindowViewModel(new SynchronizationHelper());          
 
             //ReplaceCommand = new DelegateCommand(Replace);
         }
 
-        private void SwitchToTabView(object sender, RoutedEventArgs routedEventArgs)
+        public void SwitchToTabsView(object sender, RoutedEventArgs routedEventArgs)
         {
-            MainWindowViewModel.TabsViewModelVisible = true;
-            MainWindowViewModel.TilesViewModelVisible = false;
+            tabs.IsVisible = true;
+            tiles.IsVisible = false;
+            list.IsVisible = false;
         }
 
-        private void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
+        public void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
         {
-            MainWindowViewModel.TabsViewModelVisible = false;
-            MainWindowViewModel.TilesViewModelVisible = true;
+            tabs.IsVisible = false;
+            tiles.IsVisible = true;
+            list.IsVisible = false;
         }
 
-        //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs) 
-        //{
-        //    foreach (var item in listbox.Items)
+        public void SwitchToListView(object sender, RoutedEventArgs routedEventArgs)
+        {
+            tabs.IsVisible = false;
+            tiles.IsVisible = false;
+            list.IsVisible = true;
+        }
+
+        //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
+        //{            
+        //    foreach (var item in content.Items)
         //    {
-        //        listbox.SelectedItems.Add(item);
+        //        content.SelectedItems.Add(item);
         //    }
         //}
 
         //private void DeselectAllItems(object sender, RoutedEventArgs routedEventArgs)
         //{
-        //    listbox.SelectedItems.Clear();
+        //    content.SelectedItems.Clear();
         //}
 
         //private void ReverseItemsSelection(object sender, RoutedEventArgs routedEventArgs)
         //{
-        //    foreach (var item in listbox.Items)
+        //    foreach (var item in content.Items)
         //    {
-        //        if (listbox.SelectedItems.Contains(item))
+        //        if (content.SelectedItems.Contains(item))
         //        {
-        //            listbox.SelectedItems.Remove(item);
+        //            content.SelectedItems.Remove(item);
         //        }
         //        else
         //        {
-        //            listbox.SelectedItems.Add(item);
+        //            content.SelectedItems.Add(item);
         //        }
         //    }
-        //}        
+        //}
 
         //public DelegateCommand ReplaceCommand { get; }
 

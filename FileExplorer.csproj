@@ -38,4 +38,10 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AvaloniaResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Pages\ListView.axaml.cs">
+      <DependentUpon>ListView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
 	<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-			 SelectionMode="Multiple" x:Name="listbox">	
+			 SelectionMode="Multiple" x:Name="content">	
 			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -26,7 +26,7 @@
 			</i:Interaction.Behaviors>
 
 			<ListBox.ContextMenu>
-				<ContextMenu>
+				<!--<ContextMenu>
 					<MenuItem Header="Вид">
 						<MenuItem Header="Огромные значки"/>
 						<MenuItem Header="Крупные значки"/>
@@ -47,7 +47,7 @@
 					</MenuItem>
 					<MenuItem Header="Группировка"/>
 					<MenuItem Header="Свойства"/>
-				</ContextMenu>
+				</ContextMenu>-->
 			</ListBox.ContextMenu>
 			
 			<ListBox.Resources>
@@ -57,7 +57,7 @@
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
 					<StackPanel Orientation="Vertical" Width="80" Height="100" x:Name = "itemListBox">
-						<StackPanel.ContextMenu>
+						<!--<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
 								<MenuItem Header="Копировать"/>
@@ -67,7 +67,7 @@
 								<MenuItem Header="Переименовать"/>
 								<MenuItem Header="Свойства"/>
 							</ContextMenu>
-						</StackPanel.ContextMenu>
+						</StackPanel.ContextMenu>-->
 						<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"

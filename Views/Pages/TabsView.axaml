@@ -16,9 +16,9 @@
 			  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 			  CanUserResizeColumns="false"
 			  GridLinesVisibility="All"
-			  Margin="10,0,0,0">
+			  Margin="10,0,0,0" x:Name="content">
 
-		<DataGrid.ContextMenu>
+		<!--<DataGrid.ContextMenu>
 			<ContextMenu>
 				<MenuItem Header="Вырезать"/>
 				<MenuItem Header="Копировать"/>
@@ -28,7 +28,7 @@
 				<MenuItem Header="Переименовать"/>
 				<MenuItem Header="Свойства"/>
 			</ContextMenu>
-		</DataGrid.ContextMenu>
+		</DataGrid.ContextMenu>-->
 
 		<i:Interaction.Behaviors>
 			<ia:EventTriggerBehavior EventName="DoubleTapped">
