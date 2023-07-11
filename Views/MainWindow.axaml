@@ -161,16 +161,20 @@
 					<MenuItem Header="Область сведений"/>
 					<MenuItem Header="Вид">
 						<MenuItem Header="Огромные значки"/>
-						<MenuItem Header="Крупные значки"/>
-						<MenuItem Header="Обычные значки"/>
-						<MenuItem Header="Мелкие значки"/>
+						<MenuItem Header="Крупные значки"
+								  Click="SwitchToLargeIcons"/>
+						<MenuItem Header="Обычные значки"
+								  Click="SwitchToRegularIcons"/>
+						<MenuItem Header="Мелкие значки"
+								  Click="SwitchToSmallIcons"/>
 						<MenuItem Header="Список"
 								  Click="SwitchToListView"/>
 						<MenuItem Header="Плитка"
 								  Click="SwitchToTilesView"/>
 						<MenuItem Header="Таблица"
 								  Click="SwitchToTabsView"/>
-						<MenuItem Header="Содержимое"/>
+						<MenuItem Header="Содержимое"
+								  />
 					</MenuItem>
 					<MenuItem Header="Сортировка">
 						<MenuItem Header="Имя"/>
@@ -256,7 +260,7 @@
 			  Grid.RowSpan="2">		
 
 			<ContentControl>
-				<views:TilesView Name="tiles" IsVisible="true"/>
+				<views:TilesView Name="tiles" IsVisible="false"/>
 			</ContentControl>
 
 			<ContentControl>
@@ -265,6 +269,22 @@
 
 			<ContentControl>
 				<views:ListView Name="list" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:SmallIconsView Name="small_icons" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:RegularIconsView Name="regular_icons" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:LargeIconsView Name="large_icons" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:LargestIconsView Name="largest_icons" IsVisible="true"/>
 			</ContentControl>
 			
 		</Grid>	

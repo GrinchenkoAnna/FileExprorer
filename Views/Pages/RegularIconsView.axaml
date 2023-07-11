@@ -6,9 +6,9 @@
 			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 			 xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileExplorer.Views.Pages.TilesView">
-	
-	<UserControl.Resources>
+             x:Class="FileExplorer.Views.Pages.RegularIconsView"> 
+
+    <UserControl.Resources>
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 	</UserControl.Resources>
 
@@ -56,7 +56,7 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Horizontal" Width="210" Height="100">
+					<StackPanel Orientation="Vertical" Width="80" Height="120">
 						<!--<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
@@ -70,39 +70,22 @@
 						</StackPanel.ContextMenu>-->
 						<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
-										  Width="70" Height="70"
+										  Width="40" MaxHeight="60"
 										  HorizontalAlignment="Center"
-										  x:Name="icons">
+										  VerticalAlignment="Top">
 						</DrawingPresenter>
-						<!--<Image Source="{Binding, Converter={StaticResource FileEntityResource}}"/>-->
-						<!--<Image Source="{Binding ., Converter={StaticResource FileEntityResource}}"/>-->
-						
-						<Border CornerRadius="7">
+						<Border CornerRadius="7" MaxHeight="80">
 							<Border.Background>
 								<SolidColorBrush Color="White" Opacity="0.8"/>
 							</Border.Background>
-							<StackPanel Orientation="Vertical">
-								<TextBlock Width="130" Height="50"
-										   Margin="5,5,5,0"
-										   Text="{Binding Name}" 
-										   TextWrapping="Wrap"
-										   TextAlignment="Left"
-										   TextTrimming="CharacterEllipsis"
-										   FontSize="12" FontWeight="Bold"/>
-								<TextBlock Width="130" Height="25"
-										   Margin="5,0,5,0"
-										   Text="{Binding Type}"
-										   TextWrapping="Wrap"
-										   TextAlignment="Left" 
-										   FontSize="12"/>
-								<TextBlock Width="130" Height="25"
-										   Margin="5,0,5,5"
-										   Text="{Binding Size}" 
-										   TextWrapping="Wrap"
-										   TextAlignment="Left"
-										   FontSize="12"/>
-							</StackPanel>
-								
+							<TextBlock MaxWidth="60" MaxHeight="80"
+									   Margin="8,8,8,8"
+									   Text="{Binding Name}" TextWrapping="Wrap"
+									   TextAlignment="Center" 
+									   VerticalAlignment="Top"
+									   FontSize="12"
+									   TextTrimming="CharacterEllipsis">		
+							</TextBlock>
 						</Border>
 					</StackPanel>					
 				</DataTemplate>

@@ -10,8 +10,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 
-
-
 namespace FileExplorer.ViewModels
 {
     internal class FileEntityToImageConverter : IValueConverter
@@ -19,7 +17,8 @@ namespace FileExplorer.ViewModels
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            var drawingGroup = new DrawingImage();
+            //var drawingGroup = new DrawingImage();
+            var image = new Image();
 
             if (value is FileEntityViewModel entityViewModel)
             {
@@ -33,7 +32,8 @@ namespace FileExplorer.ViewModels
                 }
             }
 
-            return drawingGroup;
+            //return drawingGroup;
+            return image;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

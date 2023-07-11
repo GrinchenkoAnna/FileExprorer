@@ -6,8 +6,8 @@
 			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 			 xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileExplorer.Views.Pages.TilesView">
-	
+             x:Class="FileExplorer.Views.Pages.LargestIconsView">
+
 	<UserControl.Resources>
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 	</UserControl.Resources>
@@ -15,17 +15,17 @@
 	<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-			 SelectionMode="Multiple" x:Name="content">	
-			
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.OpenCommand}"
-						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
+			 SelectionMode="Multiple" x:Name="content">
 
-			<!--<ListBox.ContextMenu>
+		<i:Interaction.Behaviors>
+			<ia:EventTriggerBehavior EventName="DoubleTapped">
+				<ia:InvokeCommandAction
+					Command="{Binding CurrentDirectoryItem.OpenCommand}"
+					CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+			</ia:EventTriggerBehavior>
+		</i:Interaction.Behaviors>
+
+		<!--<ListBox.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Вид">
 						<MenuItem Header="Огромные значки"/>
@@ -49,15 +49,15 @@
 					<MenuItem Header="Свойства"/>
 				</ContextMenu>
 			</ListBox.ContextMenu>-->
-			
-			<ListBox.Resources>
-				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-			</ListBox.Resources>			
-			
-			<ListBox.ItemTemplate>
-				<DataTemplate>					
-					<StackPanel Orientation="Horizontal" Width="210" Height="100">
-						<!--<StackPanel.ContextMenu>
+
+		<ListBox.Resources>
+			<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+		</ListBox.Resources>
+
+		<ListBox.ItemTemplate>
+			<DataTemplate>
+				<StackPanel Orientation="Vertical" Width="150" Height="220">
+					<!--<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
 								<MenuItem Header="Копировать"/>
@@ -68,51 +68,34 @@
 								<MenuItem Header="Свойства"/>
 							</ContextMenu>
 						</StackPanel.ContextMenu>-->
-						<DrawingPresenter Drawing="{Binding ., 
+					<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
-										  Width="70" Height="70"
-										  HorizontalAlignment="Center"
-										  x:Name="icons">
-						</DrawingPresenter>
-						<!--<Image Source="{Binding, Converter={StaticResource FileEntityResource}}"/>-->
-						<!--<Image Source="{Binding ., Converter={StaticResource FileEntityResource}}"/>-->
-						
-						<Border CornerRadius="7">
-							<Border.Background>
-								<SolidColorBrush Color="White" Opacity="0.8"/>
-							</Border.Background>
-							<StackPanel Orientation="Vertical">
-								<TextBlock Width="130" Height="50"
-										   Margin="5,5,5,0"
-										   Text="{Binding Name}" 
-										   TextWrapping="Wrap"
-										   TextAlignment="Left"
-										   TextTrimming="CharacterEllipsis"
-										   FontSize="12" FontWeight="Bold"/>
-								<TextBlock Width="130" Height="25"
-										   Margin="5,0,5,0"
-										   Text="{Binding Type}"
-										   TextWrapping="Wrap"
-										   TextAlignment="Left" 
-										   FontSize="12"/>
-								<TextBlock Width="130" Height="25"
-										   Margin="5,0,5,5"
-										   Text="{Binding Size}" 
-										   TextWrapping="Wrap"
-										   TextAlignment="Left"
-										   FontSize="12"/>
-							</StackPanel>
-								
-						</Border>
-					</StackPanel>					
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-			
-			<ListBox.ItemsPanel>
-				<ItemsPanelTemplate>
-					<WrapPanel Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
-			</ListBox.ItemsPanel>
-		</ListBox>
+									  Width="120" MaxHeight="120"
+									  HorizontalAlignment="Center"
+									  VerticalAlignment="Top">
+					</DrawingPresenter>
+					<Border CornerRadius="7" MaxHeight="80">
+						<Border.Background>
+							<SolidColorBrush Color="White" Opacity="0.8"/>
+						</Border.Background>
+						<TextBlock MaxWidth="120" MaxHeight="80"
+								   Margin="8,8,8,8"
+								   Text="{Binding Name}" TextWrapping="Wrap"
+								   TextAlignment="Center"
+								   VerticalAlignment="Top"
+								   FontSize="14"
+								   TextTrimming="CharacterEllipsis">
+						</TextBlock>
+					</Border>
+				</StackPanel>
+			</DataTemplate>
+		</ListBox.ItemTemplate>
 
+		<ListBox.ItemsPanel>
+			<ItemsPanelTemplate>
+				<WrapPanel Orientation="Horizontal"/>
+			</ItemsPanelTemplate>
+		</ListBox.ItemsPanel>
+	</ListBox>
+  
 </UserControl>

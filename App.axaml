@@ -32,7 +32,9 @@
 					<SolidColorBrush Color="Tomato"/>
 				</GeometryDrawing.Brush>
 			</GeometryDrawing>			
-		</DrawingGroup>		
+		</DrawingGroup>	
+		<!--<ImageBrush x:Key="FolderIconImage" Source="/Assets/folder.ico"/>
+		<ImageBrush x:Key="FileIconImage" Source="/Assets/file.ico"/>-->
 		
 	</Application.Resources>
 </Application>

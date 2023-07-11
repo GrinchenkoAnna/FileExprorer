@@ -43,5 +43,8 @@
     <Compile Update="Views\Pages\ListView.axaml.cs">
       <DependentUpon>ListView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Pages\SmallIconsView.axaml.cs">
+      <DependentUpon>SmallIconsView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
