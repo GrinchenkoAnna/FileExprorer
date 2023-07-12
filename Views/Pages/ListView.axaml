@@ -15,7 +15,7 @@
 	<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-			 SelectionMode="Multiple">
+			 SelectionMode="Multiple"  x:Name="content">
 				
 		<i:Interaction.Behaviors>
 			<ia:EventTriggerBehavior EventName="DoubleTapped">

@@ -17,6 +17,9 @@ namespace FileExplorer.ViewModels
         public string DateOfChange { get; set; }
 
         [JsonIgnore]
+        public string DateOfCreation { get; set; }
+
+        [JsonIgnore]
         public string Type { get; set; }
 
         [JsonIgnore]

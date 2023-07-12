@@ -14,6 +14,7 @@ namespace FileExplorer.ViewModels
         { 
             FullName = fileInfo.FullName;
             DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+            DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
             if (fileInfo.GetType().ToString() == "System.IO.FileInfo")
             {
                 Type = "Файл";

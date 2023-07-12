@@ -118,8 +118,34 @@ namespace FileExplorer.Views
             content_view.IsVisible = true;
         }
 
+        public void NavigationPanel(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (quick_access.IsVisible == true && tree.IsVisible == true)
+            {
+                tree.IsVisible = false;
+                quick_access.IsVisible = false;
+
+                main_panel.SetValue(Grid.ColumnProperty, 0);
+                main_panel.SetValue(Grid.ColumnSpanProperty, 5);
+                background.SetValue(Grid.ColumnProperty, 0);
+                background.SetValue(Grid.ColumnSpanProperty, 5);
+                background.Margin = new Avalonia.Thickness(0,0,0,0);
+            }
+            else
+            {
+                tree.IsVisible = true;
+                quick_access.IsVisible = true;
+
+                main_panel.SetValue(Grid.ColumnProperty, 3);
+                main_panel.SetValue(Grid.ColumnSpanProperty, 2);
+                background.SetValue(Grid.ColumnProperty, 3);
+                background.SetValue(Grid.ColumnSpanProperty, 2);
+                background.Margin = new Avalonia.Thickness(2, 0, 0, 0);
+            }
+        }
+
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
-        //{            
+        //{
         //    foreach (var item in content.Items)
         //    {
         //        content.SelectedItems.Add(item);
@@ -189,6 +215,8 @@ namespace FileExplorer.Views
         //        }
         //    }
         //}
+
+
         private async void OpenFolderDialogButtonClick(object sender, RoutedEventArgs routedEventArgs)
         {
             OpenFolderDialog openFolderDialog = new OpenFolderDialog();
