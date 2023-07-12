@@ -31,6 +31,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
@@ -42,6 +43,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToListView(object sender, RoutedEventArgs routedEventArgs)
@@ -53,6 +55,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToSmallIcons(object sender, RoutedEventArgs routedEventArgs)
@@ -64,6 +67,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToRegularIcons(object sender, RoutedEventArgs routedEventArgs)
@@ -75,6 +79,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = true;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToLargeIcons(object sender, RoutedEventArgs routedEventArgs)
@@ -86,6 +91,7 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = true;
             largest_icons.IsVisible = false;
+            content_view.IsVisible = false;
         }
 
         public void SwitchToLargestIcons(object sender, RoutedEventArgs routedEventArgs)
@@ -97,6 +103,19 @@ namespace FileExplorer.Views
             regular_icons.IsVisible = false;
             large_icons.IsVisible = false;
             largest_icons.IsVisible = true;
+            content_view.IsVisible = false;
+        }
+
+        public void SwitchToContent(object sender, RoutedEventArgs routedEventArgs)
+        {
+            tabs.IsVisible = false;
+            tiles.IsVisible = false;
+            list.IsVisible = false;
+            small_icons.IsVisible = false;
+            regular_icons.IsVisible = false;
+            large_icons.IsVisible = false;
+            largest_icons.IsVisible = false;
+            content_view.IsVisible = true;
         }
 
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)

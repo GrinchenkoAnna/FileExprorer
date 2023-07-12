@@ -160,7 +160,8 @@
 					<MenuItem Header="Область навигации"/>
 					<MenuItem Header="Область сведений"/>
 					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"/>
+						<MenuItem Header="Огромные значки"
+								  Click="SwitchToLargestIcons"/>
 						<MenuItem Header="Крупные значки"
 								  Click="SwitchToLargeIcons"/>
 						<MenuItem Header="Обычные значки"
@@ -174,7 +175,7 @@
 						<MenuItem Header="Таблица"
 								  Click="SwitchToTabsView"/>
 						<MenuItem Header="Содержимое"
-								  />
+								  Click="SwitchToContent"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
 						<MenuItem Header="Имя"/>
@@ -284,7 +285,11 @@
 			</ContentControl>
 
 			<ContentControl>
-				<views:LargestIconsView Name="largest_icons" IsVisible="true"/>
+				<views:LargestIconsView Name="largest_icons" IsVisible="false"/>
+			</ContentControl>
+
+			<ContentControl>
+				<views:ContentView Name="content_view" IsVisible="true"/>
 			</ContentControl>
 			
 		</Grid>	

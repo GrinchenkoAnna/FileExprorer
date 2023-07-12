@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FileExplorer.Views.Pages.ContentView">
+
+	<UserControl.Resources>
+		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+	</UserControl.Resources>
+
+	<ListBox Background="Transparent"
+			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
+			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
+			 SelectionMode="Multiple">
+
+		<i:Interaction.Behaviors>
+			<ia:EventTriggerBehavior EventName="DoubleTapped">
+				<ia:InvokeCommandAction
+					Command="{Binding CurrentDirectoryItem.OpenCommand}"
+					CommandParameter="{Binding 
+					CurrentDirectoryItem.SelectFileEntity}"/>
+			</ia:EventTriggerBehavior>
+		</i:Interaction.Behaviors>
+
+		<ListBox.Resources>
+			<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+		</ListBox.Resources>
+
+		<ListBox.ItemTemplate>
+			<DataTemplate>
+				<StackPanel Orientation="Horizontal" Height="40">
+					<DrawingPresenter Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"
+									  HorizontalAlignment="Center">
+					</DrawingPresenter>
+					<Border CornerRadius="7" VerticalAlignment="Center"
+							Height="60">
+						<Border.Background>
+							<SolidColorBrush Color="White" Opacity="0.8"/>
+						</Border.Background>
+						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
+								   TextAlignment="Left"
+								   VerticalAlignment="Center"
+								   FontSize="14" FontWeight="Bold"
+								   Width="200" Margin="5,0,5,0">
+						</TextBlock>
+					</Border>
+					<Border CornerRadius="7" VerticalAlignment="Center"
+							Height="60" Margin="5,0,5,0">
+						<Border.Background>
+							<SolidColorBrush Color="White" Opacity="0.8"/>
+						</Border.Background>
+						<StackPanel Orientation="Vertical"
+									VerticalAlignment="Center">
+							<StackPanel Orientation="Horizontal"
+										Margin="5,0,5,0">
+								<TextBlock Text="Тип: "
+										   VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding Type}"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal"
+										Margin="5,0,5,0">
+								<TextBlock Text="Дата изменения: "
+										   VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding DateOfChange}"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal"
+										Margin="5,0,5,0">
+								<TextBlock Text="Размер: "
+										   VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding Size}"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</DataTemplate>
+		</ListBox.ItemTemplate>
+	</ListBox>
+</UserControl>
