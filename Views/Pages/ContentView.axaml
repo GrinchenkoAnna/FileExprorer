@@ -15,12 +15,21 @@
 	<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-			 SelectionMode="Multiple"  x:Name="content">
+			 SelectionMode="Multiple" x:Name="content">
 
 		<i:Interaction.Behaviors>
 			<ia:EventTriggerBehavior EventName="DoubleTapped">
 				<ia:InvokeCommandAction
 					Command="{Binding CurrentDirectoryItem.OpenCommand}"
+					CommandParameter="{Binding 
+					CurrentDirectoryItem.SelectFileEntity}"/>
+			</ia:EventTriggerBehavior>
+		</i:Interaction.Behaviors>
+
+		<i:Interaction.Behaviors>
+			<ia:EventTriggerBehavior EventName="Tapped">
+				<ia:InvokeCommandAction
+					Command="{Binding InformationItem.AddToInformationCommand}"
 					CommandParameter="{Binding 
 					CurrentDirectoryItem.SelectFileEntity}"/>
 			</ia:EventTriggerBehavior>

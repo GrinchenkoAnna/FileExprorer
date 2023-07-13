@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace FileExplorer.ViewModels
 {
@@ -7,15 +8,30 @@ namespace FileExplorer.ViewModels
     {
         //public ObservableCollection<DirectoryViewModel> Subfolders { get; set; }
         public DirectoryViewModel() { }
-        public DirectoryViewModel(string directoryName) : base(directoryName) { FullName = directoryName; }
-        public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name) 
+        public DirectoryViewModel(string directoryName) : base(directoryName) 
         { 
+            FullName = directoryName; 
+            if (Directory.GetLogicalDrives().Contains(FullName)) 
+            { 
+                Type = "Локальный диск";
+                IsSystemFolder = true;
+            }            
+        }
+        public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name)
+        {
             FullName = directoryName.FullName;
             DateOfChange = directoryName.LastWriteTime.ToShortDateString() + " " + directoryName.LastWriteTime.ToShortTimeString();
-            if (directoryName.GetType().ToString() == "System.IO.DirectoryInfo")
-            {
-                Type = "Папка с файлами";
+            if (directoryName.Attributes.ToString().Contains("System")) 
+            { 
+                Type = "Системная папка"; 
+                IsSystemFolder = true;
             }
-        }       
+            else 
+            { 
+                Type = "Папка с файлами"; 
+                IsSystemFolder = false;
+            }
+            NumberOfItems = directoryName.EnumerateFileSystemInfos().Count();
+        }
     }
 }
