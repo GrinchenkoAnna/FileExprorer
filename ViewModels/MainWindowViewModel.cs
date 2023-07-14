@@ -84,18 +84,7 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickDirectoryItem)));
             }
         }
-        #endregion
-
-        private DirectoryItemViewModel informationItem;
-        public DirectoryItemViewModel InformationItem
-        {
-            get => informationItem;
-            set
-            {
-                informationItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InformationItem)));
-            }
-        }
+        #endregion        
 
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
         {
@@ -107,7 +96,6 @@ namespace FileExplorer.ViewModels
             CurrentDirectoryItem = vm;
             TreeDirectoryItem = vm;
             QuickDirectoryItem = vm;
-            InformationItem = vm;
         }
     }
 }

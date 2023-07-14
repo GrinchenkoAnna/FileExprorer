@@ -144,18 +144,6 @@ namespace FileExplorer.Views
             }
         }
 
-        public void InformationPanel(object sender, RoutedEventArgs routedEventArgs)
-        {
-            if (info.IsVisible == false)
-            {
-                info.IsVisible = true;
-            }
-            else
-            {
-                info.IsVisible = false;
-            }
-        }
-
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
         //{
         //    foreach (var item in content.Items)
