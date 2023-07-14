@@ -26,6 +26,12 @@ namespace FileExplorer.ViewModels
         public string Size { get; set; }
 
         [JsonIgnore]
+        public int NumberOfItems { get; set; }
+
+        [JsonIgnore]
+        public bool IsSystemFolder { get; set; }
+
+        [JsonIgnore]
         public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }        
 
         public FileEntityViewModel(string name)
