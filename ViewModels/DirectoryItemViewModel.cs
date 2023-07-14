@@ -104,18 +104,7 @@ namespace FileExplorer.ViewModels
         {
             get => quickAccessFileItems;
             private set { quickAccessFileItems = value; }
-        }
-
-        private ObservableCollection<FileEntityViewModel> informationItems = new();
-        public ObservableCollection<FileEntityViewModel> InformationItems
-        {
-            get => informationItems;
-            private set
-            {
-                informationItems = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InformationItems)));
-            }
-        }
+        }     
 
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
@@ -129,7 +118,6 @@ namespace FileExplorer.ViewModels
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
             RemoveFromQuickAccessCommand = new DelegateCommand(RemoveFromQuickAccess);
-            AddToInformationCommand = new DelegateCommand(AddToInformation);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
             //ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
@@ -185,7 +173,6 @@ namespace FileExplorer.ViewModels
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }
         public DelegateCommand RemoveFromQuickAccessCommand { get; }
-        public DelegateCommand AddToInformationCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
         //public DelegateCommand ReplaceCommand { get; }
@@ -217,10 +204,10 @@ namespace FileExplorer.ViewModels
                     }
                 }.Start();
             }
-            //else if (parameter == null)
-            //{
-            //    throw new ArgumentNullException(nameof(parameter));
-            //}
+            else if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
         }
         
         private void OpenDirectory()
@@ -432,27 +419,7 @@ namespace FileExplorer.ViewModels
             }
             else { throw new Exception(); }
         }
-        #endregion
-
-        #region InformationPanel
-        private void AddToInformation(object parameter)
-        {
-            if (InformationItems.Count != 0)
-            {
-                InformationItems.Clear();
-            }
-
-            if (parameter is DirectoryViewModel fol_item)
-            {               
-                InformationItems.Add(fol_item);                
-            }
-            else if (parameter is FileViewModel file_item)
-            {
-                InformationItems.Add(file_item);
-            }
-            //else throw new Exception();
-        }
-        #endregion
+        #endregion       
 
         #region Tree
         public interface ISynchronizationHelper

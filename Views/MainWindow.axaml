@@ -41,7 +41,6 @@
 			<ColumnDefinition Width="80"/>
 			<ColumnDefinition Width="80"/>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="230"/>
 		</Grid.ColumnDefinitions>
 
 		<!--<StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
@@ -162,9 +161,7 @@
 					<CheckBox Content="Область навигации"
 							  IsChecked="true"
 							  Click="NavigationPanel"/>
-					<CheckBox Content="Область сведений"
-							  IsChecked="false"
-							  Click="InformationPanel"/>
+					<MenuItem Header="Область сведений"/>
 					<MenuItem Header="Вид">
 						<MenuItem Header="Огромные значки"
 								  Click="SwitchToLargestIcons"/>
@@ -195,7 +192,7 @@
 			</Menu>
 		</Grid>
 
-		<TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" 
+		<TextBox Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3" 
 				 Margin="2,5,0,5" Text="Поиск: "
 				 Background="White" BorderThickness="0.5" 
 				 BorderBrush="RosyBrown"/>
@@ -211,7 +208,7 @@
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="DoubleTapped">
 						<ia:InvokeCommandAction
-							Command="{Binding QuickDirectoryItem.OpenCommand}"
+							Command="{Binding CurrentDirectoryItem.OpenCommand}"
 							CommandParameter="{Binding QuickDirectoryItem.SelectFileEntity}"/>
 					</ia:EventTriggerBehavior>
 				</i:Interaction.Behaviors>
@@ -252,79 +249,8 @@
 			</TreeView>
 		</Border>
 		
-		<!--Information Panel-->
-		<Border Grid.Row="2" Grid.RowSpan="2" Grid.Column="5"
-				CornerRadius="3" BorderThickness="0.5" 
-				BorderBrush="RosyBrown" Width="230" x:Name="info"
-				IsVisible="False">
-			
-			<Border.Background>
-				<SolidColorBrush Color="White" Opacity="0.7"/>
-			</Border.Background>
-
-			<ListBox Background="Transparent"
-			 Items="{Binding InformationItem.InformationItems}">
-				
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Vertical">
-							
-							<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
-										   VerticalAlignment="Center"
-										   FontSize="14" FontWeight="Bold"
-										   Width="220" Margin="8,0,0,0"/>
-							
-							<TextBlock Text="{Binding Type}"
-										   VerticalAlignment="Center"/>
-
-							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
-								<TextBlock Text="Элементов: "
-										   VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding NumberOfItems}"
-										   VerticalAlignment="Center"/>
-							</StackPanel>	
-							
-							<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"
-											  HorizontalAlignment="Center"/>
-							
-							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
-								<TextBlock Text="Дата изменения: "
-										   VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding DateOfChange}"
-										   VerticalAlignment="Center"
-										   TextWrapping="Wrap"/>
-							</StackPanel>
-							
-							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
-								<TextBlock Text="Размер: "
-										   VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding Size}"
-										   VerticalAlignment="Center"
-										   TextWrapping="Wrap"/>
-							</StackPanel>
-
-							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
-								<TextBlock Text="Дата создания: "
-										   VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding DateOfCreation}"
-										   VerticalAlignment="Center"
-										   TextWrapping="Wrap"/>
-							</StackPanel>
-							
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-			
-		</Border>
-		
 		<!--Main Panel-->
-		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+		<Border Grid.Row="1" Grid.Column="3"
 				CornerRadius="3" Background="PapayaWhip" Margin="2,3,0,2"
 				BorderThickness="0.5" BorderBrush="RosyBrown">
 			<TextBlock Grid.Row="1" Grid.Column="3"
@@ -333,7 +259,7 @@
 				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Border>		
 
-		<Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1"
+		<Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
 			  Grid.RowSpan="2" x:Name="main_panel">		
 
 			<ContentControl>
