@@ -22,6 +22,7 @@ namespace FileExplorer.Views
             //ReplaceCommand = new DelegateCommand(Replace);
         }
 
+        #region Views
         public void SwitchToTabsView(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = true;
@@ -33,7 +34,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -45,7 +45,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToListView(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -57,7 +56,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToSmallIcons(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -69,7 +67,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToRegularIcons(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -81,7 +78,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToLargeIcons(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -93,7 +89,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = false;
             content_view.IsVisible = false;
         }
-
         public void SwitchToLargestIcons(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -105,7 +100,6 @@ namespace FileExplorer.Views
             largest_icons.IsVisible = true;
             content_view.IsVisible = false;
         }
-
         public void SwitchToContent(object sender, RoutedEventArgs routedEventArgs)
         {
             tabs.IsVisible = false;
@@ -118,6 +112,9 @@ namespace FileExplorer.Views
             content_view.IsVisible = true;
         }
 
+        #endregion
+
+        #region Panels
         public void NavigationPanel(object sender, RoutedEventArgs routedEventArgs)
         {
             if (quick_access.IsVisible == true && tree.IsVisible == true)
@@ -143,6 +140,20 @@ namespace FileExplorer.Views
                 background.Margin = new Avalonia.Thickness(2, 0, 0, 0);
             }
         }
+        public void InformationPanel(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (info.IsVisible == false)
+            {
+                info.IsVisible = true;
+                main_panel.SetValue(Grid.ColumnSpanProperty, 1);
+            }
+            else
+            {
+                info.IsVisible = false;
+                main_panel.SetValue(Grid.ColumnSpanProperty, 2);
+            }
+        }
+        #endregion
 
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
         //{

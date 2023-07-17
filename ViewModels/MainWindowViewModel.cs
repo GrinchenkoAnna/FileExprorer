@@ -86,6 +86,17 @@ namespace FileExplorer.ViewModels
         }
         #endregion        
 
+        private DirectoryItemViewModel informationItem;
+        public DirectoryItemViewModel InformationItem
+        {
+            get => informationItem;
+            set
+            {
+                informationItem = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InformationItem)));
+            }
+        }
+
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
         {
             _synchronizationHelper = synchronizationHelper;
@@ -96,6 +107,7 @@ namespace FileExplorer.ViewModels
             CurrentDirectoryItem = vm;
             TreeDirectoryItem = vm;
             QuickDirectoryItem = vm;
+            InformationItem = vm;
         }
     }
 }
