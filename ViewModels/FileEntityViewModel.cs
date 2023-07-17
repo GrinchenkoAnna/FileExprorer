@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace FileExplorer.ViewModels
@@ -29,6 +30,10 @@ namespace FileExplorer.ViewModels
         public bool IsSystemFolder { get; set; }
 
         [JsonIgnore]
+        public int NumberOfItems { get; set; }
+
+
+        [JsonIgnore]
         public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }        
 
         public FileEntityViewModel(string name)
@@ -45,7 +50,7 @@ namespace FileExplorer.ViewModels
 
         public FileEntityViewModel(FileInfo fileName)
         {
-            FullName = fileName.FullName;
+            FullName = fileName.FullName;            
         }        
     }
 }

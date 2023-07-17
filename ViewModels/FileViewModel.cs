@@ -18,8 +18,10 @@ namespace FileExplorer.ViewModels
             if (fileInfo.GetType().ToString() == "System.IO.FileInfo")
             {
                 Type = "Файл";
+                IsSystemFolder = false;
             }
-            Size = (fileInfo.Length/1024).ToString() + " КБ";
+            Size = (fileInfo.Length / 1024).ToString() + " КБ";
+            NumberOfItems = 0;
         }
     }
 }

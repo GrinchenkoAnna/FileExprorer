@@ -8,20 +8,30 @@ namespace FileExplorer.ViewModels
     {
         //public ObservableCollection<DirectoryViewModel> Subfolders { get; set; }
         public DirectoryViewModel() { }
-        public DirectoryViewModel(string directoryName) : base(directoryName) { FullName = directoryName; }
-        public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name) 
+        public DirectoryViewModel(string directoryName) : base(directoryName) 
         { 
-            FullName = directoryName.FullName;
+            FullName = directoryName;
             if (Directory.GetLogicalDrives().Contains(FullName))
             {
                 Type = "Локальный диск";
                 IsSystemFolder = true;
+                NumberOfItems = 0;
+            }           
+        }
+        public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name)
+        {
+            FullName = directoryName.FullName;
+            if (directoryName.Attributes.ToString().Contains("System"))
+            {
+                Type = "Системная папка";
+                IsSystemFolder = true;
             }
-            DateOfChange = directoryName.LastWriteTime.ToShortDateString() + " " + directoryName.LastWriteTime.ToShortTimeString();
-            if (directoryName.GetType().ToString() == "System.IO.DirectoryInfo")
+            else
             {
                 Type = "Папка с файлами";
+                IsSystemFolder = false;
             }
-        }       
+            DateOfChange = directoryName.LastWriteTime.ToShortDateString() + " " + directoryName.LastWriteTime.ToShortTimeString();
+        }
     }
 }

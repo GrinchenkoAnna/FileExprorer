@@ -217,10 +217,10 @@ namespace FileExplorer.ViewModels
                     }
                 }.Start();
             }
-            else if (parameter == null)
-            {
-                throw new ArgumentNullException(nameof(parameter));
-            }
+            //else if (parameter == null)
+            //{
+            //    throw new ArgumentNullException(nameof(parameter));
+            //}
         }
         
         private void OpenDirectory()
@@ -239,7 +239,6 @@ namespace FileExplorer.ViewModels
             var directoryInfo = new DirectoryInfo(FilePath);
             try
             {
-
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
@@ -444,6 +443,12 @@ namespace FileExplorer.ViewModels
 
             if (parameter is DirectoryViewModel fol_item)
             {
+                try
+                {
+                    fol_item.NumberOfItems = Directory.GetDirectories(fol_item.FullName).Length +
+                        Directory.GetFiles(fol_item.FullName).Length;
+                }
+                catch (Exception) { }
                 InformationItems.Add(fol_item);
             }
             else if (parameter is FileViewModel file_item)

@@ -232,7 +232,7 @@
 		<!--Information Panel-->
 		<Border Grid.Row="2" Grid.RowSpan="2" Grid.Column="4"
 				CornerRadius="3" BorderThickness="0.5"
-				BorderBrush="RosyBrown" Width="230" x:Name="info"
+				BorderBrush="RosyBrown" Width="250" x:Name="info"
 				IsVisible="false">
 
 			<Border.Background>
@@ -249,13 +249,13 @@
 							<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
 										   VerticalAlignment="Center"
 										   FontSize="14" FontWeight="Bold"
-										   Width="220" Margin="8,0,0,0"/>
+										   Width="250" Margin="8,0,0,0"/>
 
 							<TextBlock Text="{Binding Type}"
 										   VerticalAlignment="Center"/>
 
 							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
+										IsVisible="{Binding NumberOfItems}">
 								<TextBlock Text="Элементов: "
 										   VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding NumberOfItems}"
