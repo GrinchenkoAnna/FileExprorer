@@ -2,8 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 			 xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileExplorer.Views.Pages.RegularIconsView"> 
@@ -16,15 +14,7 @@
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 			 SelectionMode="Multiple" x:Name="content">	
-			
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped">
-					<ia:InvokeCommandAction
-						Command="{Binding CurrentDirectoryItem.OpenCommand}"
-						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
-
+		
 			<!--<ListBox.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Вид">
