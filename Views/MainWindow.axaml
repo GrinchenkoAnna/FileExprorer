@@ -69,7 +69,8 @@
 						<MenuItem Header="Содержимое"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"/>
+						<MenuItem Header="Имя"
+								  />
 						<MenuItem Header="Дата изменения"/>
 						<MenuItem Header="Тип"/>
 						<MenuItem Header="Размер"/>
@@ -176,7 +177,9 @@
 								  Click="SwitchToContent"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"/>
+						<MenuItem Header="Имя"
+								  Command="{Binding CurrentDirectoryItem.SortByNameCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 						<MenuItem Header="Дата изменения"/>
 						<MenuItem Header="Тип"/>
 						<MenuItem Header="Размер"/>

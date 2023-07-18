@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace FileExplorer.ViewModels
 {
@@ -134,6 +135,7 @@ namespace FileExplorer.ViewModels
             RenameCommand = new DelegateCommand(Rename);
             //ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
 
+            SortByNameCommand = new DelegateCommand(SortByName);
 
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
@@ -189,6 +191,8 @@ namespace FileExplorer.ViewModels
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
         //public DelegateCommand ReplaceCommand { get; }
+
+        public DelegateCommand SortByNameCommand { get; }
 
 
         public DelegateCommand MoveBackCommand { get; }
@@ -457,6 +461,33 @@ namespace FileExplorer.ViewModels
             }
             //else throw new Exception();
         }
+        #endregion
+
+        #region Sorting
+
+        private void SortByName(object parameter) //не работает для "директории" с логическими дисками. Остальное сделать по аналогии
+        {
+            DirectoriesAndFiles.Clear();
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString()); 
+            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
+            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
+
+            try
+            {
+                foreach (var directory in dirs)
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                }
+
+                foreach (var fileInfo in files)
+                {
+                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+        }
+
         #endregion
 
         #region Tree
