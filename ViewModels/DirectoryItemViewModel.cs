@@ -9,6 +9,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Linq;
+using static System.Net.WebRequestMethods;
+using System.Reflection;
 
 namespace FileExplorer.ViewModels
 {
@@ -48,6 +50,17 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }        
+
+        private bool directoryWithLogicalDrives;
+        public bool DirectoryWithLogicalDrives
+        {
+            get => directoryWithLogicalDrives;
+            set
+            {
+                directoryWithLogicalDrives = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoryWithLogicalDrives)));
+            }
+        }
 
         private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new();
         public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
@@ -136,6 +149,9 @@ namespace FileExplorer.ViewModels
             //ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
 
             SortByNameCommand = new DelegateCommand(SortByName);
+            SortByDateOfChangeCommand = new DelegateCommand(SortByDateOfChange);
+            SortByTypeCommand = new DelegateCommand(SortByType);
+            SortBySizeCommand = new DelegateCommand(SortBySize);
 
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
@@ -193,7 +209,9 @@ namespace FileExplorer.ViewModels
         //public DelegateCommand ReplaceCommand { get; }
 
         public DelegateCommand SortByNameCommand { get; }
-
+        public DelegateCommand SortByDateOfChangeCommand { get; }
+        public DelegateCommand SortByTypeCommand { get; }
+        public DelegateCommand SortBySizeCommand { get; }
 
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
@@ -233,6 +251,7 @@ namespace FileExplorer.ViewModels
 
             if (Name == "Мой компьютер")
             {
+                DirectoryWithLogicalDrives = true;
                 foreach (var logicalDrive in Directory.GetLogicalDrives())
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
@@ -240,6 +259,7 @@ namespace FileExplorer.ViewModels
                 return;
             }
 
+            DirectoryWithLogicalDrives = false;
             var directoryInfo = new DirectoryInfo(FilePath);
             try
             {
@@ -266,7 +286,7 @@ namespace FileExplorer.ViewModels
                 if (item is DirectoryViewModel) 
                     Directory.Delete(FilePath);
                 else if (item is FileViewModel)
-                    File.Delete(FilePath);
+                    System.IO.File.Delete(FilePath);
 
                 //тупое обновление страницы
                 OnMoveBack(parameter);
@@ -349,7 +369,7 @@ namespace FileExplorer.ViewModels
                 QuickAccessItems.Add(fol_item);
                 QuickAccessDirectoryItems.Add(fol_item);
                 string fol_itemJson = JsonSerializer.Serialize<ObservableCollection<DirectoryViewModel>>(QuickAccessDirectoryItems, options);
-                File.WriteAllText(QuickAccessFolderName, fol_itemJson);
+                System.IO.File.WriteAllText(QuickAccessFolderName, fol_itemJson);
             }
             else if (parameter is FileViewModel file_item)
             {
@@ -360,7 +380,7 @@ namespace FileExplorer.ViewModels
                 QuickAccessItems.Add(file_item);
                 QuickAccessFileItems.Add(file_item);
                 string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
-                File.WriteAllText(QuickAccessFileName, file_itemJson);
+                System.IO.File.WriteAllText(QuickAccessFileName, file_itemJson);
             }
         }
 
@@ -371,7 +391,7 @@ namespace FileExplorer.ViewModels
 
             if (quickAccessFolderInfo.Length > 2)
             {
-                string fol_dataJson = File.ReadAllText(QuickAccessFolderName);
+                string fol_dataJson = System.IO.File.ReadAllText(QuickAccessFolderName);
                 ObservableCollection<DirectoryViewModel>? fol_item = JsonSerializer.Deserialize<ObservableCollection<DirectoryViewModel>>(fol_dataJson);
                 foreach (var item in fol_item)
                 {
@@ -384,11 +404,11 @@ namespace FileExplorer.ViewModels
             }
             if (quickAccessFileInfo.Length > 2)
             {
-                string file_dataJson = File.ReadAllText(QuickAccessFileName);
+                string file_dataJson = System.IO.File.ReadAllText(QuickAccessFileName);
                 ObservableCollection<FileViewModel>? file_item = JsonSerializer.Deserialize<ObservableCollection<FileViewModel>>(file_dataJson);
                 foreach (var item in file_item)
                 {
-                    if (!QuickAccessItems.Contains(item) && File.Exists(item.FullName))
+                    if (!QuickAccessItems.Contains(item) && System.IO.File.Exists(item.FullName))
                     {
                         QuickAccessItems.Add(item);
                         QuickAccessFileItems.Add(item);
@@ -410,7 +430,7 @@ namespace FileExplorer.ViewModels
 
                         string fol_itemJson = JsonSerializer.Serialize<ObservableCollection<DirectoryViewModel>>(QuickAccessDirectoryItems, options);
                         quickAccessFolderInfo.Delete();
-                        File.WriteAllText(QuickAccessFolderName, fol_itemJson);
+                        System.IO.File.WriteAllText(QuickAccessFolderName, fol_itemJson);
 
                         return;
                     }
@@ -427,7 +447,7 @@ namespace FileExplorer.ViewModels
 
                         string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
                         quickAccessFileInfo.Delete();
-                        File.WriteAllText(QuickAccessFileName, file_itemJson);
+                        System.IO.File.WriteAllText(QuickAccessFileName, file_itemJson);
 
                         return;
                     }
@@ -465,27 +485,79 @@ namespace FileExplorer.ViewModels
 
         #region Sorting
 
-        private void SortByName(object parameter) //не работает для "директории" с логическими дисками. Остальное сделать по аналогии
+        private void AddSortedItems(IOrderedEnumerable<DirectoryInfo> directories, IOrderedEnumerable<FileInfo> files)
         {
             DirectoriesAndFiles.Clear();
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString()); 
-            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
-            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
-
             try
             {
-                foreach (var directory in dirs)
+                foreach (var directory in directories)
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
                 }
 
-                foreach (var fileInfo in files)
+                foreach (var file in files)
                 {
-                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                    DirectoriesAndFiles.Add(new FileViewModel(file));
                 }
             }
             catch (UnauthorizedAccessException) { }
+        }
+
+        private void SortByName(object parameter) 
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
+
+            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
+            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
+
+            AddSortedItems(dirs, files);
+        }
+
+        private void SortByDateOfChange(object parameter) 
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
+
+            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.LastWriteTime);
+            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.LastWriteTime);
+
+            AddSortedItems(dirs, files);
+        }
+
+        private void SortByType(object parameter)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
+
+            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Extension);
+            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Extension);
+
+            AddSortedItems(dirs, files);
+        }
+
+        public static long GetDirectorySize(string path)
+        {
+            DirectoryInfo dir = new DirectoryInfo(path);
+            try
+            {
+                return dir.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(f => f.Length);
+            }
+            catch (Exception e) { return 0; }
+        }
+
+        private long sizeOfFolderItem = 0;
+        private long sizeOfFileItem = 0;
+        private void SortBySize(object parameter) //доделать
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());            
+
+            var d = directoryInfo.EnumerateDirectories().OrderBy(d => sizeOfFolderItem);
+            var f = directoryInfo.EnumerateFiles().OrderBy(d => sizeOfFileItem);
+
+            AddSortedItems(d, f);
+
+            sizeOfFolderItem = 0;
+            sizeOfFileItem = 0;
+        
         }
 
         #endregion
@@ -527,7 +599,7 @@ namespace FileExplorer.ViewModels
                     foreach (var dir in Directory.EnumerateDirectories(strPath))
                     {
                         FileEntityViewModel thisnode = new FileEntityViewModel(dir);
-                        if (((File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
+                        if (((System.IO.File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
                             != (FileAttributes.System | FileAttributes.Hidden)) && Directory.Exists(dir))
                         {
                             thisnode.Name = Path.GetFileName(dir);
@@ -542,7 +614,7 @@ namespace FileExplorer.ViewModels
                     foreach (var file in Directory.GetFiles(strPath))
                     {
                         FileEntityViewModel thisnode = new FileEntityViewModel(file);
-                        if ((File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
+                        if ((System.IO.File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
                             != (FileAttributes.System | FileAttributes.Hidden))
                         {
                             thisnode.Name = Path.GetFileName(file);

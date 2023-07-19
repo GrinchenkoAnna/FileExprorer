@@ -32,6 +32,7 @@ namespace FileExplorer.ViewModels
                 IsSystemFolder = false;
             }
             DateOfChange = directoryName.LastWriteTime.ToShortDateString() + " " + directoryName.LastWriteTime.ToShortTimeString();
+            //Size = DirectoryItemViewModel.GetDirectorySize(directoryName.FullName).ToString();
         }
     }
 }

@@ -176,13 +176,20 @@
 						<MenuItem Header="Содержимое"
 								  Click="SwitchToContent"/>
 					</MenuItem>
-					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"
+					<MenuItem Header="Сортировка"
+							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}">
+						<MenuItem Header="Имя"								  
 								  Command="{Binding CurrentDirectoryItem.SortByNameCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-						<MenuItem Header="Дата изменения"/>
-						<MenuItem Header="Тип"/>
-						<MenuItem Header="Размер"/>
+						<MenuItem Header="Дата изменения"
+								  Command="{Binding CurrentDirectoryItem.SortByDateOfChangeCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<MenuItem Header="Тип"
+								  Command="{Binding CurrentDirectoryItem.SortByTypeCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<MenuItem Header="Размер"
+								  Command="{Binding CurrentDirectoryItem.SortBySizeCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 						<MenuItem Header="По возрастанию"/>
 						<MenuItem Header="По убыванию"/>
 					</MenuItem>
