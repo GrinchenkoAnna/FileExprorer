@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
@@ -32,7 +33,25 @@ namespace FileExplorer.ViewModels
                 IsSystemFolder = false;
             }
             DateOfChange = directoryName.LastWriteTime.ToShortDateString() + " " + directoryName.LastWriteTime.ToShortTimeString();
-            //Size = DirectoryItemViewModel.GetDirectorySize(directoryName.FullName).ToString();
+            //Size = DirectoryItemViewModel.GetDirectorySize(directoryName.FullName).ToString();                
+        }
+        
+        private static long DirectorySize(DirectoryInfo directoryInfo)
+        {
+            long size = 0;
+            FileInfo[] files = directoryInfo.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                size += file.Length;
+            }
+
+            DirectoryInfo[] dirs = directoryInfo.GetDirectories();
+            foreach (var dir in dirs)
+            {
+                size += DirectorySize(dir);
+            }
+
+            return size;
         }
     }
 }

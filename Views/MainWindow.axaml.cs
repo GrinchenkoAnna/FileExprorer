@@ -13,6 +13,8 @@ namespace FileExplorer.Views
 {
     public partial class MainWindow : Window
     {
+        public static bool asc = true; 
+        public static bool desc = false;
 
         public MainWindow()
         {
@@ -153,6 +155,54 @@ namespace FileExplorer.Views
                 main_panel.SetValue(Grid.ColumnSpanProperty, 2);
             }
         }
+        #endregion
+
+        #region Menu
+
+        public void ChangeSortingModeToName(object sender, RoutedEventArgs routedEventArgs)
+        {
+            sort_name.IsChecked = true;
+            sort_date.IsChecked = false;
+            sort_type.IsChecked = false;
+            sort_size.IsChecked = false;
+        }
+        public void ChangeSortingModeToDateOfChange(object sender, RoutedEventArgs routedEventArgs)
+        {
+            sort_name.IsChecked = false;
+            sort_date.IsChecked = true;
+            sort_type.IsChecked = false;
+            sort_size.IsChecked = false;
+        }
+        public void ChangeSortingModeToType(object sender, RoutedEventArgs routedEventArgs)
+        {
+            sort_name.IsChecked = false;
+            sort_date.IsChecked = false;
+            sort_type.IsChecked = true;
+            sort_size.IsChecked = false;
+        }
+        public void ChangeSortingModeToSize(object sender, RoutedEventArgs routedEventArgs)
+        {
+            sort_name.IsChecked = false;
+            sort_date.IsChecked = false;
+            sort_type.IsChecked = false;
+            sort_size.IsChecked = true;
+        }
+        
+        public void ChangeSortingModeToAscending(object sender, RoutedEventArgs routedEventArgs)
+        {
+            ascending.IsChecked = true;
+            asc = true;
+            descending.IsChecked = false;
+            desc = false;
+        }
+        public void ChangeSortingModeToDescending(object sender, RoutedEventArgs routedEventArgs)
+        {
+            ascending.IsChecked = false;
+            asc = false;
+            descending.IsChecked = true;
+            desc = true;
+        }
+
         #endregion
 
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)

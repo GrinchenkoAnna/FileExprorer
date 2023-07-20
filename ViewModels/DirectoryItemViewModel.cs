@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using static System.Net.WebRequestMethods;
 using System.Reflection;
+using System.Collections.Generic;
+using FileExplorer.Views;
 
 namespace FileExplorer.ViewModels
 {
@@ -501,63 +503,90 @@ namespace FileExplorer.ViewModels
                     DirectoriesAndFiles.Add(new FileViewModel(file));
                 }
             }
-            catch (UnauthorizedAccessException) { }
+            catch (Exception e) { }
         }
 
         private void SortByName(object parameter) 
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
-            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
-            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
-
-            AddSortedItems(dirs, files);
+            if (MainWindow.asc == true)
+            {
+                var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
+                var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
+                AddSortedItems(dirs, files);
+            }
+            if (MainWindow.desc == true) 
+            {
+                var dirs = directoryInfo.EnumerateDirectories().OrderByDescending(d => d.Name);
+                var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.Name);
+                AddSortedItems(dirs, files);
+            }  
         }
 
         private void SortByDateOfChange(object parameter) 
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
-            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.LastWriteTime);
-            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.LastWriteTime);
-
-            AddSortedItems(dirs, files);
+            if (MainWindow.asc == true)
+            {
+                var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.LastWriteTime);
+                var files = directoryInfo.EnumerateFiles().OrderBy(d => d.LastWriteTime);
+                AddSortedItems(dirs, files);
+            }
+            if (MainWindow.desc == true)
+            {
+                var dirs = directoryInfo.EnumerateDirectories().OrderByDescending(d => d.LastWriteTime);
+                var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.LastWriteTime);
+                AddSortedItems(dirs, files);
+            }
         }
 
         private void SortByType(object parameter)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
-            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Extension);
-            var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Extension);
-
-            AddSortedItems(dirs, files);
-        }
-
-        public static long GetDirectorySize(string path)
-        {
-            DirectoryInfo dir = new DirectoryInfo(path);
-            try
+            if (MainWindow.asc == true)
             {
-                return dir.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(f => f.Length);
+                var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Extension);
+                var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Extension);
+                AddSortedItems(dirs, files);
             }
-            catch (Exception e) { return 0; }
+            if (MainWindow.desc == true)
+            {
+                var dirs = directoryInfo.EnumerateDirectories().OrderByDescending(d => d.Extension);
+                var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.Extension);
+                AddSortedItems(dirs, files);
+            }
         }
 
-        private long sizeOfFolderItem = 0;
-        private long sizeOfFileItem = 0;
+        //public static long GetDirectorySize(string path)
+        //{
+        //    DirectoryInfo dir = new DirectoryInfo(path);
+        //    try
+        //    {
+        //        return dir.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(f => f.Length);
+        //    }
+        //    catch (Exception e) { return 0; }
+        //}
+        
         private void SortBySize(object parameter) //доделать
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());            
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
+            
+            List<FileInfo> fileInfos = directoryInfo.GetFiles().ToList();
 
-            var d = directoryInfo.EnumerateDirectories().OrderBy(d => sizeOfFolderItem);
-            var f = directoryInfo.EnumerateFiles().OrderBy(d => sizeOfFileItem);
-
-            AddSortedItems(d, f);
-
-            sizeOfFolderItem = 0;
-            sizeOfFileItem = 0;
-        
+            var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name); //Не удается корректно подсчитать размер директории            
+            if (MainWindow.asc == true)
+            {
+                var files = fileInfos.Where(f => f.FullName != null).OrderBy(f => f.Length);
+                AddSortedItems(dirs, files);
+            }
+            if (MainWindow.desc == true)
+            {
+                var files = fileInfos.Where(f => f.FullName != null).OrderByDescending(f => f.Length);
+                AddSortedItems(dirs, files);
+            }      
         }
 
         #endregion

@@ -178,20 +178,33 @@
 					</MenuItem>
 					<MenuItem Header="Сортировка"
 							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}">
-						<MenuItem Header="Имя"								  
+						<CheckBox Content="Имя" x:Name="sort_name"
+								  IsChecked="true"
+								  Click="ChangeSortingModeToName"
 								  Command="{Binding CurrentDirectoryItem.SortByNameCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-						<MenuItem Header="Дата изменения"
-								  Command="{Binding CurrentDirectoryItem.SortByDateOfChangeCommand}"
+						<CheckBox Content="Дата изменения" x:Name="sort_date"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToDateOfChange"
+								  Command="{Binding CurrentDirectoryItem.SortByDateOfChange}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-						<MenuItem Header="Тип"
+						<CheckBox Content="Тип" x:Name="sort_type"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToType"
 								  Command="{Binding CurrentDirectoryItem.SortByTypeCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-						<MenuItem Header="Размер"
+						<CheckBox Content="Размер" x:Name="sort_size"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToSize"
 								  Command="{Binding CurrentDirectoryItem.SortBySizeCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-						<MenuItem Header="По возрастанию"/>
-						<MenuItem Header="По убыванию"/>
+
+						<CheckBox Content="По возрастанию" x:Name="ascending"
+								  IsChecked="true"
+								  Click="ChangeSortingModeToAscending"/>
+						<CheckBox Content="По убыванию" x:Name="descending"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToDescending"/>
 					</MenuItem>
 				</MenuItem>
 			</Menu>
