@@ -17,7 +17,19 @@ namespace FileExplorer.ViewModels
                 Type = "Локальный диск";
                 IsSystemFolder = true;
                 NumberOfItems = 0;
-            }           
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(directoryName);
+            if (directoryInfo.Attributes.ToString().Contains("System"))
+            {
+                Type = "Системная папка";
+                IsSystemFolder = true;
+            }
+            else
+            {
+                Type = "Папка с файлами";
+                IsSystemFolder = false;
+            }
+            DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " + directoryInfo.LastWriteTime.ToShortTimeString();
         }
         public DirectoryViewModel(DirectoryInfo directoryName) : base(directoryName.Name)
         {
@@ -36,22 +48,22 @@ namespace FileExplorer.ViewModels
             //Size = DirectoryItemViewModel.GetDirectorySize(directoryName.FullName).ToString();                
         }
         
-        private static long DirectorySize(DirectoryInfo directoryInfo)
-        {
-            long size = 0;
-            FileInfo[] files = directoryInfo.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                size += file.Length;
-            }
+        //private static long DirectorySize(DirectoryInfo directoryInfo)
+        //{
+        //    long size = 0;
+        //    FileInfo[] files = directoryInfo.GetFiles();
+        //    foreach (FileInfo file in files)
+        //    {
+        //        size += file.Length;
+        //    }
 
-            DirectoryInfo[] dirs = directoryInfo.GetDirectories();
-            foreach (var dir in dirs)
-            {
-                size += DirectorySize(dir);
-            }
+        //    DirectoryInfo[] dirs = directoryInfo.GetDirectories();
+        //    foreach (var dir in dirs)
+        //    {
+        //        size += DirectorySize(dir);
+        //    }
 
-            return size;
-        }
+        //    return size;
+        //}
     }
 }

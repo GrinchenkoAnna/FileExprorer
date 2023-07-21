@@ -8,6 +8,7 @@ using FileExplorer.Views.Pages;
 using ReactiveUI;
 
 using System.ComponentModel;
+using System.IO;
 
 namespace FileExplorer.Views
 {
@@ -205,6 +206,8 @@ namespace FileExplorer.Views
 
         #endregion
 
+        #region Selection
+
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
         //{
         //    foreach (var item in content.Items)
@@ -229,6 +232,27 @@ namespace FileExplorer.Views
         //        else
         //        {
         //            content.SelectedItems.Add(item);
+        //        }
+        //    }
+        //}
+
+        #endregion
+
+        //private async void OpenFolderDialogButtonClick(object sender, RoutedEventArgs routedEventArgs)
+        //{
+        //    OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+        //    string? result = await openFolderDialog.ShowAsync(this);
+        //    if (DataContext is MainWindowViewModel dataContext)
+        //    {
+        //        if (result != null)
+        //        {
+        //            dataContext.Path = result;
+        //            DirectoryInfo directoryInfo = new DirectoryInfo(result);
+
+        //        }
+        //        else
+        //        {
+        //            dataContext.Path = "Dialog was canceled";
         //        }
         //    }
         //}
@@ -258,7 +282,7 @@ namespace FileExplorer.Views
         //                dataContext.Path = "Dialog was canceled";
         //            }
         //        }
-        //    }            
+        //    }
         //}
         //private async void SaveFileDialogButtonClick(object sender, RoutedEventArgs routedEventArgs)
         //{
@@ -278,21 +302,6 @@ namespace FileExplorer.Views
         //}
 
 
-        private async void OpenFolderDialogButtonClick(object sender, RoutedEventArgs routedEventArgs)
-        {
-            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
-            string? result = await openFolderDialog.ShowAsync(this);
-            if (DataContext is MainWindowViewModel dataContext)
-            {
-                if (result != null)
-                {
-                    dataContext.Path = result;
-                }
-                else
-                {
-                    dataContext.Path = "Dialog was canceled";
-                }
-            }              
-        }
+
     }
 }

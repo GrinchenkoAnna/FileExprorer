@@ -148,7 +148,7 @@ namespace FileExplorer.ViewModels
             AddToInformationCommand = new DelegateCommand(AddToInformation);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
-            //ReplaceCommand = new DelegateCommand(Replace, OnCanReplace);
+            CreateNewFolderCommand = new DelegateCommand(CreateNewFolder);
 
             SortByNameCommand = new DelegateCommand(SortByName);
             SortByDateOfChangeCommand = new DelegateCommand(SortByDateOfChange);
@@ -208,7 +208,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand AddToInformationCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
-        //public DelegateCommand ReplaceCommand { get; }
+        public DelegateCommand CreateNewFolderCommand { get; }
 
         public DelegateCommand SortByNameCommand { get; }
         public DelegateCommand SortByDateOfChangeCommand { get; }
@@ -587,6 +587,27 @@ namespace FileExplorer.ViewModels
                 var files = fileInfos.Where(f => f.FullName != null).OrderByDescending(f => f.Length);
                 AddSortedItems(dirs, files);
             }      
+        }
+
+        #endregion
+
+        #region NewFolder
+
+        private void CreateNewFolder(object parameter)
+        {
+            if (parameter is string directory && directory != "Мой компьютер")
+            {
+                var directoryInfo = Directory.CreateDirectory(directory);
+                System.IO.File.SetAttributes(directory, FileAttributes.Normal);
+
+                var newFolder = new DirectoryViewModel(directory);
+                DirectoriesAndFiles.Add(newFolder);
+
+                newFolder.Name = "Новая папка";
+                newFolder.FullName = directoryInfo.FullName + "/Новая папка";
+                newFolder.IsSystemFolder = false;
+                newFolder.Type = "Папка с файлами";
+            }
         }
 
         #endregion
