@@ -13,6 +13,7 @@ using static System.Net.WebRequestMethods;
 using System.Reflection;
 using System.Collections.Generic;
 using FileExplorer.Views;
+using DynamicData.Experimental;
 
 namespace FileExplorer.ViewModels
 {
@@ -136,11 +137,13 @@ namespace FileExplorer.ViewModels
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
         {
+            RunWatcher();
+
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
             _synchronizationHelper = synchronizationHelper;
 
             Name = _history.Current.DirectoryPathName;
-            FilePath = _history.Current.DirectoryPath;           
+            FilePath = _history.Current.DirectoryPath;  
 
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
@@ -172,6 +175,22 @@ namespace FileExplorer.ViewModels
             //_history.KeyPress += KeyPressed;           
         }
         #endregion
+
+        private void RunWatcher()
+        {
+            using var watcher = new FileSystemWatcher(@"D:\");
+            watcher.NotifyFilter = NotifyFilters.Attributes
+                | NotifyFilters.CreationTime
+                | NotifyFilters.DirectoryName
+                | NotifyFilters.FileName
+                | NotifyFilters.LastWrite
+                | NotifyFilters.LastAccess
+                | NotifyFilters.Size;
+            watcher.IncludeSubdirectories = true;
+            watcher.EnableRaisingEvents = true;
+            watcher.Created += OnCreated;
+            watcher.Deleted += OnDeleted;
+        }
 
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
@@ -259,7 +278,7 @@ namespace FileExplorer.ViewModels
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
                 }
                 return;
-            }
+            }           
 
             DirectoryWithLogicalDrives = false;
             var directoryInfo = new DirectoryInfo(FilePath);
@@ -276,14 +295,14 @@ namespace FileExplorer.ViewModels
                 }
             }
             catch (UnauthorizedAccessException) { }
-        }        
+        }              
         #endregion
         
         #region Delete
         private void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
-            {
+            {                
                 FilePath = item.FullName;
                 if (item is DirectoryViewModel) 
                     Directory.Delete(FilePath);
@@ -299,6 +318,13 @@ namespace FileExplorer.ViewModels
         }        
 
         private bool OnCanDelete(object obj) => _history.CanDelete;
+
+        private void OnDeleted(object sender, FileSystemEventArgs e)
+        {
+            //var directoryInfo = new DirectoryInfo(e.FullPath);
+            //string nameOfDirectory = GetNameOfNewFolder(directoryInfo, "Новая папка");
+            Directory.Delete(e.FullPath);
+        }
         #endregion
 
         #region Replace
@@ -596,20 +622,50 @@ namespace FileExplorer.ViewModels
         private void CreateNewFolder(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
-            {
+            {   
                 var directoryInfo = Directory.CreateDirectory(directory);
-                System.IO.File.SetAttributes(directory, FileAttributes.Normal);
+                System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
 
                 var newFolder = new DirectoryViewModel(directory);
                 DirectoriesAndFiles.Add(newFolder);
 
+                //newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
                 newFolder.Name = "Новая папка";
-                newFolder.FullName = directoryInfo.FullName + "/Новая папка";
+                newFolder.FullName = directoryInfo.FullName + newFolder.Name;
                 newFolder.IsSystemFolder = false;
                 newFolder.Type = "Папка с файлами";
             }
         }
 
+        private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
+        {
+            var dirs = directoryInfo.EnumerateDirectories();
+            int counter = 1;
+
+            while (true)
+            {
+                int temp = counter;
+                foreach (var d in dirs)
+                {
+                    if (name == d.Name)
+                    {
+                        name = "Новая папка " + '(' + counter + ')';
+                        counter++;
+                    }               
+                }
+                if (temp - counter == 0) break;
+            }
+            if (counter != 1) counter = 1;
+
+            return name;
+        }
+
+        private void OnCreated(object sender, FileSystemEventArgs e)
+        {            
+            //var directoryInfo = new DirectoryInfo(e.FullPath);
+            //string nameOfDirectory = GetNameOfNewFolder(directoryInfo, "Новая папка");
+            Directory.CreateDirectory(e.FullPath);
+        }   
         #endregion
 
         #region Tree
