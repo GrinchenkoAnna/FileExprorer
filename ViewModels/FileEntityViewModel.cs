@@ -36,21 +36,12 @@ namespace FileExplorer.ViewModels
         [JsonIgnore]
         public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }        
 
-        public FileEntityViewModel(string name)
-        {
-            Name = name;
-        }
+        public FileEntityViewModel(string name) { Name = name; }
 
         public FileEntityViewModel() { }
 
-        public FileEntityViewModel(DirectoryInfo directoryName)
-        {
-            FullName = directoryName.FullName;
-        }
+        public FileEntityViewModel(DirectoryInfo directoryName) { FullName = directoryName.FullName; }
 
-        public FileEntityViewModel(FileInfo fileName)
-        {
-            FullName = fileName.FullName;            
-        }        
+        public FileEntityViewModel(FileInfo fileName) { FullName = fileName.FullName; }        
     }
 }

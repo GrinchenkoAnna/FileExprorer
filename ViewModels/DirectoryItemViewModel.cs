@@ -14,6 +14,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using FileExplorer.Views;
 using DynamicData.Experimental;
+using System.Net.Http.Headers;
+using Avalonia.Controls.Shapes;
 
 namespace FileExplorer.ViewModels
 {
@@ -137,8 +139,6 @@ namespace FileExplorer.ViewModels
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
         {
-            RunWatcher();
-
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
             _synchronizationHelper = synchronizationHelper;
 
@@ -176,22 +176,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        private void RunWatcher()
-        {
-            using var watcher = new FileSystemWatcher(@"D:\");
-            watcher.NotifyFilter = NotifyFilters.Attributes
-                | NotifyFilters.CreationTime
-                | NotifyFilters.DirectoryName
-                | NotifyFilters.FileName
-                | NotifyFilters.LastWrite
-                | NotifyFilters.LastAccess
-                | NotifyFilters.Size;
-            watcher.IncludeSubdirectories = true;
-            watcher.EnableRaisingEvents = true;
-            watcher.Created += OnCreated;
-            watcher.Deleted += OnDeleted;
-        }
-
+        
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
             MoveBackCommand?.RaiseCanExecuteChanged();
@@ -236,7 +221,7 @@ namespace FileExplorer.ViewModels
 
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
-        public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой
+        public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой   
 
         #region OpenDirectory
         private void Open(object parameter)
@@ -278,10 +263,29 @@ namespace FileExplorer.ViewModels
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
                 }
                 return;
-            }           
+            }            
 
             DirectoryWithLogicalDrives = false;
             var directoryInfo = new DirectoryInfo(FilePath);
+
+            FileSystemWatcher watcher = new FileSystemWatcher(FilePath);
+            watcher.NotifyFilter = NotifyFilters.Attributes
+                | NotifyFilters.CreationTime
+                | NotifyFilters.DirectoryName
+                | NotifyFilters.FileName
+                | NotifyFilters.LastWrite
+                | NotifyFilters.LastAccess
+                | NotifyFilters.Size;
+
+            watcher.Filter = "*.*";
+            watcher.IncludeSubdirectories = true;
+
+            watcher.Created += OnCreated;
+            watcher.Deleted += OnDeleted;
+            watcher.Renamed += OnRenamed;
+
+            watcher.EnableRaisingEvents = true;
+
             try
             {
                 foreach (var directory in directoryInfo.GetDirectories())
@@ -335,7 +339,7 @@ namespace FileExplorer.ViewModels
                 string oldPath = item.FullName;
                 if (item is DirectoryViewModel)
                 {
-                    string newPath = @"C:\Users\" + Path.GetFileName(oldPath);
+                    string newPath = @"C:\Users\" + System.IO.Path.GetFileName(oldPath);
                     //try
                     //{
                     var directoryInfo = new DirectoryInfo(oldPath);
@@ -622,19 +626,38 @@ namespace FileExplorer.ViewModels
         private void CreateNewFolder(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
-            {   
-                var directoryInfo = Directory.CreateDirectory(directory);
+            {
+                //var directoryInfo = Directory.CreateDirectory(directory);
+                var directoryInfo = new DirectoryInfo(directory);
                 System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
 
                 var newFolder = new DirectoryViewModel(directory);
                 DirectoriesAndFiles.Add(newFolder);
 
-                //newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
-                newFolder.Name = "Новая папка";
+                newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
                 newFolder.FullName = directoryInfo.FullName + newFolder.Name;
                 newFolder.IsSystemFolder = false;
                 newFolder.Type = "Папка с файлами";
+
+                Directory.CreateDirectory(newFolder.FullName);
             }
+        }
+        private void OnCreated(object sender, FileSystemEventArgs e)
+        {
+            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {                
+                DirectoriesAndFiles.Add(new DirectoryViewModel(e.FullPath)); //Add Dispatcher.UIThread.InvokeAsync
+            }                
+            else
+            {
+                DirectoriesAndFiles.Add(new FileViewModel(e.FullPath));
+            }
+        } 
+
+        private static void OnRenamed(object sender, FileSystemEventArgs e)
+        {
+            
         }
 
         private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
@@ -658,14 +681,7 @@ namespace FileExplorer.ViewModels
             if (counter != 1) counter = 1;
 
             return name;
-        }
-
-        private void OnCreated(object sender, FileSystemEventArgs e)
-        {            
-            //var directoryInfo = new DirectoryInfo(e.FullPath);
-            //string nameOfDirectory = GetNameOfNewFolder(directoryInfo, "Новая папка");
-            Directory.CreateDirectory(e.FullPath);
-        }   
+        }         
         #endregion
 
         #region Tree
@@ -681,7 +697,7 @@ namespace FileExplorer.ViewModels
             foreach (var logicalDrive in Directory.GetLogicalDrives())
             {                
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
-                root.FullName = Path.GetFullPath(logicalDrive);
+                root.FullName = System.IO.Path.GetFullPath(logicalDrive);
                 //await Task.Run(() =>
                 //{
                 //    _synchronizationHelper.InvokeAsync(() =>
@@ -708,8 +724,8 @@ namespace FileExplorer.ViewModels
                         if (((System.IO.File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
                             != (FileAttributes.System | FileAttributes.Hidden)) && Directory.Exists(dir))
                         {
-                            thisnode.Name = Path.GetFileName(dir);
-                            thisnode.FullName = Path.GetFullPath(dir);
+                            thisnode.Name = System.IO.Path.GetFileName(dir);
+                            thisnode.FullName = System.IO.Path.GetFullPath(dir);
                             subfolders.Add(thisnode);
                             //try { thisnode.Subfolders = GetSubfolders(dir); }
                             //catch (UnauthorizedAccessException) { }
@@ -723,7 +739,7 @@ namespace FileExplorer.ViewModels
                         if ((System.IO.File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
                             != (FileAttributes.System | FileAttributes.Hidden))
                         {
-                            thisnode.Name = Path.GetFileName(file);
+                            thisnode.Name = System.IO.Path.GetFileName(file);
                             subfolders.Add(thisnode);
                         }
                     }
