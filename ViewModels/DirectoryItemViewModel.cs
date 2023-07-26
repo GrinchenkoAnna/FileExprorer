@@ -285,6 +285,7 @@ namespace FileExplorer.ViewModels
             watcher.Renamed += OnRenamed;
 
             watcher.EnableRaisingEvents = true;
+            watcher.InternalBufferSize = 4096;
 
             try
             {
@@ -626,8 +627,7 @@ namespace FileExplorer.ViewModels
         private void CreateNewFolder(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
-            {
-                //var directoryInfo = Directory.CreateDirectory(directory);
+            {                
                 var directoryInfo = new DirectoryInfo(directory);
                 System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
 
@@ -635,31 +635,13 @@ namespace FileExplorer.ViewModels
                 DirectoriesAndFiles.Add(newFolder);
 
                 newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
-                newFolder.FullName = directoryInfo.FullName + newFolder.Name;
+                newFolder.FullName = directoryInfo.FullName + '\\' + newFolder.Name;
                 newFolder.IsSystemFolder = false;
                 newFolder.Type = "Папка с файлами";
-
+                
                 Directory.CreateDirectory(newFolder.FullName);
             }
         }
-        private void OnCreated(object sender, FileSystemEventArgs e)
-        {
-            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {                
-                DirectoriesAndFiles.Add(new DirectoryViewModel(e.FullPath)); //Add Dispatcher.UIThread.InvokeAsync
-            }                
-            else
-            {
-                DirectoriesAndFiles.Add(new FileViewModel(e.FullPath));
-            }
-        } 
-
-        private static void OnRenamed(object sender, FileSystemEventArgs e)
-        {
-            
-        }
-
         private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
         {
             var dirs = directoryInfo.EnumerateDirectories();
@@ -674,14 +656,47 @@ namespace FileExplorer.ViewModels
                     {
                         name = "Новая папка " + '(' + counter + ')';
                         counter++;
-                    }               
+                    }
                 }
                 if (temp - counter == 0) break;
             }
             if (counter != 1) counter = 1;
 
             return name;
-        }         
+        }
+        private async void OnCreated(object sender, FileSystemEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                _synchronizationHelper.InvokeAsync(() =>
+                {
+                    AddItemFromSystem(e);
+                });
+            });
+        }
+        private async Task AddItemFromSystem(FileSystemEventArgs e)
+        {
+            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                foreach (var item in DirectoriesAndFiles)
+                {
+                    if (item.FullName == e.FullPath) { return; }
+                }
+                DirectoryViewModel newDir = new DirectoryViewModel(e.Name);
+                DirectoriesAndFiles.Add(newDir);
+                newDir.FullName = e.FullPath;
+            }
+            else
+            {
+                DirectoriesAndFiles.Add(new FileViewModel(e.Name)); 
+            }
+        }
+
+        private static void OnRenamed(object sender, FileSystemEventArgs e)
+        {
+            
+        }        
         #endregion
 
         #region Tree
