@@ -16,6 +16,9 @@ using FileExplorer.Views;
 using DynamicData.Experimental;
 using System.Net.Http.Headers;
 using Avalonia.Controls.Shapes;
+using DynamicData;
+using System.Reflection.Metadata;
+using System.Data.Common;
 
 namespace FileExplorer.ViewModels
 {
@@ -136,6 +139,8 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        private List<ObservableCollection<FileEntityViewModel>> Collections = new();
+
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
         {
@@ -169,6 +174,10 @@ namespace FileExplorer.ViewModels
 
             QuickAccessItems = new ObservableCollection<FileEntityViewModel>();            
             ReadQuickAccessItem();
+
+            Collections.Add(QuickAccessItems);
+            Collections.Add(DirectoriesAndFiles);
+            Collections.Add(Items);
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
@@ -249,8 +258,7 @@ namespace FileExplorer.ViewModels
             //{
             //    throw new ArgumentNullException(nameof(parameter));
             //}
-        }
-        
+        }        
         private void OpenDirectory()
         {
             DirectoriesAndFiles.Clear();
@@ -269,6 +277,7 @@ namespace FileExplorer.ViewModels
             var directoryInfo = new DirectoryInfo(FilePath);
 
             FileSystemWatcher watcher = new FileSystemWatcher(FilePath);
+            watcher.Path = FilePath;
             watcher.NotifyFilter = NotifyFilters.Attributes
                 | NotifyFilters.CreationTime
                 | NotifyFilters.DirectoryName
@@ -281,6 +290,7 @@ namespace FileExplorer.ViewModels
             watcher.IncludeSubdirectories = true;
 
             watcher.Created += OnCreated;
+            watcher.Changed += OnChanged;
             watcher.Deleted += OnDeleted;
             watcher.Renamed += OnRenamed;
 
@@ -300,9 +310,190 @@ namespace FileExplorer.ViewModels
                 }
             }
             catch (UnauthorizedAccessException) { }
-        }              
+        }
         #endregion
-        
+
+        #region WatcherEvents        
+        private async void OnCreated(object sender, FileSystemEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                _synchronizationHelper.InvokeAsync(() =>
+                {
+                    AddItemFromSystem(e);
+                });
+            });
+        }
+        private async Task AddItemFromSystem(FileSystemEventArgs e)
+        {
+            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                foreach (var item in DirectoriesAndFiles)
+                {
+                    if (item.FullName == e.FullPath) { return; }
+                }
+                DirectoryViewModel newDir = new DirectoryViewModel(e.Name);
+                DirectoriesAndFiles.Add(newDir);
+                newDir.FullName = e.FullPath;
+            }
+            else
+            {
+                if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
+                {
+                    foreach (var item in DirectoriesAndFiles)
+                    {
+                        if (item.FullName == e.FullPath) { return; }
+                    }
+                    FileViewModel newFile = new FileViewModel(e.Name);
+                    DirectoriesAndFiles.Add(newFile);
+                    newFile.FullName = e.FullPath;
+                }
+            }
+        }
+
+        private async void OnChanged(object sender, FileSystemEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                _synchronizationHelper.InvokeAsync(() =>
+                {
+                    ChangedItemFromSystem(e);
+                });
+            });
+        }
+        private async Task ChangedItemFromSystem(FileSystemEventArgs e)
+        {
+            foreach (var collection in Collections)
+            {
+                foreach (var item in collection)
+                {
+                    if (item.FullName == e.FullPath)
+                    {
+                        if (item is DirectoryViewModel)
+                        {
+
+                        }
+                        if (item is FileViewModel)
+                        {
+                            item.Size = (e.FullPath.Length / 1024).ToString() + " КБ";
+                            item.NumberOfItems = 0;
+                            //string dateOfChange = 
+                            //item.DateOfChange = e.
+                            //DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+                        }
+                    }
+                }
+            }
+            foreach (var item in QuickAccessDirectoryItems)
+            {
+                if (item.FullName == e.FullPath)
+                {
+                    
+                }
+            }
+            foreach (var item in QuickAccessFileItems)
+            {
+                if (item.FullName == e.FullPath)
+                {
+                    item.Size = (e.FullPath.Length / 1024).ToString() + " КБ";
+                    item.NumberOfItems = 0;
+                    //item.DateOfChange = e.
+                    //DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+                }
+            }            
+        }
+
+        private async void OnDeleted(object sender, FileSystemEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                _synchronizationHelper.InvokeAsync(() =>
+                {
+                    DeletedItemFromSystem(e);
+                });
+            });
+        }
+        private async Task DeletedItemFromSystem(FileSystemEventArgs e)
+        {
+            foreach (var collection in Collections)
+            {
+                foreach(var item in collection)
+                {
+                    if (item.FullName == e.FullPath)
+                    {
+                        collection.Remove(item);
+                    }
+                }
+            }
+            foreach (var item in QuickAccessDirectoryItems)
+            {
+                if (item.FullName == e.FullPath)
+                {
+                    QuickAccessDirectoryItems.Remove(item);
+                }
+            }
+            foreach (var item in QuickAccessFileItems)
+            {
+                if (item.FullName == e.FullPath)
+                {
+                    QuickAccessFileItems.Remove(item);
+                }
+            }
+
+            //тупое обновление страницы
+            OnMoveBack(e.FullPath);
+            OnMoveForward(e.FullPath);
+            OpenDirectory();
+        }
+
+        private async void OnRenamed(object sender, RenamedEventArgs e)
+        {           
+            await Task.Run(() =>
+            {
+                _synchronizationHelper.InvokeAsync(() =>
+                {
+                    RenamedItemFromSystem(e);
+                });
+            });
+        }
+        private async Task RenamedItemFromSystem(RenamedEventArgs e)
+        {
+            foreach (var collection in Collections)
+            {
+                foreach (var item in collection)
+                {
+                    if (item.FullName == e.OldFullPath)
+                    {
+                        item.FullName = e.FullPath;
+                        item.Name = e.Name;
+                    }
+                }
+            }
+            foreach (var item in QuickAccessDirectoryItems)
+            {
+                if (item.FullName == e.OldFullPath)
+                {
+                    item.FullName = e.FullPath;
+                    item.Name = e.Name;
+                }
+            }
+            foreach (var item in QuickAccessFileItems)
+            {
+                if (item.FullName == e.OldFullPath)
+                {
+                    item.FullName = e.FullPath;
+                    item.Name = e.Name;
+                }
+            }
+
+            //тупое обновление страницы
+            OnMoveBack(e.FullPath);
+            OnMoveForward(e.FullPath);
+            OpenDirectory();
+        }
+        #endregion
+
         #region Delete
         private void Delete(object parameter)
         {
@@ -322,14 +513,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }        
 
-        private bool OnCanDelete(object obj) => _history.CanDelete;
-
-        private void OnDeleted(object sender, FileSystemEventArgs e)
-        {
-            //var directoryInfo = new DirectoryInfo(e.FullPath);
-            //string nameOfDirectory = GetNameOfNewFolder(directoryInfo, "Новая папка");
-            Directory.Delete(e.FullPath);
-        }
+        private bool OnCanDelete(object obj) => _history.CanDelete;        
         #endregion
 
         #region Replace
@@ -382,8 +566,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        #region AddToQuickAccess & Delete
-
+        #region Add&Remove_QuickAccess 
         JsonSerializerOptions options = new JsonSerializerOptions()
         { 
             AllowTrailingCommas = true,
@@ -416,7 +599,6 @@ namespace FileExplorer.ViewModels
                 System.IO.File.WriteAllText(QuickAccessFileName, file_itemJson);
             }
         }
-
         private void ReadQuickAccessItem()
         {
             if (!quickAccessFolderInfo.Exists) { quickAccessFolderInfo.Create(); }
@@ -449,7 +631,6 @@ namespace FileExplorer.ViewModels
                 }
             }
         }
-
         private void RemoveFromQuickAccess(object parameter)
         {            
             if (parameter is DirectoryViewModel fol_item)
@@ -517,7 +698,6 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Sorting
-
         private void AddSortedItems(IOrderedEnumerable<DirectoryInfo> directories, IOrderedEnumerable<FileInfo> files)
         {
             DirectoriesAndFiles.Clear();
@@ -619,29 +799,9 @@ namespace FileExplorer.ViewModels
                 AddSortedItems(dirs, files);
             }      
         }
-
         #endregion
 
         #region NewFolder
-
-        private void CreateNewFolder(object parameter)
-        {
-            if (parameter is string directory && directory != "Мой компьютер")
-            {                
-                var directoryInfo = new DirectoryInfo(directory);
-                System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
-
-                var newFolder = new DirectoryViewModel(directory);
-                DirectoriesAndFiles.Add(newFolder);
-
-                newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
-                newFolder.FullName = directoryInfo.FullName + '\\' + newFolder.Name;
-                newFolder.IsSystemFolder = false;
-                newFolder.Type = "Папка с файлами";
-                
-                Directory.CreateDirectory(newFolder.FullName);
-            }
-        }
         private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
         {
             var dirs = directoryInfo.EnumerateDirectories();
@@ -664,38 +824,23 @@ namespace FileExplorer.ViewModels
 
             return name;
         }
-        private async void OnCreated(object sender, FileSystemEventArgs e)
+        private void CreateNewFolder(object parameter)
         {
-            await Task.Run(() =>
-            {
-                _synchronizationHelper.InvokeAsync(() =>
-                {
-                    AddItemFromSystem(e);
-                });
-            });
-        }
-        private async Task AddItemFromSystem(FileSystemEventArgs e)
-        {
-            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                foreach (var item in DirectoriesAndFiles)
-                {
-                    if (item.FullName == e.FullPath) { return; }
-                }
-                DirectoryViewModel newDir = new DirectoryViewModel(e.Name);
-                DirectoriesAndFiles.Add(newDir);
-                newDir.FullName = e.FullPath;
-            }
-            else
-            {
-                DirectoriesAndFiles.Add(new FileViewModel(e.Name)); 
-            }
-        }
+            if (parameter is string directory && directory != "Мой компьютер")
+            {                
+                var directoryInfo = new DirectoryInfo(directory);
+                System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
 
-        private static void OnRenamed(object sender, FileSystemEventArgs e)
-        {
-            
+                var newFolder = new DirectoryViewModel(directory);
+                DirectoriesAndFiles.Add(newFolder);
+
+                newFolder.Name = GetNameOfNewFolder(directoryInfo, "Новая папка");
+                newFolder.FullName = directoryInfo.FullName + @"\" + newFolder.Name;
+                newFolder.IsSystemFolder = false;
+                newFolder.Type = "Папка с файлами";
+                
+                Directory.CreateDirectory(newFolder.FullName);
+            }
         }        
         #endregion
 
