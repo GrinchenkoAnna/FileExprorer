@@ -19,6 +19,7 @@ using Avalonia.Controls.Shapes;
 using DynamicData;
 using System.Reflection.Metadata;
 using System.Data.Common;
+using Microsoft.VisualBasic;
 
 namespace FileExplorer.ViewModels
 {
@@ -57,7 +58,29 @@ namespace FileExplorer.ViewModels
                 name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
-        }        
+        }
+
+        private string pathBuffer;
+        public string PathBuffer
+        {
+            get => pathBuffer;
+            set
+            {
+                pathBuffer = value;
+                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PathBuffer)));
+            }
+        }
+        
+        private int entityBuffer;
+        public int EntityBuffer
+        {
+            get => entityBuffer;
+            set
+            {
+                entityBuffer = value;
+                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PathBuffer)));
+            }
+        }
 
         private bool directoryWithLogicalDrives;
         public bool DirectoryWithLogicalDrives
@@ -153,11 +176,13 @@ namespace FileExplorer.ViewModels
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
             RemoveFromQuickAccessCommand = new DelegateCommand(RemoveFromQuickAccess);
-            AddToInformationCommand = new DelegateCommand(AddToInformation);
+            CopyCommand = new DelegateCommand(Copy);
+            PasteCommand = new DelegateCommand(Paste);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
             CreateNewFolderCommand = new DelegateCommand(CreateNewFolder);
 
+            AddToInformationCommand = new DelegateCommand(AddToInformation);
             SortByNameCommand = new DelegateCommand(SortByName);
             SortByDateOfChangeCommand = new DelegateCommand(SortByDateOfChange);
             SortByTypeCommand = new DelegateCommand(SortByType);
@@ -218,11 +243,13 @@ namespace FileExplorer.ViewModels
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }
         public DelegateCommand RemoveFromQuickAccessCommand { get; }
-        public DelegateCommand AddToInformationCommand { get; }
+        public DelegateCommand CopyCommand { get; }
+        public DelegateCommand PasteCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
         public DelegateCommand CreateNewFolderCommand { get; }
 
+        public DelegateCommand AddToInformationCommand { get; }
         public DelegateCommand SortByNameCommand { get; }
         public DelegateCommand SortByDateOfChangeCommand { get; }
         public DelegateCommand SortByTypeCommand { get; }
@@ -370,17 +397,16 @@ namespace FileExplorer.ViewModels
                 {
                     if (item.FullName == e.FullPath)
                     {
+                        collection.Remove(item);
                         if (item is DirectoryViewModel)
                         {
-
+                            DirectoryInfo directoryInfo = new DirectoryInfo(e.FullPath);
+                            collection.Add(new DirectoryViewModel(directoryInfo));
                         }
                         if (item is FileViewModel)
                         {
-                            item.Size = (e.FullPath.Length / 1024).ToString() + " КБ";
-                            item.NumberOfItems = 0;
-                            //string dateOfChange = 
-                            //item.DateOfChange = e.
-                            //DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+                            FileInfo fileInfo = new FileInfo(e.FullPath);
+                            collection.Add(new FileViewModel(fileInfo));
                         }
                     }
                 }
@@ -389,17 +415,18 @@ namespace FileExplorer.ViewModels
             {
                 if (item.FullName == e.FullPath)
                 {
-                    
+                    QuickAccessDirectoryItems.Remove(item);
+                    DirectoryInfo directoryInfo = new DirectoryInfo(e.FullPath);
+                    QuickAccessDirectoryItems.Add(new DirectoryViewModel(directoryInfo));
                 }
             }
             foreach (var item in QuickAccessFileItems)
             {
                 if (item.FullName == e.FullPath)
                 {
-                    item.Size = (e.FullPath.Length / 1024).ToString() + " КБ";
-                    item.NumberOfItems = 0;
-                    //item.DateOfChange = e.
-                    //DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+                    QuickAccessFileItems.Remove(item);
+                    FileInfo fileInfo = new FileInfo(e.FullPath);
+                    QuickAccessFileItems.Add(new FileViewModel(fileInfo));
                 }
             }            
         }
@@ -492,6 +519,46 @@ namespace FileExplorer.ViewModels
             OnMoveForward(e.FullPath);
             OpenDirectory();
         }
+        #endregion
+
+        #region Copy&Paste
+        private void Copy(object parameter)
+        {
+            if (parameter is FileEntityViewModel item)
+            {
+                PathBuffer = item.FullName;
+                if (item is DirectoryViewModel)
+                {
+                    entityBuffer = 2;
+                }
+                else if (item is FileViewModel)
+                {
+                    entityBuffer = 1;
+                }
+                else
+                {
+                    entityBuffer = 0;
+                }
+            }
+            else { throw new Exception(); }
+        } 
+        
+        private void Paste(object parameter)
+        {
+            if (parameter is string directory && directory != "Мой компьютер")
+            {
+                if (entityBuffer == 2)
+                {
+                    DirectoriesAndFiles.Add(new DirectoryViewModel(PathBuffer));
+                }
+                else if (entityBuffer == 1)
+                {
+                    DirectoriesAndFiles.Add(new FileViewModel(PathBuffer));
+                }
+                else throw new Exception();
+            }
+            else { throw new Exception(); }
+        }//доделать
         #endregion
 
         #region Delete

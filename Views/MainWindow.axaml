@@ -120,9 +120,13 @@
 					<MenuItem Header="Открепить от панели быстрого доступа"
 							  Command="{Binding QuickDirectoryItem.RemoveFromQuickAccessCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-					<MenuItem Header="Копировать"/>
+					<MenuItem Header="Копировать"
+							  Command="{Binding CurrentDirectoryItem.CopyCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Вставить"
-							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
+							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+							  Command="{Binding CurrentDirectoryItem.PasteCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 					<MenuItem Header="Вырезать"
 							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
 					<MenuItem Header="Скопировать путь"/>
