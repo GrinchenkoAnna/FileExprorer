@@ -25,8 +25,6 @@ namespace FileExplorer.ViewModels
 {
     public partial class DirectoryItemViewModel : ListBox, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         //private BackgroundWorker _backgroundWorker;
 
         private readonly IDirectoryHistory _history;
@@ -37,6 +35,9 @@ namespace FileExplorer.ViewModels
         private const string QuickAccessFileName = "quickAccessFiles.json";
         FileInfo quickAccessFolderInfo = new FileInfo(QuickAccessFolderName);
         FileInfo quickAccessFileInfo = new FileInfo(QuickAccessFileName);
+
+        #region EventProperties
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private string filePath;
         public string FilePath
@@ -58,29 +59,7 @@ namespace FileExplorer.ViewModels
                 name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
-        }
-
-        private string pathBuffer;
-        public string PathBuffer
-        {
-            get => pathBuffer;
-            set
-            {
-                pathBuffer = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PathBuffer)));
-            }
-        }
-        
-        private int entityBuffer;
-        public int EntityBuffer
-        {
-            get => entityBuffer;
-            set
-            {
-                entityBuffer = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PathBuffer)));
-            }
-        }
+        }       
 
         private bool directoryWithLogicalDrives;
         public bool DirectoryWithLogicalDrives
@@ -92,7 +71,32 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoryWithLogicalDrives)));
             }
         }
+        #endregion
 
+        #region BufferProperties
+        private string pathBuffer;
+        public string PathBuffer
+        {
+            get => pathBuffer;
+            set => pathBuffer = value;
+        }
+
+        private string nameBuffer;
+        public string NameBuffer
+        {
+            get => nameBuffer;
+            set => nameBuffer = value; 
+        }
+
+        private int entityBuffer;
+        public int EntityBuffer
+        {
+            get => entityBuffer;
+            set => entityBuffer = value;
+        }
+        #endregion
+
+        #region Collections
         private ObservableCollection<FileEntityViewModel> directoriesAndFiles = new();
         public ObservableCollection<FileEntityViewModel> DirectoriesAndFiles
         {
@@ -163,6 +167,7 @@ namespace FileExplorer.ViewModels
         }
 
         private List<ObservableCollection<FileEntityViewModel>> Collections = new();
+        #endregion
 
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
@@ -527,33 +532,84 @@ namespace FileExplorer.ViewModels
             if (parameter is FileEntityViewModel item)
             {
                 PathBuffer = item.FullName;
-                if (item is DirectoryViewModel)
-                {
-                    entityBuffer = 2;
+                NameBuffer = item.Name;
+
+                if (item is DirectoryViewModel) 
+                { 
+                    EntityBuffer = 2;
                 }
-                else if (item is FileViewModel)
-                {
-                    entityBuffer = 1;
+                else if (item is FileViewModel) 
+                { 
+                    EntityBuffer = 1;
                 }
-                else
-                {
-                    entityBuffer = 0;
-                }
+                else { EntityBuffer = 0; }
             }
             else { throw new Exception(); }
-        } 
-        
+        }
+
+        private string GetNameOfCopiedItem(DirectoryInfo directoryInfo, string name, int extention = 0)
+        {            
+            var dirs = directoryInfo.EnumerateDirectories();
+            var files = directoryInfo.EnumerateFiles();
+
+            while (true)
+            {
+                bool copy = false;
+                foreach (var d in dirs)
+                {
+                    if (name == d.Name)
+                    {
+                        name = name + " —" + " копия";
+                        copy = true;
+                    }
+                }
+                foreach (var f in files)
+                {
+                    if (name == f.Name[..^extention]) 
+                    {
+                        name = name + " —" + " копия";
+                        copy = true;
+                    }
+                }
+                if (copy == false) break;
+            }
+            return name;
+        }
+
         private void Paste(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
             {
-                if (entityBuffer == 2)
-                {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(PathBuffer));
+                var directoryInfo = new DirectoryInfo(directory);
+
+                if (EntityBuffer == 2) //не копируется содержимое папки
+                {                 
+                    var pastedFolder = new DirectoryViewModel(PathBuffer);                   
+
+                    pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer);
+                    pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
+                    pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " + directoryInfo.LastWriteTime.ToShortTimeString();
+                    DirectoriesAndFiles.Add(pastedFolder);
+
+                    Directory.CreateDirectory(pastedFolder.FullName);
+
+                    //if ()
                 }
-                else if (entityBuffer == 1)
+                else if (EntityBuffer == 1)
                 {
-                    DirectoriesAndFiles.Add(new FileViewModel(PathBuffer));
+                    var fileInfo = new FileInfo(directory);
+                    var pastedFile = new FileViewModel(PathBuffer);
+                    string extention = System.IO.Path.GetExtension(PathBuffer);
+                    NameBuffer = NameBuffer[..^extention.Length];
+
+                    pastedFile.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer, extention.Length) + extention;
+                    pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;
+                    pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
+                    pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+                    DirectoriesAndFiles.Add(pastedFile);
+
+                    System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);
+
                 }
                 else throw new Exception();
             }
@@ -580,7 +636,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }        
 
-        private bool OnCanDelete(object obj) => _history.CanDelete;        
+        private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)    
         #endregion
 
         #region Replace
@@ -888,7 +944,6 @@ namespace FileExplorer.ViewModels
                 if (temp - counter == 0) break;
             }
             if (counter != 1) counter = 1;
-
             return name;
         }
         private void CreateNewFolder(object parameter)
