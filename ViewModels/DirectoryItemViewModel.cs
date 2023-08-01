@@ -526,7 +526,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        #region Copy&Paste
+        #region Copy&CutAndPaste
         private void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
@@ -576,7 +576,46 @@ namespace FileExplorer.ViewModels
             return name;
         }
 
-        private void Paste(object parameter)
+        private async Task PasteSubitems(string oldPath, string newPath)
+        {
+            var subdirectories = Directory.GetDirectories(oldPath);
+            if (subdirectories.Count() != 0)
+            {
+                foreach (string subdirectory in subdirectories)
+                {
+                    try
+                    {
+                        string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
+                        Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
+                        await Task.Run(() => 
+                        {
+                            _synchronizationHelper.InvokeAsync(() =>
+                            {
+                                PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
+                                      newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
+                            });
+                        });                        
+                    }
+                    catch (Exception e) { }
+                }
+            }
+
+            var subfiles = Directory.GetFiles(oldPath);
+            if (subfiles.Count() != 0)
+            {
+                foreach (string subfile in subfiles) 
+                {
+                    try
+                    {
+                        string nameOfSubfile = System.IO.Path.GetFileName(subfile);
+                        System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
+                    }
+                    catch (Exception e) { }
+                }
+            }
+        }
+
+        private async void Paste(object parameter) // добавить try-catch??
         {
             if (parameter is string directory && directory != "Мой компьютер")
             {
@@ -593,7 +632,13 @@ namespace FileExplorer.ViewModels
 
                     Directory.CreateDirectory(pastedFolder.FullName);
 
-                    //if ()
+                    await Task.Run(() => //все равно виснет
+                    {
+                        _synchronizationHelper.InvokeAsync(() =>
+                        {
+                            PasteSubitems(PathBuffer, pastedFolder.FullName);
+                        });
+                    });
                 }
                 else if (EntityBuffer == 1)
                 {
@@ -608,8 +653,7 @@ namespace FileExplorer.ViewModels
                     pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
                     DirectoriesAndFiles.Add(pastedFile);
 
-                    System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);
-
+                    System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);                  
                 }
                 else throw new Exception();
             }
@@ -618,13 +662,52 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Delete
-        private void Delete(object parameter)
+        //private async Task PasteSubitems(string oldPath, string newPath)
+        //{
+        //    var subdirectories = Directory.GetDirectories(oldPath);
+        //    if (subdirectories.Count() != 0)
+        //    {
+        //        foreach (string subdirectory in subdirectories)
+        //        {
+        //            try
+        //            {
+        //                string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
+        //                Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
+        //                await Task.Run(() =>
+        //                {
+        //                    _synchronizationHelper.InvokeAsync(() =>
+        //                    {
+        //                        PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
+        //                              newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
+        //                    });
+        //                });
+        //            }
+        //            catch (Exception e) { }
+        //        }
+        //    }
+
+        //    var subfiles = Directory.GetFiles(oldPath);
+        //    if (subfiles.Count() != 0)
+        //    {
+        //        foreach (string subfile in subfiles)
+        //        {
+        //            try
+        //            {
+        //                string nameOfSubfile = System.IO.Path.GetFileName(subfile);
+        //                System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
+        //            }
+        //            catch (Exception e) { }
+        //        }
+        //    }
+        //} //переделать под удаление
+
+        private async void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {                
                 FilePath = item.FullName;
                 if (item is DirectoryViewModel) 
-                    Directory.Delete(FilePath);
+                    Directory.Delete(FilePath); //не удаляет папки с содержимым
                 else if (item is FileViewModel)
                     System.IO.File.Delete(FilePath);
 
@@ -637,7 +720,7 @@ namespace FileExplorer.ViewModels
         }        
 
         private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)    
-        #endregion
+        #endregion 
 
         #region Replace
         private void Replace(object parameter)
@@ -928,6 +1011,7 @@ namespace FileExplorer.ViewModels
         private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
         {
             var dirs = directoryInfo.EnumerateDirectories();
+            var files = directoryInfo.EnumerateFiles();
             int counter = 1;
 
             while (true)
@@ -937,7 +1021,15 @@ namespace FileExplorer.ViewModels
                 {
                     if (name == d.Name)
                     {
-                        name = "Новая папка " + '(' + counter + ')';
+                        name = name + '(' + counter + ')';
+                        counter++;
+                    }
+                }
+                foreach (var f in files)
+                {
+                    if (name == f.Name)
+                    {
+                        name = name + '(' + counter + ')';
                         counter++;
                     }
                 }

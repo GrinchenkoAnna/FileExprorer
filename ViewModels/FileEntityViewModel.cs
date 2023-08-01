@@ -34,7 +34,8 @@ namespace FileExplorer.ViewModels
 
 
         [JsonIgnore]
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }        
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }      
+        
 
         public FileEntityViewModel(string name) { Name = name; }
 
