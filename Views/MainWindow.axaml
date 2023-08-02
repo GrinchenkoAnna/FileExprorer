@@ -128,7 +128,9 @@
 							  Command="{Binding CurrentDirectoryItem.PasteCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 					<MenuItem Header="Вырезать"
-							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
+							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+							  Command="{Binding CurrentDirectoryItem.CutCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Скопировать путь"/>
 					<MenuItem Header="Переместить в"
 							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>

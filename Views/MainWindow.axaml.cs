@@ -159,7 +159,6 @@ namespace FileExplorer.Views
         #endregion
 
         #region Menu
-
         public void ChangeSortingModeToName(object sender, RoutedEventArgs routedEventArgs)
         {
             sort_name.IsChecked = true;
@@ -202,8 +201,7 @@ namespace FileExplorer.Views
             asc = false;
             descending.IsChecked = true;
             desc = true;
-        }
-
+        }        
         #endregion
 
         #region Selection

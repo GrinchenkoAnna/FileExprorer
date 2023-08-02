@@ -182,6 +182,7 @@ namespace FileExplorer.ViewModels
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
             RemoveFromQuickAccessCommand = new DelegateCommand(RemoveFromQuickAccess);
             CopyCommand = new DelegateCommand(Copy);
+            CutCommand = new DelegateCommand(Cut);
             PasteCommand = new DelegateCommand(Paste);
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
@@ -249,6 +250,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand AddToQuickAccessCommand { get; }
         public DelegateCommand RemoveFromQuickAccessCommand { get; }
         public DelegateCommand CopyCommand { get; }
+        public DelegateCommand CutCommand { get; }
         public DelegateCommand PasteCommand { get; }
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
@@ -527,6 +529,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Copy&CutAndPaste
+        bool deleteItemAfterPaste = false;        
         private void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
@@ -543,6 +546,18 @@ namespace FileExplorer.ViewModels
                     EntityBuffer = 1;
                 }
                 else { EntityBuffer = 0; }
+
+                deleteItemAfterPaste = false;
+            }
+            else { throw new Exception(); }
+        }
+        private void Cut(object parameter)
+        {
+            if (parameter is FileEntityViewModel item)
+            {
+                Copy(parameter);
+                DirectoriesAndFiles.Remove(item);  
+                deleteItemAfterPaste = true;
             }
             else { throw new Exception(); }
         }
@@ -612,7 +627,7 @@ namespace FileExplorer.ViewModels
                     }
                     catch (Exception e) { }
                 }
-            }
+            }            
         }
 
         private async void Paste(object parameter) // добавить try-catch??
@@ -638,7 +653,7 @@ namespace FileExplorer.ViewModels
                         {
                             PasteSubitems(PathBuffer, pastedFolder.FullName);
                         });
-                    });
+                    });  
                 }
                 else if (EntityBuffer == 1)
                 {
@@ -656,67 +671,59 @@ namespace FileExplorer.ViewModels
                     System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);                  
                 }
                 else throw new Exception();
+
+                if (deleteItemAfterPaste)
+                {
+                    Delete(PathBuffer);
+                    deleteItemAfterPaste = false;
+                }                
             }
             else { throw new Exception(); }
-        }//доделать
+        }
         #endregion
 
-        #region Delete
-        //private async Task PasteSubitems(string oldPath, string newPath)
-        //{
-        //    var subdirectories = Directory.GetDirectories(oldPath);
-        //    if (subdirectories.Count() != 0)
-        //    {
-        //        foreach (string subdirectory in subdirectories)
-        //        {
-        //            try
-        //            {
-        //                string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
-        //                Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
-        //                await Task.Run(() =>
-        //                {
-        //                    _synchronizationHelper.InvokeAsync(() =>
-        //                    {
-        //                        PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
-        //                              newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
-        //                    });
-        //                });
-        //            }
-        //            catch (Exception e) { }
-        //        }
-        //    }
+        #region Delete    
 
-        //    var subfiles = Directory.GetFiles(oldPath);
-        //    if (subfiles.Count() != 0)
-        //    {
-        //        foreach (string subfile in subfiles)
-        //        {
-        //            try
-        //            {
-        //                string nameOfSubfile = System.IO.Path.GetFileName(subfile);
-        //                System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
-        //            }
-        //            catch (Exception e) { }
-        //        }
-        //    }
-        //} //переделать под удаление
-
-        private async void Delete(object parameter)
+        private void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {                
                 FilePath = item.FullName;
-                if (item is DirectoryViewModel) 
-                    Directory.Delete(FilePath); //не удаляет папки с содержимым
-                else if (item is FileViewModel)
-                    System.IO.File.Delete(FilePath);
+                DirectoryInfo di = new DirectoryInfo(FilePath);
+                if (item is DirectoryViewModel)
+                {                                   
+                    foreach (FileInfo file in di.EnumerateFiles())
+                    {
+                        file.Delete();
+                    }
+                    foreach (DirectoryInfo dir in di.EnumerateDirectories())
+                    {
+                        dir.Delete(true);
+                    }
 
-                //тупое обновление страницы
-                OnMoveBack(parameter);
-                OnMoveForward(parameter);
-                OpenDirectory();
+                    Directory.Delete(FilePath);                    
+                }                
+                else if (item is FileViewModel)
+                {
+                    System.IO.File.Delete(FilePath);
+                }
+
+                DirectoriesAndFiles.Remove(item);                
             }
             else { throw new Exception(); }
+        }        
+        private void Delete(string path)
+        {
+            DirectoryInfo di = new DirectoryInfo(path);
+            foreach (FileInfo file in di.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.EnumerateDirectories())
+            {
+                dir.Delete(true);
+            }
+            Directory.Delete(path);
         }        
 
         private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)    
