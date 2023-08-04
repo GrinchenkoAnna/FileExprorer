@@ -106,7 +106,7 @@ namespace FileExplorer.ViewModels
                 directoriesAndFiles = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DirectoriesAndFiles)));
             }
-        }           
+        }
 
         private FileEntityViewModel selectFileEntity;
         public FileEntityViewModel SelectFileEntity
@@ -118,7 +118,7 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectFileEntity)));
             }
         }
-        
+
         private ObservableCollection<FileEntityViewModel> items = new();
         public ObservableCollection<FileEntityViewModel> Items
         {
@@ -529,35 +529,65 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Copy&CutAndPaste
-        bool deleteItemAfterPaste = false;        
+        private List<string> ItemBuffer = new();
+        //private void Copy(object parameter)
+        //{
+        //    if (parameter is FileEntityViewModel item)
+        //    {
+        //        PathBuffer = item.FullName;
+        //        NameBuffer = item.Name;
+
+        //        if (item is DirectoryViewModel) 
+        //        { 
+        //            EntityBuffer = 2;
+        //        }
+        //        else if (item is FileViewModel) 
+        //        { 
+        //            EntityBuffer = 1;
+        //        }
+        //        else { EntityBuffer = 0; }
+        //    }
+        //    else { throw new Exception(); }
+        //}
         private void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
-                PathBuffer = item.FullName;
-                NameBuffer = item.Name;
-
-                if (item is DirectoryViewModel) 
-                { 
-                    EntityBuffer = 2;
-                }
-                else if (item is FileViewModel) 
-                { 
-                    EntityBuffer = 1;
-                }
-                else { EntityBuffer = 0; }
-
-                deleteItemAfterPaste = false;
+                ItemBuffer.Clear();
+                AddToItemBuffer(item.FullName);
             }
             else { throw new Exception(); }
+        }
+        private void AddToItemBuffer(string path)
+        {          
+            ItemBuffer.Add(path);
+
+            FileAttributes attributes = System.IO.File.GetAttributes(path);
+            if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) //директория
+            {
+                if (Directory.EnumerateDirectories(path).Count() != 0)
+                {
+                    foreach (string dir in Directory.EnumerateDirectories(path))
+                    {
+                        AddToItemBuffer(dir);
+                    }
+                }
+                if (Directory.EnumerateFiles(path).Count() != 0)
+                {
+                    foreach (string file in Directory.EnumerateFiles(path))
+                    {
+                        ItemBuffer.Add(file);
+                    }
+                }
+            }
         }
         private void Cut(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
                 Copy(parameter);
-                DirectoriesAndFiles.Remove(item);  
-                deleteItemAfterPaste = true;
+                DirectoriesAndFiles.Remove(item); 
+                Directory.Delete(item.FullName, true);  
             }
             else { throw new Exception(); }
         }
@@ -591,92 +621,156 @@ namespace FileExplorer.ViewModels
             return name;
         }
 
-        private async Task PasteSubitems(string oldPath, string newPath)
-        {
-            var subdirectories = Directory.GetDirectories(oldPath);
-            if (subdirectories.Count() != 0)
-            {
-                foreach (string subdirectory in subdirectories)
-                {
-                    try
-                    {
-                        string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
-                        Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
-                        await Task.Run(() => 
-                        {
-                            _synchronizationHelper.InvokeAsync(() =>
-                            {
-                                PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
-                                      newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
-                            });
-                        });                        
-                    }
-                    catch (Exception e) { }
-                }
-            }
+        //private async Task PasteSubitems(string oldPath, string newPath)
+        //{
+        //    var subdirectories = Directory.GetDirectories(oldPath);
+        //    if (subdirectories.Count() != 0)
+        //    {
+        //        foreach (string subdirectory in subdirectories)
+        //        {
+        //            try
+        //            {
+        //                string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
+        //                Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
+        //                await Task.Run(() => 
+        //                {
+        //                    _synchronizationHelper.InvokeAsync(() =>
+        //                    {
+        //                        PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
+        //                              newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
+        //                    });
+        //                });                        
+        //            }
+        //            catch (Exception e) { }
+        //        }
+        //    }
 
-            var subfiles = Directory.GetFiles(oldPath);
-            if (subfiles.Count() != 0)
-            {
-                foreach (string subfile in subfiles) 
-                {
-                    try
-                    {
-                        string nameOfSubfile = System.IO.Path.GetFileName(subfile);
-                        System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
-                    }
-                    catch (Exception e) { }
-                }
-            }            
-        }
+        //    var subfiles = Directory.GetFiles(oldPath);
+        //    if (subfiles.Count() != 0)
+        //    {
+        //        foreach (string subfile in subfiles) 
+        //        {
+        //            try
+        //            {
+        //                string nameOfSubfile = System.IO.Path.GetFileName(subfile);
+        //                System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
+        //            }
+        //            catch (Exception e) { }
+        //        }
+        //    }            
+        //}
 
+        //private async void Paste(object parameter) // добавить try-catch??
+        //{
+        //    if (parameter is string directory && directory != "Мой компьютер")
+        //    {
+        //        var directoryInfo = new DirectoryInfo(directory);
+
+        //        if (EntityBuffer == 2) //не копируется содержимое папки
+        //        {                 
+        //            var pastedFolder = new DirectoryViewModel(PathBuffer);                   
+
+        //            pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer);
+        //            pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
+        //            pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " + directoryInfo.LastWriteTime.ToShortTimeString();
+        //            DirectoriesAndFiles.Add(pastedFolder);
+
+        //            Directory.CreateDirectory(pastedFolder.FullName);
+
+        //            await Task.Run(() => //все равно виснет
+        //            {
+        //                _synchronizationHelper.InvokeAsync(() =>
+        //                {
+        //                    PasteSubitems(PathBuffer, pastedFolder.FullName);
+        //                });
+        //            });  
+        //        }
+        //        else if (EntityBuffer == 1)
+        //        {
+        //            var fileInfo = new FileInfo(directory);
+        //            var pastedFile = new FileViewModel(PathBuffer);
+        //            string extention = System.IO.Path.GetExtension(PathBuffer);
+        //            NameBuffer = NameBuffer[..^extention.Length];
+
+        //            pastedFile.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer, extention.Length) + extention;
+        //            pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;
+        //            pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
+        //            pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+        //            DirectoriesAndFiles.Add(pastedFile);
+
+        //            System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);                  
+        //        }
+        //        else throw new Exception();                               
+        //    }
+        //    else { throw new Exception(); }
+        //}
         private async void Paste(object parameter) // добавить try-catch??
         {
+            string mainDirectory = "";
             if (parameter is string directory && directory != "Мой компьютер")
             {
-                var directoryInfo = new DirectoryInfo(directory);
-
-                if (EntityBuffer == 2) //не копируется содержимое папки
-                {                 
-                    var pastedFolder = new DirectoryViewModel(PathBuffer);                   
-
-                    pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer);
-                    pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
-                    pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " + directoryInfo.LastWriteTime.ToShortTimeString();
-                    DirectoriesAndFiles.Add(pastedFolder);
-
-                    Directory.CreateDirectory(pastedFolder.FullName);
-
-                    await Task.Run(() => //все равно виснет
+                foreach (string itemPath in ItemBuffer)
+                {    
+                    if (itemPath == ItemBuffer[0]) //корневая директория / одиночный файл
                     {
-                        _synchronizationHelper.InvokeAsync(() =>
+                        DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+
+                        FileAttributes attributes = System.IO.File.GetAttributes(itemPath);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
                         {
-                            PasteSubitems(PathBuffer, pastedFolder.FullName);
-                        });
-                    });  
-                }
-                else if (EntityBuffer == 1)
-                {
-                    var fileInfo = new FileInfo(directory);
-                    var pastedFile = new FileViewModel(PathBuffer);
-                    string extention = System.IO.Path.GetExtension(PathBuffer);
-                    NameBuffer = NameBuffer[..^extention.Length];
+                            var pastedFolder = new DirectoryViewModel(itemPath);
 
-                    pastedFile.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer, extention.Length) + extention;
-                    pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;
-                    pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
-                    pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
-                    DirectoriesAndFiles.Add(pastedFile);
+                            pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, System.IO.Path.GetFileName(itemPath));
+                            pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
+                            mainDirectory = pastedFolder.FullName;
+                            pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " 
+                                + directoryInfo.LastWriteTime.ToShortTimeString();
+                            DirectoriesAndFiles.Add(pastedFolder);
+                            Directory.CreateDirectory(pastedFolder.FullName);
+                        }                       
+                        else
+                        {
+                            var fileInfo = new FileInfo(directory);
+                            var pastedFile = new FileViewModel(itemPath);
+                            string extention = System.IO.Path.GetExtension(itemPath);
+                            string pureName = System.IO.Path.GetFileName(itemPath);
+                            pureName = pureName.Substring(0, pureName.Length - extention.Length);
 
-                    System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);                  
-                }
-                else throw new Exception();
+                            pastedFile.Name = GetNameOfCopiedItem(directoryInfo, pureName, extention.Length) + extention;
+                            pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;                            
+                            pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " 
+                                + fileInfo.CreationTime.ToShortTimeString();
+                            pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " 
+                                + fileInfo.LastWriteTime.ToShortTimeString();
+                            DirectoriesAndFiles.Add(pastedFile);
 
-                if (deleteItemAfterPaste)
-                {
-                    Delete(PathBuffer);
-                    deleteItemAfterPaste = false;
-                }                
+                            System.IO.File.Copy(itemPath, pastedFile.FullName, false);
+                        }
+                    }
+                    else //поддиректории / файлы внутри ДОДЕЛАТЬ
+                    {
+                        string _itemPath = itemPath.Replace(ItemBuffer[0], mainDirectory);
+                        //DirectoryInfo directoryInfo = new DirectoryInfo(itemPath);
+
+                        FileAttributes attributes = System.IO.File.GetAttributes(itemPath);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                        {                                                    
+                            Directory.CreateDirectory(_itemPath);
+                        }
+                        else // ДОДЕЛАТЬ
+                        {
+                            FileInfo fileInfo = new FileInfo(directory);
+
+                            string extention = System.IO.Path.GetExtension(_itemPath);
+                            string name = System.IO.Path.GetFileName(_itemPath)[..^extention.Length];
+
+                            //name = GetNameOfCopiedItem(directoryInfo, System.IO.Path.GetFileName(_itemPath), extention.Length) + extention;
+                            string path = fileInfo.FullName + @"\" + name;                            
+
+                            System.IO.File.Copy(_itemPath, path, false);
+                        }
+                    }
+                }                          
             }
             else { throw new Exception(); }
         }
