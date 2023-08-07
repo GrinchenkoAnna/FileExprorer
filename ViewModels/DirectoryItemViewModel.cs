@@ -94,6 +94,8 @@ namespace FileExplorer.ViewModels
             get => entityBuffer;
             set => entityBuffer = value;
         }
+
+        private List<string> ItemBuffer = new(); 
         #endregion
 
         #region Collections
@@ -529,26 +531,8 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Copy&CutAndPaste
-        private List<string> ItemBuffer = new();
-        //private void Copy(object parameter)
-        //{
-        //    if (parameter is FileEntityViewModel item)
-        //    {
-        //        PathBuffer = item.FullName;
-        //        NameBuffer = item.Name;
-
-        //        if (item is DirectoryViewModel) 
-        //        { 
-        //            EntityBuffer = 2;
-        //        }
-        //        else if (item is FileViewModel) 
-        //        { 
-        //            EntityBuffer = 1;
-        //        }
-        //        else { EntityBuffer = 0; }
-        //    }
-        //    else { throw new Exception(); }
-        //}
+        bool cutItem = false;
+        
         private void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
@@ -579,15 +563,15 @@ namespace FileExplorer.ViewModels
                         ItemBuffer.Add(file);
                     }
                 }
-            }
+            }           
         }
         private void Cut(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
-                Copy(parameter);
-                DirectoriesAndFiles.Remove(item); 
-                Directory.Delete(item.FullName, true);  
+                cutItem = true;
+                Copy(parameter);                
+                //DirectoriesAndFiles.Remove(item); //сделать полупрозрачным?            
             }
             else { throw new Exception(); }
         }
@@ -621,92 +605,24 @@ namespace FileExplorer.ViewModels
             return name;
         }
 
-        //private async Task PasteSubitems(string oldPath, string newPath)
-        //{
-        //    var subdirectories = Directory.GetDirectories(oldPath);
-        //    if (subdirectories.Count() != 0)
-        //    {
-        //        foreach (string subdirectory in subdirectories)
-        //        {
-        //            try
-        //            {
-        //                string nameOfSubdirectory = System.IO.Path.GetFileName(subdirectory);
-        //                Directory.CreateDirectory(subdirectory.Replace(oldPath + @"\" + nameOfSubdirectory, newPath + @"\" + nameOfSubdirectory));
-        //                await Task.Run(() => 
-        //                {
-        //                    _synchronizationHelper.InvokeAsync(() =>
-        //                    {
-        //                        PasteSubitems(oldPath + @"\" + System.IO.Path.GetFileName(subdirectory),
-        //                              newPath + @"\" + System.IO.Path.GetFileName(subdirectory));
-        //                    });
-        //                });                        
-        //            }
-        //            catch (Exception e) { }
-        //        }
-        //    }
+        private async Task PasteSubitems(string oldPath, string beginningOfNewPath)
+        {
+            string newPath = oldPath.Replace(ItemBuffer[0], beginningOfNewPath);
 
-        //    var subfiles = Directory.GetFiles(oldPath);
-        //    if (subfiles.Count() != 0)
-        //    {
-        //        foreach (string subfile in subfiles) 
-        //        {
-        //            try
-        //            {
-        //                string nameOfSubfile = System.IO.Path.GetFileName(subfile);
-        //                System.IO.File.Copy(oldPath + @"\" + nameOfSubfile, newPath + @"\" + nameOfSubfile, false);
-        //            }
-        //            catch (Exception e) { }
-        //        }
-        //    }            
-        //}
+            FileAttributes attributes = System.IO.File.GetAttributes(oldPath);
+            if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                Directory.CreateDirectory(newPath);
+            }
+            else
+            {
+                System.IO.File.Copy(oldPath, newPath, false);
+            }
+        }
 
-        //private async void Paste(object parameter) // добавить try-catch??
-        //{
-        //    if (parameter is string directory && directory != "Мой компьютер")
-        //    {
-        //        var directoryInfo = new DirectoryInfo(directory);
-
-        //        if (EntityBuffer == 2) //не копируется содержимое папки
-        //        {                 
-        //            var pastedFolder = new DirectoryViewModel(PathBuffer);                   
-
-        //            pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer);
-        //            pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
-        //            pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " + directoryInfo.LastWriteTime.ToShortTimeString();
-        //            DirectoriesAndFiles.Add(pastedFolder);
-
-        //            Directory.CreateDirectory(pastedFolder.FullName);
-
-        //            await Task.Run(() => //все равно виснет
-        //            {
-        //                _synchronizationHelper.InvokeAsync(() =>
-        //                {
-        //                    PasteSubitems(PathBuffer, pastedFolder.FullName);
-        //                });
-        //            });  
-        //        }
-        //        else if (EntityBuffer == 1)
-        //        {
-        //            var fileInfo = new FileInfo(directory);
-        //            var pastedFile = new FileViewModel(PathBuffer);
-        //            string extention = System.IO.Path.GetExtension(PathBuffer);
-        //            NameBuffer = NameBuffer[..^extention.Length];
-
-        //            pastedFile.Name = GetNameOfCopiedItem(directoryInfo, NameBuffer, extention.Length) + extention;
-        //            pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;
-        //            pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
-        //            pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
-        //            DirectoriesAndFiles.Add(pastedFile);
-
-        //            System.IO.File.Copy(PathBuffer, pastedFile.FullName, false);                  
-        //        }
-        //        else throw new Exception();                               
-        //    }
-        //    else { throw new Exception(); }
-        //}
         private async void Paste(object parameter) // добавить try-catch??
         {
-            string mainDirectory = "";
+            string mainDirectory = ""; //новое имя корневой директории
             if (parameter is string directory && directory != "Мой компьютер")
             {
                 foreach (string itemPath in ItemBuffer)
@@ -722,7 +638,9 @@ namespace FileExplorer.ViewModels
 
                             pastedFolder.Name = GetNameOfCopiedItem(directoryInfo, System.IO.Path.GetFileName(itemPath));
                             pastedFolder.FullName = directoryInfo.FullName + @"\" + pastedFolder.Name;
+
                             mainDirectory = pastedFolder.FullName;
+
                             pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " 
                                 + directoryInfo.LastWriteTime.ToShortTimeString();
                             DirectoriesAndFiles.Add(pastedFolder);
@@ -747,28 +665,21 @@ namespace FileExplorer.ViewModels
                             System.IO.File.Copy(itemPath, pastedFile.FullName, false);
                         }
                     }
-                    else //поддиректории / файлы внутри ДОДЕЛАТЬ
+                    else //поддиректории / файлы внутри
                     {
-                        string _itemPath = itemPath.Replace(ItemBuffer[0], mainDirectory);
-                        //DirectoryInfo directoryInfo = new DirectoryInfo(itemPath);
-
-                        FileAttributes attributes = System.IO.File.GetAttributes(itemPath);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                        {                                                    
-                            Directory.CreateDirectory(_itemPath);
-                        }
-                        else // ДОДЕЛАТЬ
+                        await Task.Run(() => //все равно виснет
                         {
-                            FileInfo fileInfo = new FileInfo(directory);
+                            _synchronizationHelper.InvokeAsync(() =>
+                            {
+                                PasteSubitems(itemPath, mainDirectory);
+                            });
+                        });
+                    }
 
-                            string extention = System.IO.Path.GetExtension(_itemPath);
-                            string name = System.IO.Path.GetFileName(_itemPath)[..^extention.Length];
-
-                            //name = GetNameOfCopiedItem(directoryInfo, System.IO.Path.GetFileName(_itemPath), extention.Length) + extention;
-                            string path = fileInfo.FullName + @"\" + name;                            
-
-                            System.IO.File.Copy(_itemPath, path, false);
-                        }
+                    if (cutItem)
+                    {
+                        Delete(ItemBuffer[0]);
+                        cutItem = false;
                     }
                 }                          
             }
@@ -776,8 +687,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        #region Delete    
-
+        #region Delete   
         private void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
@@ -820,7 +730,7 @@ namespace FileExplorer.ViewModels
             Directory.Delete(path);
         }        
 
-        private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)    
+        private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)   
         #endregion 
 
         #region Replace
