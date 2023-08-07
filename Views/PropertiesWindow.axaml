@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:FileExplorer.ViewModels"	
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        x:Class="FileExplorer.Views.PropertiesWindow"
+		xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
+        Title="Свойства">
+
+	<Window.Resources>
+		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
+	</Window.Resources>
+
+	<ListBox Items="{Binding CurrentDirectoryItem.PropertiesOfItems}">
+		<!--<DrawingPresenter Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"
+										  Width="70" Height="70"
+										  HorizontalAlignment="Center"
+										  x:Name="icons">
+		</DrawingPresenter>-->
+		<!--<TextBlock Text="{Binding Name}" />-->
+		<TextBlock Text="Name"/>
+	</ListBox>	
+	
+</Window>

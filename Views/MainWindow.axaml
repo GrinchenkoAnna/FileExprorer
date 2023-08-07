@@ -144,7 +144,8 @@
 							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
 							  Command="{Binding CurrentDirectoryItem.CreateNewFolderCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-					<MenuItem Header="Свойства"/>
+					<MenuItem Header="Свойства"		
+							  Click="ShowPropertiesWindow"/>
 					<!--<MenuItem Header="Выделить все"
 							  Click="SelectAllItems"/>
 					<MenuItem Header="Снять выделение"

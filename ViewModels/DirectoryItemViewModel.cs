@@ -74,27 +74,6 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region BufferProperties
-        private string pathBuffer;
-        public string PathBuffer
-        {
-            get => pathBuffer;
-            set => pathBuffer = value;
-        }
-
-        private string nameBuffer;
-        public string NameBuffer
-        {
-            get => nameBuffer;
-            set => nameBuffer = value; 
-        }
-
-        private int entityBuffer;
-        public int EntityBuffer
-        {
-            get => entityBuffer;
-            set => entityBuffer = value;
-        }
-
         private List<string> ItemBuffer = new(); 
         #endregion
 
@@ -168,6 +147,17 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        private ObservableCollection<FileEntityViewModel> propertiesOfItems = new();
+        public ObservableCollection<FileEntityViewModel> PropertiesOfItems
+        {
+            get => propertiesOfItems;
+            private set
+            {
+                propertiesOfItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PropertiesOfItems)));
+            }
+        }
+
         private List<ObservableCollection<FileEntityViewModel>> Collections = new();
         #endregion
 
@@ -189,6 +179,8 @@ namespace FileExplorer.ViewModels
             DeleteCommand = new DelegateCommand(Delete, OnCanDelete);
             RenameCommand = new DelegateCommand(Rename);
             CreateNewFolderCommand = new DelegateCommand(CreateNewFolder);
+
+            ShowItemPropertiesCommand = new DelegateCommand(ShowItemProperties);
 
             AddToInformationCommand = new DelegateCommand(AddToInformation);
             SortByNameCommand = new DelegateCommand(SortByName);
@@ -257,6 +249,8 @@ namespace FileExplorer.ViewModels
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand RenameCommand { get; }
         public DelegateCommand CreateNewFolderCommand { get; }
+
+        public DelegateCommand ShowItemPropertiesCommand { get; }
 
         public DelegateCommand AddToInformationCommand { get; }
         public DelegateCommand SortByNameCommand { get; }
@@ -1066,7 +1060,21 @@ namespace FileExplorer.ViewModels
                 
                 Directory.CreateDirectory(newFolder.FullName);
             }
-        }        
+        }
+        #endregion
+
+        #region ShowItemProperties
+        private void ShowItemProperties(object parameter)
+        {
+            if (parameter is FileEntityViewModel item)
+            {
+                PropertiesOfItems.Clear();
+                PropertiesOfItems.Add(item);
+
+                //MainWindow.ShowPropertiesWindow();
+            }
+            //else { throw new Exception(); }
+        }
         #endregion
 
         #region Tree

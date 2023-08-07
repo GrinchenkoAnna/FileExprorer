@@ -201,7 +201,18 @@ namespace FileExplorer.Views
             asc = false;
             descending.IsChecked = true;
             desc = true;
-        }        
+        }
+        #endregion
+
+        #region PropertiesWindow
+        public void ShowPropertiesWindow(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var window = new PropertiesWindow();
+            
+            window.Show(this);
+            
+            //window.Show();
+        }
         #endregion
 
         #region Selection
