@@ -18,7 +18,8 @@
 			<!--<ListBox.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"/>
+						<MenuItem Header="Огромные значки"
+								  Click="SwitchToLargestIcons"/>
 						<MenuItem Header="Крупные значки"/>
 						<MenuItem Header="Обычные значки"/>
 						<MenuItem Header="Мелкие значки"/>
@@ -47,7 +48,8 @@
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
 					<StackPanel Orientation="Horizontal" Width="210" Height="100">
-						<!--<StackPanel.ContextMenu>
+						
+						<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
 								<MenuItem Header="Копировать"/>
@@ -57,7 +59,8 @@
 								<MenuItem Header="Переименовать"/>
 								<MenuItem Header="Свойства"/>
 							</ContextMenu>
-						</StackPanel.ContextMenu>-->
+						</StackPanel.ContextMenu>
+						
 						<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 										  Width="70" Height="70"

@@ -22,11 +22,6 @@
 	<Window.Resources>
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 	</Window.Resources>
-	
-
-	<!--<Design.DataContext>
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>-->
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -51,36 +46,7 @@
 			<Border.Background>
 				<ImageBrush Stretch="UniformToFill" Opacity="0.8"
 			   Source="/Assets/autumn.jpg"/>
-				<!--<SolidColorBrush Color="Tomato" Opacity="0.4"/>-->
 			</Border.Background>
-			
-			<Border.ContextMenu>
-				<ContextMenu>
-					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"/>
-						<MenuItem Header="Крупные значки"/>
-						<MenuItem Header="Обычные значки"/>
-						<MenuItem Header="Мелкие значки"/>
-						<MenuItem Header="Список"/>
-						<MenuItem Header="Плитка"
-								  Click="SwitchToTilesView"/>
-						<MenuItem Header="Таблица"
-								  Click="SwitchToTabsView"/>
-						<MenuItem Header="Содержимое"/>
-					</MenuItem>
-					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"
-								  />
-						<MenuItem Header="Дата изменения"/>
-						<MenuItem Header="Тип"/>
-						<MenuItem Header="Размер"/>
-						<MenuItem Header="По возрастанию"/>
-						<MenuItem Header="По убыванию"/>
-					</MenuItem>
-					<MenuItem Header="Группировка"/>
-					<MenuItem Header="Свойства"/>
-				</ContextMenu>
-			</Border.ContextMenu>
 		</Border>		
 		
 		<!--Buttons-->
@@ -144,8 +110,8 @@
 							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
 							  Command="{Binding CurrentDirectoryItem.CreateNewFolderCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
-					<MenuItem Header="Свойства"		
-							  Click="ShowPropertiesWindow"/>
+					<!--<MenuItem Header="Свойства"		
+							  Click="ShowPropertiesWindow"/>-->
 					<!--<MenuItem Header="Выделить все"
 							  Click="SelectAllItems"/>
 					<MenuItem Header="Снять выделение"
@@ -378,7 +344,68 @@
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 
-			<ContentControl>
+			<Grid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Вид">
+						<MenuItem Header="Огромные значки"
+								  Click="SwitchToLargestIcons"/>
+						<MenuItem Header="Крупные значки"
+								  Click="SwitchToLargeIcons"/>
+						<MenuItem Header="Обычные значки"
+								  Click="SwitchToRegularIcons"/>
+						<MenuItem Header="Мелкие значки"
+								  Click="SwitchToSmallIcons"/>
+						<MenuItem Header="Список"
+								  Click="SwitchToListView"/>
+						<MenuItem Header="Плитка"
+								  Click="SwitchToTilesView"/>
+						<MenuItem Header="Таблица"
+								  Click="SwitchToTabsView"/>
+						<MenuItem Header="Содержимое"
+								  Click="SwitchToContent"/>
+					</MenuItem>
+					
+					<MenuItem Header="Сортировка"
+							  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}">
+						<CheckBox Content="Имя" x:Name="context_sort_name"
+								  IsChecked="true"
+								  Click="ChangeSortingModeToName"
+								  Command="{Binding CurrentDirectoryItem.SortByNameCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<CheckBox Content="Дата изменения" x:Name="context_sort_date"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToDateOfChange"
+								  Command="{Binding CurrentDirectoryItem.SortByDateOfChange}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<CheckBox Content="Тип" x:Name="context_sort_type"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToType"
+								  Command="{Binding CurrentDirectoryItem.SortByTypeCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<CheckBox Content="Размер" x:Name="context_sort_size"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToSize"
+								  Command="{Binding CurrentDirectoryItem.SortBySizeCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+
+						<CheckBox Content="По возрастанию" x:Name="context_ascending"
+								  IsChecked="true"
+								  Click="ChangeSortingModeToAscending"
+								  Command="{Binding CurrentDirectoryItem.RefreshSortCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+						<CheckBox Content="По убыванию" x:Name="context_descending"
+								  IsChecked="false"
+								  Click="ChangeSortingModeToDescending"
+								  Command="{Binding CurrentDirectoryItem.RefreshSortCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
+					</MenuItem>
+					
+					<MenuItem Header="Группировка"/>
+					<MenuItem Header="Свойства"/>
+				</ContextMenu>
+			</Grid.ContextMenu>
+			
+			<ContentControl>				
 				<views:TilesView Name="tiles" IsVisible="true"/>
 			</ContentControl>
 

@@ -187,6 +187,7 @@ namespace FileExplorer.ViewModels
             SortByDateOfChangeCommand = new DelegateCommand(SortByDateOfChange);
             SortByTypeCommand = new DelegateCommand(SortByType);
             SortBySizeCommand = new DelegateCommand(SortBySize);
+            RefreshSortCommand = new DelegateCommand(RefreshSort);
 
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
@@ -257,6 +258,7 @@ namespace FileExplorer.ViewModels
         public DelegateCommand SortByDateOfChangeCommand { get; }
         public DelegateCommand SortByTypeCommand { get; }
         public DelegateCommand SortBySizeCommand { get; }
+        public DelegateCommand RefreshSortCommand { get; }
 
         public DelegateCommand MoveBackCommand { get; }
         public DelegateCommand MoveForwardCommand { get; }
@@ -883,6 +885,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region InformationPanel
+        private string theLastSort = "name";
         private void AddToInformation(object parameter)
         {
             if (InformationItems.Count != 0)
@@ -909,6 +912,31 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Sorting
+        private void RefreshSort(object parameter)
+        {
+            if (parameter is string)
+            {
+                if (theLastSort == "name")
+                {
+                    SortByName(parameter);
+                }
+                else if (theLastSort == "dateOfChange")
+                {
+                    SortByDateOfChange(parameter);
+                }
+                else if (theLastSort == "type")
+                {
+                    SortByType(parameter);  
+                }
+                else if (theLastSort == "size")
+                {
+                    SortBySize(parameter);
+                }
+                else { throw new Exception(); }
+            }
+            else { throw new Exception(); }
+        }
+
         private void AddSortedItems(IOrderedEnumerable<DirectoryInfo> directories, IOrderedEnumerable<FileInfo> files)
         {
             DirectoriesAndFiles.Clear();
@@ -943,7 +971,8 @@ namespace FileExplorer.ViewModels
                 var dirs = directoryInfo.EnumerateDirectories().OrderByDescending(d => d.Name);
                 var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.Name);
                 AddSortedItems(dirs, files);
-            }  
+            }
+            theLastSort = "name";
         }
 
         private void SortByDateOfChange(object parameter) 
@@ -962,6 +991,7 @@ namespace FileExplorer.ViewModels
                 var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.LastWriteTime);
                 AddSortedItems(dirs, files);
             }
+            theLastSort = "dateOfChange";
         }
 
         private void SortByType(object parameter)
@@ -980,6 +1010,7 @@ namespace FileExplorer.ViewModels
                 var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.Extension);
                 AddSortedItems(dirs, files);
             }
+            theLastSort = "type";
         }
 
         //public static long GetDirectorySize(string path)
@@ -1008,7 +1039,8 @@ namespace FileExplorer.ViewModels
             {
                 var files = fileInfos.Where(f => f.FullName != null).OrderByDescending(f => f.Length);
                 AddSortedItems(dirs, files);
-            }      
+            }
+            theLastSort = "size";
         }
         #endregion
 
