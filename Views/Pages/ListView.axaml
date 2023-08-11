@@ -14,20 +14,35 @@
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 			 SelectionMode="Multiple"  x:Name="content">
-						
+		
 		<ListBox.Resources>
 			<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 		</ListBox.Resources>
 
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<StackPanel Orientation="Horizontal" Height="40">			
-					<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"							 
-									  HorizontalAlignment="Center">
+				<Grid ColumnDefinitions="40, *">
+
+					<Grid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Вырезать"/>
+							<MenuItem Header="Копировать"/>
+							<MenuItem Header="Удалить"
+									  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+									  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+									  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+							<MenuItem Header="Переименовать"/>
+							<MenuItem Header="Свойства"/>
+						</ContextMenu>
+					</Grid.ContextMenu>
+
+					<DrawingPresenter Grid.Column="0"
+						Drawing="{Binding ., 
+										  Converter={StaticResource FileEntityResource}}"	
+						HorizontalAlignment="Center">
 					</DrawingPresenter>
-					<Border CornerRadius="7" VerticalAlignment="Center"
-							Height="20">
+					<Border CornerRadius="7" Grid.Column="1"
+							VerticalAlignment="Center" Height="40">
 						<Border.Background>
 							<SolidColorBrush Color="White" Opacity="0.8"/>
 						</Border.Background>
@@ -38,7 +53,7 @@
 								   Margin="5,0,5,0">
 						</TextBlock>
 					</Border>
-				</StackPanel>
+				</Grid>
 			</DataTemplate>
 		</ListBox.ItemTemplate>				
 	</ListBox>

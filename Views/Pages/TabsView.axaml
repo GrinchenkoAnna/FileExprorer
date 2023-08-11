@@ -17,7 +17,7 @@
 			  Margin="10,0,0,0" x:Name="content">
 
 		<!--<DataGrid.ContextMenu>
-			<ContextMenu>
+			<ContextMenu IsVisible="False">
 				<MenuItem Header="Вырезать"/>
 				<MenuItem Header="Копировать"/>
 				<MenuItem Header="Удалить"
@@ -33,6 +33,11 @@
 				<DataGridTemplateColumn.Header>
 					<Border CornerRadius="7" HorizontalAlignment="Left"
 							Margin="-4,0,0,0" Height="25" MinWidth="50">
+
+						<Border.ContextMenu>
+							<ContextMenu IsVisible="False"/>
+						</Border.ContextMenu>
+
 						<Border.Background>
 							<SolidColorBrush Color="White"
 											 Opacity="0.8"/>
@@ -46,6 +51,20 @@
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal"
 									HorizontalAlignment="Left">
+
+							<StackPanel.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Вырезать"/>
+									<MenuItem Header="Копировать"/>
+									<MenuItem Header="Удалить"
+											  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+											  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+											  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+									<MenuItem Header="Переименовать"/>
+									<MenuItem Header="Свойства"/>
+								</ContextMenu>
+							</StackPanel.ContextMenu>
+							
 							<DrawingPresenter Drawing="{Binding ., 
 											  Converter={StaticResource FileEntityResource}}"
 											  Width="35" Height="35"
@@ -76,6 +95,11 @@
 				<DataGridTemplateColumn.Header>
 					<Border CornerRadius="7" HorizontalAlignment="Left"
 							Margin="-4,0,0,0" Height="25">
+
+						<Border.ContextMenu>
+							<ContextMenu IsVisible="False"/>
+						</Border.ContextMenu>
+
 						<Border.Background>
 							<SolidColorBrush Color="White"
 											 Opacity="0.8"/>
@@ -91,6 +115,20 @@
 						<Border CornerRadius="7"
 								HorizontalAlignment="Left"
 								Width="132">
+
+							<Border.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Вырезать"/>
+									<MenuItem Header="Копировать"/>
+									<MenuItem Header="Удалить"
+											  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+											  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+											  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+									<MenuItem Header="Переименовать"/>
+									<MenuItem Header="Свойства"/>
+								</ContextMenu>
+							</Border.ContextMenu>
+							
 							<Border.Background>
 								<SolidColorBrush Color="White"
 												 Opacity="0.8"/>
@@ -111,6 +149,11 @@
 				<DataGridTemplateColumn.Header>
 					<Border CornerRadius="7" HorizontalAlignment="Left"
 							Margin="-4,0,0,0" Height="25">
+
+						<Border.ContextMenu>
+							<ContextMenu IsVisible="False"/>
+						</Border.ContextMenu>
+
 						<Border.Background>
 							<SolidColorBrush Color="White"
 											 Opacity="0.8"/>
@@ -126,6 +169,20 @@
 						<Border CornerRadius="7"
 								HorizontalAlignment="Left"
 								Width="135">
+
+							<Border.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Вырезать"/>
+									<MenuItem Header="Копировать"/>
+									<MenuItem Header="Удалить"
+											  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+											  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+											  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+									<MenuItem Header="Переименовать"/>
+									<MenuItem Header="Свойства"/>
+								</ContextMenu>
+							</Border.ContextMenu>
+
 							<Border.Background>
 								<SolidColorBrush Color="White"
 												 Opacity="0.8"/>
@@ -147,6 +204,11 @@
 				<DataGridTemplateColumn.Header>
 					<Border CornerRadius="7" HorizontalAlignment="Left"
 							Margin="-4,0,0,0" Height="25">
+						
+						<Border.ContextMenu>
+							<ContextMenu IsVisible="False"/>
+						</Border.ContextMenu>
+						
 						<Border.Background>
 							<SolidColorBrush Color="White"
 											 Opacity="0.8"/>
@@ -162,6 +224,20 @@
 						<Border CornerRadius="7"
 								HorizontalAlignment="Left"
 								Width="100">
+
+							<Border.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Вырезать"/>
+									<MenuItem Header="Копировать"/>
+									<MenuItem Header="Удалить"
+											  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+											  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+											  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+									<MenuItem Header="Переименовать"/>
+									<MenuItem Header="Свойства"/>
+								</ContextMenu>
+							</Border.ContextMenu>
+
 							<Border.Background>
 								<SolidColorBrush Color="White"
 												 Opacity="0.8"/>

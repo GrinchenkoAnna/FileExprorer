@@ -21,13 +21,27 @@
 
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<StackPanel Orientation="Horizontal" Height="40">
-					<DrawingPresenter Drawing="{Binding ., 
+				<Grid ColumnDefinitions="40, 200, *" Height="40">
+
+					<Grid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Вырезать"/>
+							<MenuItem Header="Копировать"/>
+							<MenuItem Header="Удалить"
+									  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+									  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+							<MenuItem Header="Переименовать"/>
+							<MenuItem Header="Свойства"/>
+						</ContextMenu>
+					</Grid.ContextMenu>
+
+					<DrawingPresenter Grid.Column="0"
+						Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
-									  HorizontalAlignment="Center">
+						HorizontalAlignment="Center">
 					</DrawingPresenter>
 					<Border CornerRadius="7" VerticalAlignment="Center"
-							Height="60">
+							Height="60" Grid.Column="1">
 						<Border.Background>
 							<SolidColorBrush Color="White" Opacity="0.8"/>
 						</Border.Background>
@@ -35,11 +49,11 @@
 								   TextAlignment="Left"
 								   VerticalAlignment="Center"
 								   FontSize="14" FontWeight="Bold"
-								   Width="200" Margin="5,0,5,0">
+								   Margin="5,0,5,0">
 						</TextBlock>
 					</Border>
 					<Border CornerRadius="7" VerticalAlignment="Center"
-							Height="60" Margin="5,0,5,0">
+							Height="60" Margin="5,0,5,0" Grid.Column="2">
 						<Border.Background>
 							<SolidColorBrush Color="White" Opacity="0.8"/>
 						</Border.Background>
@@ -69,7 +83,7 @@
 
 						</StackPanel>
 					</Border>
-				</StackPanel>
+				</Grid>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>

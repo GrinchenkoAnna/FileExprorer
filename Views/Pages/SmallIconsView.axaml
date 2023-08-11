@@ -18,6 +18,20 @@
 		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<StackPanel Orientation="Horizontal" Height="35">
+
+					<StackPanel.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Вырезать"/>
+							<MenuItem Header="Копировать"/>
+							<MenuItem Header="Удалить"
+									  IsVisible="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"
+									  Command="{Binding CurrentDirectoryItem.DeleteCommand}"
+									  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+							<MenuItem Header="Переименовать"/>
+							<MenuItem Header="Свойства"/>
+						</ContextMenu>
+					</StackPanel.ContextMenu>
+					
 					<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 									  HorizontalAlignment="Left"

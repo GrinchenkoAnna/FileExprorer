@@ -14,32 +14,7 @@
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 			 SelectionMode="Multiple" x:Name="content">
-
-		<!--<ListBox.ContextMenu>
-				<ContextMenu>
-					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"/>
-						<MenuItem Header="Крупные значки"/>
-						<MenuItem Header="Обычные значки"/>
-						<MenuItem Header="Мелкие значки"/>
-						<MenuItem Header="Список"/>
-						<MenuItem Header="Плитка"/>
-						<MenuItem Header="Таблица"/>
-						<MenuItem Header="Содержимое"/>
-					</MenuItem>
-					<MenuItem Header="Сортировка">
-						<MenuItem Header="Имя"/>
-						<MenuItem Header="Дата изменения"/>
-						<MenuItem Header="Тип"/>
-						<MenuItem Header="Размер"/>
-						<MenuItem Header="По возрастанию"/>
-						<MenuItem Header="По убыванию"/>
-					</MenuItem>
-					<MenuItem Header="Группировка"/>
-					<MenuItem Header="Свойства"/>
-				</ContextMenu>
-			</ListBox.ContextMenu>-->
-
+		
 		<ListBox.Resources>
 			<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 		</ListBox.Resources>
@@ -47,7 +22,8 @@
 		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<StackPanel Orientation="Vertical" Width="150" Height="220">
-					<!--<StackPanel.ContextMenu>
+					
+					<StackPanel.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="Вырезать"/>
 								<MenuItem Header="Копировать"/>
@@ -57,7 +33,8 @@
 								<MenuItem Header="Переименовать"/>
 								<MenuItem Header="Свойства"/>
 							</ContextMenu>
-						</StackPanel.ContextMenu>-->
+						</StackPanel.ContextMenu>
+					
 					<DrawingPresenter Drawing="{Binding ., 
 										  Converter={StaticResource FileEntityResource}}"
 									  Width="120" MaxHeight="120"
