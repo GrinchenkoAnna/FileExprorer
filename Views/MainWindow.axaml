@@ -301,7 +301,7 @@
 		<!--Tree View-->
 		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
 				CornerRadius="3" Background="PapayaWhip" x:Name="tree">
-			<TreeView Items="{Binding TreeDirectoryItem.Items}"
+			<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
 					  Width="240" HorizontalAlignment="Left"
 					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">

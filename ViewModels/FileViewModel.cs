@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 
 namespace FileExplorer.ViewModels
 {
@@ -20,8 +21,23 @@ namespace FileExplorer.ViewModels
                 Type = "Файл";
                 IsSystemFolder = false;
             }
-            Size = (fileInfo.Length / 1024).ToString() + " КБ";
+            Size = GetFileSize(fileInfo);            
             NumberOfItems = 0;
+        }
+        
+        private string GetFileSize(FileInfo fileInfo)
+        {
+            string[] units = new string[5]{" КБ", " МБ", " ГБ", " ТБ", " ПБ" };
+            int i = 0;
+            long size = fileInfo.Length / 1024;
+
+            while (size > 999 && i < 3)
+            {
+                size = size / 1024;
+                i++;
+            }
+
+            return (size).ToString() + units[i];
         }
     }
 }

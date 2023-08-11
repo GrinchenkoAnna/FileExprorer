@@ -100,14 +100,14 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<FileEntityViewModel> items = new();
-        public ObservableCollection<FileEntityViewModel> Items
+        private ObservableCollection<FileEntityViewModel> treeItems = new();
+        public ObservableCollection<FileEntityViewModel> TreeItems
         {
-            get => items;
+            get => treeItems;
             set
             {
-                items = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
+                treeItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TreeItems)));
             }
         }
 
@@ -203,7 +203,7 @@ namespace FileExplorer.ViewModels
 
             Collections.Add(QuickAccessItems);
             Collections.Add(DirectoriesAndFiles);
-            Collections.Add(Items);
+            Collections.Add(TreeItems);
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
@@ -1117,7 +1117,7 @@ namespace FileExplorer.ViewModels
         //private async Task OpenTree()
         private void OpenTree()
         {
-            Items = new ObservableCollection<FileEntityViewModel>();
+            TreeItems = new ObservableCollection<FileEntityViewModel>();
 
             foreach (var logicalDrive in Directory.GetLogicalDrives())
             {                
@@ -1132,7 +1132,7 @@ namespace FileExplorer.ViewModels
                 //});
                 //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
                 root.Subfolders = GetSubfolders(logicalDrive);
-                Items.Add(root);                
+                TreeItems.Add(root);                
             }
         }
         
