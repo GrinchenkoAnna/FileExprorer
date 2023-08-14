@@ -24,18 +24,19 @@ namespace FileExplorer.ViewModels
         public string Type { get; set; }
 
         [JsonIgnore]
-        public string Size { get; set; }
+        public string Size { get; set; }    
         
         [JsonIgnore]
         public bool IsSystemFolder { get; set; }
+        
+        [JsonIgnore]
+        public bool IsRoot { get; set; }
 
         [JsonIgnore]
         public int NumberOfItems { get; set; }
 
-
         [JsonIgnore]
-        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }      
-        
+        public ObservableCollection<FileEntityViewModel> Subfolders { get; set; }
 
         public FileEntityViewModel(string name) { Name = name; }
 
@@ -43,6 +44,21 @@ namespace FileExplorer.ViewModels
 
         public FileEntityViewModel(DirectoryInfo directoryName) { FullName = directoryName.FullName; }
 
-        public FileEntityViewModel(FileInfo fileName) { FullName = fileName.FullName; }        
+        public FileEntityViewModel(FileInfo fileName) { FullName = fileName.FullName; }
+
+        protected string ConvertValue(long value)
+        {
+            string[] units = new string[5] { " КБ", " МБ", " ГБ", " ТБ", " ПБ" };
+            int i = 0;
+            long size = value / 1024;
+
+            while (size > 999 && i < 3)
+            {
+                size /= 1024;
+                i++;
+            }
+
+            return (size).ToString() + units[i];
+        }
     }
 }

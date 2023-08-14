@@ -21,7 +21,7 @@
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Horizontal" Width="210" Height="100">
+					<StackPanel Orientation="Horizontal" Width="210" Height="120">
 						
 						<StackPanel.ContextMenu>
 							<ContextMenu>
@@ -61,7 +61,7 @@
 										   TextWrapping="Wrap"
 										   TextAlignment="Left" 
 										   FontSize="12"/>
-								<TextBlock Width="130" Height="25"
+								<TextBlock Width="130" Height="50"
 										   Margin="5,0,5,5"
 										   Text="{Binding Size}" 
 										   TextWrapping="Wrap"

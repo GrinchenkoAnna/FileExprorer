@@ -80,11 +80,17 @@
 					<MenuItem Header="Открыть"
 							  Command="{Binding CurrentDirectoryItem.OpenCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
-					<MenuItem Header="Закрепить на панели быстрого доступа"
+					<!--<MenuItem Header="Закрепить на панели быстрого доступа"
 							  Command="{Binding QuickDirectoryItem.AddToQuickAccessCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Открепить от панели быстрого доступа"
 							  Command="{Binding QuickDirectoryItem.RemoveFromQuickAccessCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>-->
+					<MenuItem Header="Закрепить на панели быстрого доступа"
+							  Command="{Binding CurrentDirectoryItem.AddToQuickAccessCommand}"
+							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+					<MenuItem Header="Открепить от панели быстрого доступа"
+							  Command="{Binding CurrentDirectoryItem.RemoveFromQuickAccessCommand}"
 							  CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					<MenuItem Header="Копировать"
 							  Command="{Binding CurrentDirectoryItem.CopyCommand}"
@@ -194,16 +200,27 @@
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
 				CornerRadius="3" Background="#FFE0D1" x:Name="quick_access">			
-			<ListBox Name="QuickPanel" 
+			<!--<ListBox Name="QuickPanel" 
 				Items="{Binding QuickDirectoryItem.QuickAccessItems}"
 				SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
+				Background="Transparent">-->
+			<ListBox Name="QuickPanel" 
+				Items="{Binding CurrentDirectoryItem.QuickAccessItems}"
+				SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 				Background="Transparent">
 				
-				<i:Interaction.Behaviors>
+				<!--<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="DoubleTapped">
 						<ia:InvokeCommandAction
 							Command="{Binding CurrentDirectoryItem.OpenCommand}"
 							CommandParameter="{Binding QuickDirectoryItem.SelectFileEntity}"/>
+					</ia:EventTriggerBehavior>
+				</i:Interaction.Behaviors>-->
+				<i:Interaction.Behaviors>
+					<ia:EventTriggerBehavior EventName="DoubleTapped">
+						<ia:InvokeCommandAction
+							Command="{Binding CurrentDirectoryItem.OpenCommand}"
+							CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 					</ia:EventTriggerBehavior>
 				</i:Interaction.Behaviors>
 
@@ -237,8 +254,10 @@
 				<SolidColorBrush Color="White" Opacity="0.7"/>
 			</Border.Background>
 
+			<!--<ListBox Background="Transparent"
+			 Items="{Binding InformationItem.InformationItems}">-->
 			<ListBox Background="Transparent"
-			 Items="{Binding InformationItem.InformationItems}">
+			 Items="{Binding CurrentDirectoryItem.InformationItems}">
 
 				<ListBox.ItemTemplate>
 					<DataTemplate>
@@ -264,8 +283,7 @@
 										  Converter={StaticResource FileEntityResource}}"
 											  HorizontalAlignment="Center"/>
 
-							<StackPanel Orientation="Horizontal"
-										IsVisible="{Binding !IsSystemFolder}">
+							<StackPanel Orientation="Horizontal">
 								<TextBlock Text="Дата изменения: "
 										   VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding DateOfChange}"
@@ -280,7 +298,7 @@
 								<TextBlock Text="{Binding Size}"
 										   VerticalAlignment="Center"
 										   TextWrapping="Wrap"/>
-							</StackPanel>
+							</StackPanel>	
 
 							<StackPanel Orientation="Horizontal"
 										IsVisible="{Binding !IsSystemFolder}">
@@ -301,16 +319,23 @@
 		<!--Tree View-->
 		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
 				CornerRadius="3" Background="PapayaWhip" x:Name="tree">
-			<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
+			
+			<!--<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
 					  Width="240" HorizontalAlignment="Left"
+					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">-->
+			<TreeView Items="{Binding CurrentDirectoryItem.TreeItems}"
+					  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
+					  Width="240" HorizontalAlignment="Left"
 					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				
 				<TreeView.ItemTemplate>
 					<TreeDataTemplate ItemsSource="{Binding Subfolders}">
 						<TextBlock Text="{Binding Name}" FontSize="14"
 								   VerticalAlignment="Center" TextWrapping="Wrap"/>
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
+				
 			</TreeView>
 		</Border>
 		
@@ -335,10 +360,18 @@
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 
-			<i:Interaction.Behaviors>
+			<!--<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="Tapped">
 					<ia:InvokeCommandAction
 						Command="{Binding InformationItem.AddToInformationCommand}"
+						CommandParameter="{Binding 
+						CurrentDirectoryItem.SelectFileEntity}"/>
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>-->
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="Tapped">
+					<ia:InvokeCommandAction
+						Command="{Binding CurrentDirectoryItem.AddToInformationCommand}"
 						CommandParameter="{Binding 
 						CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>

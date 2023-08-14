@@ -20,25 +20,11 @@ namespace FileExplorer.ViewModels
             {
                 Type = GetFileType(fileInfo);
                 IsSystemFolder = false;
+                IsRoot = false;
             }
-            Size = GetFileSize(fileInfo);            
+            Size = ConvertValue(fileInfo.Length);            
             NumberOfItems = 0;
-        }
-        
-        private string GetFileSize(FileInfo fileInfo)
-        {
-            string[] units = new string[5]{" КБ", " МБ", " ГБ", " ТБ", " ПБ" };
-            int i = 0;
-            long size = fileInfo.Length / 1024;
-
-            while (size > 999 && i < 3)
-            {
-                size /= 1024;
-                i++;
-            }
-
-            return (size).ToString() + units[i];
-        }
+        }       
         
         private static string GetFileType(FileInfo fileInfo)
         {

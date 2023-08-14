@@ -60,42 +60,42 @@ namespace FileExplorer.ViewModels
         }     
         #endregion
 
-        #region Tree View
-        private DirectoryItemViewModel treeDirectoryItem;
-        public DirectoryItemViewModel TreeDirectoryItem
-        {
-            get => treeDirectoryItem;
-            set
-            {
-                treeDirectoryItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TreeDirectoryItem)));
-            }
-        }
-        #endregion
+        //#region Tree View
+        //private DirectoryItemViewModel treeDirectoryItem;
+        //public DirectoryItemViewModel TreeDirectoryItem
+        //{
+        //    get => treeDirectoryItem;
+        //    set
+        //    {
+        //        treeDirectoryItem = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TreeDirectoryItem)));
+        //    }
+        //}
+        //#endregion
 
-        #region QuickAccess
-        private DirectoryItemViewModel quickDirectoryItem;
-        public DirectoryItemViewModel QuickDirectoryItem
-        {
-            get => quickDirectoryItem;
-            set
-            {
-                quickDirectoryItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickDirectoryItem)));
-            }
-        }
-        #endregion        
+        //#region QuickAccess
+        //private DirectoryItemViewModel quickDirectoryItem;
+        //public DirectoryItemViewModel QuickDirectoryItem
+        //{
+        //    get => quickDirectoryItem;
+        //    set
+        //    {
+        //        quickDirectoryItem = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QuickDirectoryItem)));
+        //    }
+        //}
+        //#endregion        
 
-        private DirectoryItemViewModel informationItem;
-        public DirectoryItemViewModel InformationItem
-        {
-            get => informationItem;
-            set
-            {
-                informationItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InformationItem)));
-            }
-        }
+        //private DirectoryItemViewModel informationItem;
+        //public DirectoryItemViewModel InformationItem
+        //{
+        //    get => informationItem;
+        //    set
+        //    {
+        //        informationItem = value;
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InformationItem)));
+        //    }
+        //}
 
         public MainWindowViewModel(ISynchronizationHelper synchronizationHelper)
         {
@@ -105,9 +105,9 @@ namespace FileExplorer.ViewModels
 
             DirectoryItems.Add(vm);
             CurrentDirectoryItem = vm;
-            TreeDirectoryItem = vm;
-            QuickDirectoryItem = vm;
-            InformationItem = vm;
+            //TreeDirectoryItem = vm;
+            //QuickDirectoryItem = vm;
+            //InformationItem = vm;
         }
     }
 }

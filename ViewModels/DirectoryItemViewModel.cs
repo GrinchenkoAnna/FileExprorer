@@ -203,7 +203,7 @@ namespace FileExplorer.ViewModels
 
             Collections.Add(QuickAccessItems);
             Collections.Add(DirectoriesAndFiles);
-            Collections.Add(TreeItems);
+            Collections.Add(TreeItems);           
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
