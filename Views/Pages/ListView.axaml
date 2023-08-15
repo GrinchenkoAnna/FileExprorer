@@ -44,7 +44,7 @@
 					<Border CornerRadius="7" Grid.Column="1"
 							VerticalAlignment="Center" Height="40">
 						<Border.Background>
-							<SolidColorBrush Color="White" Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
 								   TextAlignment="Left" 

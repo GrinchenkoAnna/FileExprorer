@@ -43,7 +43,7 @@
 					<Border CornerRadius="7" VerticalAlignment="Center"
 							Height="60" Grid.Column="1">
 						<Border.Background>
-							<SolidColorBrush Color="White" Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
 								   TextAlignment="Left"
@@ -55,7 +55,7 @@
 					<Border CornerRadius="7" VerticalAlignment="Center"
 							Height="60" Margin="5,0,5,0" Grid.Column="2">
 						<Border.Background>
-							<SolidColorBrush Color="White" Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<StackPanel Orientation="Vertical"
 									VerticalAlignment="Center">

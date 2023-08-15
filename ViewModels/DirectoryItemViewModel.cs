@@ -191,7 +191,7 @@ namespace FileExplorer.ViewModels
 
             MoveBackCommand = new DelegateCommand(OnMoveBack, OnCanMoveBack);
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
-            MoveForwardCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
+            MoveUpCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
 
             OpenDirectory();
             OpenTree();
@@ -215,6 +215,7 @@ namespace FileExplorer.ViewModels
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
             MoveBackCommand?.RaiseCanExecuteChanged();
+            MoveUpCommand?.RaiseCanExecuteChanged();
             MoveForwardCommand?.RaiseCanExecuteChanged();
         }
 
@@ -1189,7 +1190,6 @@ namespace FileExplorer.ViewModels
 
             OpenDirectory();
         }
-
         private bool OnCanMoveBack(object obj) => _history.CanMoveBack;
 
         private void OnMoveForward(object obj)
@@ -1202,7 +1202,6 @@ namespace FileExplorer.ViewModels
 
             OpenDirectory();
         }
-
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
 
         private void OnMoveUp(object obj)
@@ -1215,7 +1214,6 @@ namespace FileExplorer.ViewModels
 
             OpenDirectory();
         }
-
         private bool OnCanMoveUp(object obj) => _history.CanMoveUp;
         #endregion
         #endregion

@@ -40,31 +40,31 @@
 
 		<!--Background-->
 		<Border Grid.Row="2" Grid.RowSpan="2"
-				Grid.Column="3" Grid.ColumnSpan="2"
+				Grid.Column="0" Grid.ColumnSpan="5"
 				CornerRadius="3" Margin="2,0,0,0"
 				x:Name="background">
 			<Border.Background>
 				<ImageBrush Stretch="UniformToFill" Opacity="0.8"
-			   Source="/Assets/autumn.jpg"/>
+			   Source="/Assets/duna.jpeg"/>
 			</Border.Background>
 		</Border>		
 		
 		<!--Buttons-->
 		<Grid Grid.Row="1" Grid.Column="0">
-			<Button Content="&lt;-" Background="Coral" Width="80"
+			<Button Content="&lt;-" Background="#574656" Width="80"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
-		<Grid Grid.Row="1" Grid.Column="1">			
-			<Button Content="⇧" Background="IndianRed" Width="80"
+		<Grid Grid.Row="1" Grid.Column="1">
+			<Button Content="⇧" Background="#443643" Width="80"
 					HorizontalContentAlignment="Center"
-					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />			
+					Command="{Binding CurrentDirectoryItem.MoveUpCommand}" />			
 		</Grid>
 		
 		<Grid Grid.Row="1" Grid.Column="2">
-			<Button Content="-&gt;" Background="Coral"	Width="80"
+			<Button Content="-&gt;" Background="#574656"	Width="80"
 					HorizontalContentAlignment="Center"
-					Command="{Binding CurrentDirectoryItem.MoveUpCommand}" />
+					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />
 		</Grid>		
 		
 		<!--Menu-->
@@ -72,7 +72,7 @@
 			<Menu>
 				<MenuItem HorizontalAlignment="Stretch"
 						  Margin="0,0,1,0" Width="119"
-						  Background="PeachPuff" CornerRadius="4">
+						  Background="#583437" CornerRadius="4">
 					<MenuItem.Header>
 						<TextBlock Text="Главная" HorizontalAlignment="Center"
 								   VerticalAlignment="Center"/>
@@ -128,7 +128,7 @@
 
 				<MenuItem HorizontalAlignment="Stretch"
 						  Margin="1,0,0,0" Width="119"
-						  Background="PeachPuff" CornerRadius="4">
+						  Background="#583437" CornerRadius="4">
 					<MenuItem.Header>
 						<TextBlock Text="Вид" HorizontalAlignment="Center"
 								   VerticalAlignment="Center"/>
@@ -194,12 +194,16 @@
 		<!--Search-->
 		<TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" 
 				 Margin="2,5,0,5" Text="Поиск: "
-				 Background="White" BorderThickness="0.5" 
-				 BorderBrush="RosyBrown"/>
+				 Background="#566156" BorderThickness="0.5" 
+				 BorderBrush="DimGray"/>
 
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3" Background="#FFE0D1" x:Name="quick_access">			
+				CornerRadius="3" x:Name="quick_access">
+			<Border.Background>
+				<SolidColorBrush Color="Black" Opacity="0.5"/>
+			</Border.Background>
+
 			<!--<ListBox Name="QuickPanel" 
 				Items="{Binding QuickDirectoryItem.QuickAccessItems}"
 				SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
@@ -247,11 +251,11 @@
 		<!--Information Panel-->
 		<Border Grid.Row="2" Grid.RowSpan="2" Grid.Column="4"
 				CornerRadius="3" BorderThickness="0.5"
-				BorderBrush="RosyBrown" Width="250" x:Name="info"
+				BorderBrush="DimGray" Width="250" x:Name="info"
 				IsVisible="false">
 
 			<Border.Background>
-				<SolidColorBrush Color="White" Opacity="0.7"/>
+				<SolidColorBrush Color="#375355" Opacity="0.5"/>
 			</Border.Background>
 
 			<!--<ListBox Background="Transparent"
@@ -318,7 +322,10 @@
 
 		<!--Tree View-->
 		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3" Background="PapayaWhip" x:Name="tree">
+				CornerRadius="3" x:Name="tree">
+			<Border.Background>
+				<SolidColorBrush Color="Black" Opacity="0.7"/>
+			</Border.Background>
 			
 			<!--<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
@@ -341,8 +348,8 @@
 		
 		<!--Main Panel-->
 		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
-				CornerRadius="3" Background="PapayaWhip" Margin="2,3,0,2"
-				BorderThickness="0.5" BorderBrush="RosyBrown">
+				CornerRadius="3" Background="Black" Margin="2,3,0,2"
+				BorderThickness="0.5" BorderBrush="DimGray">
 			<TextBlock Grid.Row="1" Grid.Column="3"
 				   Margin="5,0,0,0"
 				   Text="{Binding CurrentDirectoryItem.FilePath}"

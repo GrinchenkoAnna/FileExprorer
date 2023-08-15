@@ -49,7 +49,8 @@ namespace FileExplorer.ViewModels
         }
 
         public void MoveBack()
-        {
+        {     
+            //Current.NextNode = Current;
             var prev = Current.PreviousNode;
             Current = prev;
 

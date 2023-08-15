@@ -44,7 +44,7 @@
 						</DrawingPresenter>
 						<Border CornerRadius="7" MaxHeight="80">
 							<Border.Background>
-								<SolidColorBrush Color="White" Opacity="0.8"/>
+								<SolidColorBrush Color="Black" Opacity="0.5"/>
 							</Border.Background>
 							<TextBlock MaxWidth="60" MaxHeight="80"
 									   Margin="8,8,8,8"

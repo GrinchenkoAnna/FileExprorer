@@ -39,8 +39,7 @@
 						</Border.ContextMenu>
 
 						<Border.Background>
-							<SolidColorBrush Color="White"
-											 Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="Имя" VerticalAlignment="Center"
 								   Margin="8,0,8,0"/>
@@ -73,8 +72,7 @@
 							<Border CornerRadius="7" HorizontalAlignment="Left"
 								Width="250">
 								<Border.Background>
-									<SolidColorBrush Color="White"
-													 Opacity="0.8"/>
+									<SolidColorBrush Color="Black" Opacity="0.5"/>
 								</Border.Background>
 								<TextBlock Text="{Binding Name}"
 										   TextWrapping="Wrap"
@@ -101,8 +99,7 @@
 						</Border.ContextMenu>
 
 						<Border.Background>
-							<SolidColorBrush Color="White"
-											 Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="Дата изменения"
 								   VerticalAlignment="Center"
@@ -130,8 +127,7 @@
 							</Border.ContextMenu>
 							
 							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
+								<SolidColorBrush Color="Black" Opacity="0.5"/>
 							</Border.Background>
 							<TextBlock Text="{Binding DateOfChange}"
 									   TextWrapping="Wrap"
@@ -155,8 +151,7 @@
 						</Border.ContextMenu>
 
 						<Border.Background>
-							<SolidColorBrush Color="White"
-											 Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="Тип"
 								   VerticalAlignment="Center"
@@ -184,8 +179,7 @@
 							</Border.ContextMenu>
 
 							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
+								<SolidColorBrush Color="Black" Opacity="0.5"/>
 							</Border.Background>
 							<TextBlock Text="{Binding Type}"
 									   TextWrapping="Wrap"
@@ -210,8 +204,7 @@
 						</Border.ContextMenu>
 						
 						<Border.Background>
-							<SolidColorBrush Color="White"
-											 Opacity="0.8"/>
+							<SolidColorBrush Color="Black" Opacity="0.5"/>
 						</Border.Background>
 						<TextBlock Text="Размер"
 								   VerticalAlignment="Center"
@@ -239,8 +232,7 @@
 							</Border.ContextMenu>
 
 							<Border.Background>
-								<SolidColorBrush Color="White"
-												 Opacity="0.8"/>
+								<SolidColorBrush Color="Black" Opacity="0.5"/>
 							</Border.Background>
 							<TextBlock Text="{Binding Size}"
 									   TextWrapping="Wrap"
