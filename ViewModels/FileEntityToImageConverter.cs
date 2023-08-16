@@ -28,7 +28,41 @@ namespace FileExplorer.ViewModels
                         return Application.Current.FindResource("FolderIconImage");                    
 
                     case FileViewModel fileEntityViewModel:
-                        return Application.Current.FindResource("FileIconImage");                    
+                        switch (Path.GetExtension(fileEntityViewModel.Name))
+                        {
+                            case ".txt":
+                            case ".log":
+                            case ".gitattributes":
+                            case ".gitignore":
+                                return Application.Current.FindResource("TextIconImage");
+
+                            case ".vsix":
+                            case ".sln":
+                            case ".cpp":
+                            case ".c":
+                            case ".cs":
+                            case ".csproj":
+                            case ".html":
+                            case ".xml":
+                            case ".xaml":
+                            case ".axaml":
+                                return Application.Current.FindResource("CodeIconImage");
+                            
+                            case ".bmp":
+                            case ".png":
+                            case ".jpeg":
+                            case ".jpg":
+                            case ".svg":
+                            case ".tiff":
+                            case ".gif":
+                            case ".ico":
+                            case ".webp":
+                                return Application.Current.FindResource("ImageIconImage");
+
+                            default:
+                                return Application.Current.FindResource("FileIconImage");
+                        }
+                                            
                 }
             }
 
