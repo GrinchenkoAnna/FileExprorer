@@ -36,7 +36,7 @@ namespace FileExplorer.ViewModels
                 ".ico" => "Значок",
                 ".docx" or ".doc" => "Документ Microsoft Word",
                 ".pptx" => "Презентация Microsoft PowerPoint",
-                ".csv" => "Файл Microsoft Excel",
+                ".csv" or ".xlsx" => "Файл Microsoft Excel",
                 ".json" or ".bin" => extention.Substring(1).ToUpperInvariant() + " file",
                 ".ini" => "Параметры конфигурации",
                 ".vsix" => "Microsoft Visual Studio Extention",

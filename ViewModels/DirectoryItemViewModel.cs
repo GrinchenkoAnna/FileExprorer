@@ -881,7 +881,7 @@ namespace FileExplorer.ViewModels
                     }
                 }                
             }
-            else { throw new Exception(); }
+            //else { throw new Exception(); }
         }
         #endregion
 

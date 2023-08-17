@@ -6,5 +6,5 @@
     <stop offset="1" stop-color="#297cd2"/>
   </linearGradient>
   <path fill="url(#VWJODR~F49S8JZXNLPMJka)" d="M28,5v9c0,1.105,0.895,2,2,2h9L28,5z"/>
-  <path style="stroke: rgb(24, 90, 189); stroke-width: 3px; stroke-linejoin: round; stroke-linecap: round; fill: rgb(255, 255, 255);" d="M 16.228 20.054 L 19.55 32.811 C 19.55 32.811 24.119 23.614 24.119 23.792 C 24.119 23.97 27.916 33.701 27.916 33.701 L 31.061 20.173"/>
+  <text style="fill: rgb(24, 90, 189); font-family: Arial, sans-serif; font-size: 21px; font-weight: 700; white-space: pre;" x="13.617" y="34.59">W</text>
 </svg>

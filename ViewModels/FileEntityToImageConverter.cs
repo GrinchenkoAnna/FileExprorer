@@ -36,6 +36,15 @@ namespace FileExplorer.ViewModels
                             case ".gitignore":
                                 return Application.Current.FindResource("TextIconImage");
 
+                            case ".doc":
+                            case ".docx":
+                            case ".rtf":
+                                return Application.Current.FindResource("MWordIconImage");
+                                                            
+                            case ".xlsx":
+                            case ".csv":
+                                return Application.Current.FindResource("MExcelIconImage");
+
                             case ".vsix":
                             case ".sln":
                             case ".cpp":
@@ -57,7 +66,7 @@ namespace FileExplorer.ViewModels
                             case ".gif":
                             case ".ico":
                             case ".webp":
-                                return Application.Current.FindResource("ImageIconImage");
+                                return Application.Current.FindResource("PictureIconImage");
 
                             default:
                                 return Application.Current.FindResource("FileIconImage");
