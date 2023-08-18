@@ -45,6 +45,9 @@ namespace FileExplorer.ViewModels
                             case ".csv":
                                 return Application.Current.FindResource("MExcelIconImage");
 
+                            case ".pptx":
+                                return Application.Current.FindResource("MPowerPointIconImage");
+
                             case ".vsix":
                             case ".sln":
                             case ".cpp":
@@ -67,6 +70,14 @@ namespace FileExplorer.ViewModels
                             case ".ico":
                             case ".webp":
                                 return Application.Current.FindResource("PictureIconImage");
+
+                            case ".rar":
+                            case ".zip":
+                                return Application.Current.FindResource("ArchiveIconImage");
+                            
+                            case ".exe":
+                            case ".msi":
+                                return Application.Current.FindResource("ExecutableIconImage");
 
                             default:
                                 return Application.Current.FindResource("FileIconImage");
