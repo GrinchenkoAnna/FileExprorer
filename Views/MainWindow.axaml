@@ -194,8 +194,8 @@
 		<!--Search-->
 		<TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" 
 				 Margin="2,5,0,5" Text="Поиск: "
-				 Background="#566156" BorderThickness="0.5" 
-				 BorderBrush="DimGray"/>
+				 Background="#0D1F22" BorderThickness="0.5" 
+				 BorderBrush="#5C5C5C"/>
 
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
@@ -446,35 +446,43 @@
 			</Grid.ContextMenu>
 			
 			<ContentControl>				
-				<views:TilesView Name="tiles" IsVisible="true"/>
+				<views:TilesView Name="tiles" 
+								 IsVisible="true" IsEnabled="true"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:TabsView Name="tabs" IsVisible="false"/>
+				<views:TabsView Name="tabs" 
+								IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:ListView Name="list" IsVisible="false"/>
+				<views:ListView Name="list" 
+								IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:SmallIconsView Name="small_icons" IsVisible="false"/>
+				<views:SmallIconsView Name="small_icons" 
+									  IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:RegularIconsView Name="regular_icons" IsVisible="false"/>
+				<views:RegularIconsView Name="regular_icons" 
+										IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:LargeIconsView Name="large_icons" IsVisible="false"/>
+				<views:LargeIconsView Name="large_icons" 
+									  IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:LargestIconsView Name="largest_icons" IsVisible="false"/>
+				<views:LargestIconsView Name="largest_icons" 
+										IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
-				<views:ContentView Name="content_view" IsVisible="false"/>
+				<views:ContentView Name="content_view" 
+								   IsVisible="false" IsEnabled="false"/>
 			</ContentControl>
 			
 		</Grid>	

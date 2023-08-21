@@ -31,8 +31,8 @@ namespace FileExplorer.ViewModels
 
         private readonly ISynchronizationHelper _synchronizationHelper;
 
-        private const string QuickAccessFolderName = "quickAccessFolders.json";
-        private const string QuickAccessFileName = "quickAccessFiles.json";
+        private const string QuickAccessFolderName = "ViewModels\\quickAccessFolders.json";
+        private const string QuickAccessFileName = "ViewModels\\quickAccessFiles.json";
         FileInfo quickAccessFolderInfo = new FileInfo(QuickAccessFolderName);
         FileInfo quickAccessFileInfo = new FileInfo(QuickAccessFileName);
 
