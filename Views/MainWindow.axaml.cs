@@ -28,91 +28,91 @@ namespace FileExplorer.Views
         #region Views
         public void SwitchToTabsView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = true;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = true; tabs.IsEnabled = true;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsEnabled = false; largest_icons.IsVisible = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = true;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = true; tiles.IsEnabled = true;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToListView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = true;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = true; list.IsEnabled = true;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToSmallIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = true;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = true; small_icons.IsEnabled = true;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToRegularIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = true;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = true; regular_icons.IsEnabled = true;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
-        public void SwitchToLargeIcons(object sender, RoutedEventArgs routedEventArgs)
+        public void SwitchToLargeIcons(object sender, RoutedEventArgs routedEventArgs)  
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = true;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = true; large_icons.IsEnabled = true;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToLargestIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = true;
-            content_view.IsVisible = false;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = true; largest_icons.IsEnabled = true;
+            content_view.IsVisible = false; content_view.IsEnabled = false;
         }
         public void SwitchToContent(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false;
-            tiles.IsVisible = false;
-            list.IsVisible = false;
-            small_icons.IsVisible = false;
-            regular_icons.IsVisible = false;
-            large_icons.IsVisible = false;
-            largest_icons.IsVisible = false;
-            content_view.IsVisible = true;
+            tabs.IsVisible = false; tabs.IsEnabled = false;
+            tiles.IsVisible = false; tiles.IsEnabled = false;
+            list.IsVisible = false; list.IsEnabled = false;
+            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
+            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
+            content_view.IsVisible = true; content_view.IsEnabled = true;
         }
 
         #endregion

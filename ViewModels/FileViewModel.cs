@@ -9,7 +9,6 @@ namespace FileExplorer.ViewModels
     {
         public FileViewModel() { }
         public FileViewModel(string name) : base(name) { }
-        //public ObservableCollection<FileViewModel> Subfolders { get; set; }
 
         public FileViewModel(FileInfo fileInfo) : base(fileInfo.Name) 
         { 

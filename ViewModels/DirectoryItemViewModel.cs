@@ -20,6 +20,7 @@ using DynamicData;
 using System.Reflection.Metadata;
 using System.Data.Common;
 using Microsoft.VisualBasic;
+using SkiaSharp;
 
 namespace FileExplorer.ViewModels
 {
@@ -1115,8 +1116,8 @@ namespace FileExplorer.ViewModels
         {
             Task InvokeAsync(Action action);
         }
-        //private async Task OpenTree()
-        private void OpenTree()
+        private async Task OpenTree()
+        //private void OpenTree()
         {
             TreeItems = new ObservableCollection<FileEntityViewModel>();
 
@@ -1124,19 +1125,19 @@ namespace FileExplorer.ViewModels
             {                
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.FullName = System.IO.Path.GetFullPath(logicalDrive);
-                //await Task.Run(() =>
-                //{
-                //    _synchronizationHelper.InvokeAsync(() =>
-                //    {
-                //        root.Subfolders = GetSubfolders(logicalDrive);
-                //    });
-                //});
+                await Task.Run(() =>
+                {
+                    _synchronizationHelper.InvokeAsync(() =>
+                    {
+                        root.Subfolders = GetSubfolders(logicalDrive);
+                    });
+                });
                 //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
-                root.Subfolders = GetSubfolders(logicalDrive);
+                //root.Subfolders = GetSubfolders(logicalDrive);
                 TreeItems.Add(root);                
             }
         }
-        
+
         private ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
         {
             ObservableCollection<FileEntityViewModel> subfolders = new();
@@ -1155,8 +1156,6 @@ namespace FileExplorer.ViewModels
                             subfolders.Add(thisnode);
                             //try { thisnode.Subfolders = GetSubfolders(dir); }
                             //catch (UnauthorizedAccessException) { }
-                            //catch (FileNotFoundException) { }
-                            //catch (DirectoryNotFoundException) { }
                         }
                     }
                     foreach (var file in Directory.GetFiles(strPath))
@@ -1169,11 +1168,9 @@ namespace FileExplorer.ViewModels
                             subfolders.Add(thisnode);
                         }
                     }
-                }                
+                }
             }
             catch (UnauthorizedAccessException) { }
-            //catch (FileNotFoundException) { }
-            //catch (DirectoryNotFoundException) { }
 
             return subfolders;
         }

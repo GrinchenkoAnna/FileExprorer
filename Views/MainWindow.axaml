@@ -8,6 +8,7 @@
 		xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
 		xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
 		xmlns:views="clr-namespace:FileExplorer.Views.Pages;assembly=FileExplorer"
+		xmlns:tree="clr-namespace:FileExplorer.Views;assembly=FileExplorer"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -322,7 +323,7 @@
 
 		<!--Tree View-->
 		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3" x:Name="tree">
+				CornerRadius="3">
 			<Border.Background>
 				<SolidColorBrush Color="Black" Opacity="0.7"/>
 			</Border.Background>
@@ -330,7 +331,7 @@
 			<!--<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
 					  Width="240" HorizontalAlignment="Left"
-					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">-->
+					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">--><!--
 			<TreeView Items="{Binding CurrentDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 					  Width="240" HorizontalAlignment="Left"
@@ -343,7 +344,19 @@
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>
 				
-			</TreeView>
+			</TreeView>-->
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped">
+					<ia:InvokeCommandAction
+						Command="{Binding CurrentDirectoryItem.OpenCommand}"
+						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>
+
+			<ContentControl>
+				<tree:TreeView Name="tree" IsVisible="true"/>
+			</ContentControl>
 		</Border>
 		
 		<!--Main Panel-->
