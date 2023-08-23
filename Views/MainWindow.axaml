@@ -34,8 +34,9 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="80"/>
 			<ColumnDefinition Width="80"/>
-			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="80"/>			
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="250"/>
 			<ColumnDefinition Width="250"/>
 		</Grid.ColumnDefinitions>		
 
@@ -194,9 +195,22 @@
 
 		<!--Search-->
 		<TextBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" 
-				 Margin="2,5,0,5" Text="Поиск: "
+				 Margin="2,5,0,5" Text=""
 				 Background="#0D1F22" BorderThickness="0.5" 
-				 BorderBrush="#5C5C5C"/>
+				 BorderBrush="#5C5C5C" x:Name="searchBox"
+				  Watermark="{Binding CurrentDirectoryItem.CurrentSearchDirectory}"/>
+		
+		<ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="5"
+				 Background="Transparent"
+				 Items="{Binding CurrentDirectoryItem.ItemsToSearch}"
+				 x:Name="searchList">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
+							   FontSize="14"/>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"

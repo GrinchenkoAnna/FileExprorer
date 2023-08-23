@@ -60,6 +60,17 @@ namespace FileExplorer.ViewModels
                 name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
+        } 
+        
+        private string currentSearchDirectory;
+        public string CurrentSearchDirectory
+        {
+            get => currentSearchDirectory;
+            set
+            {
+                currentSearchDirectory = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentSearchDirectory)));
+            }
         }       
 
         private bool directoryWithLogicalDrives;
@@ -159,6 +170,16 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        private ObservableCollection<FileEntityViewModel> itemsToSearch = new();
+        public ObservableCollection<FileEntityViewModel> ItemsToSearch
+        {
+            get => itemsToSearch;
+            private set
+            {
+                itemsToSearch = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemsToSearch)));
+            }
+        }
         private List<ObservableCollection<FileEntityViewModel>> Collections = new();
         #endregion
 
@@ -204,7 +225,8 @@ namespace FileExplorer.ViewModels
 
             Collections.Add(QuickAccessItems);
             Collections.Add(DirectoriesAndFiles);
-            Collections.Add(TreeItems);           
+            Collections.Add(TreeItems);
+            Collections.Add(ItemsToSearch);
 
             //OpenBranchCommand = new DelegateCommand(OpenBranch);
             //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
@@ -272,7 +294,7 @@ namespace FileExplorer.ViewModels
             if (parameter is DirectoryViewModel directoryViewModel)
             {
                 FilePath = directoryViewModel.FullName;
-                Name = "Мой компьютер - " + directoryViewModel.Name;
+                Name = "Мой компьютер - " + directoryViewModel.Name;                
 
                 _history.Add(FilePath, Name);
 
@@ -296,6 +318,16 @@ namespace FileExplorer.ViewModels
         private void OpenDirectory()
         {
             DirectoriesAndFiles.Clear();
+            if (Name == "Мой компьютер")
+            {
+                CurrentSearchDirectory = "Выберете папку для поиска";
+            }
+            else
+            {
+                char[] charsToTrim = { '\\', ':' };
+                CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
+            }
+                
 
             if (Name == "Мой компьютер")
             {
@@ -333,18 +365,47 @@ namespace FileExplorer.ViewModels
 
             try
             {
+                ItemsToSearch.Clear();
+                //await Task.Run(() =>
+                //{
+                //    _synchronizationHelper.InvokeAsync(() =>
+                //    {
+                //        GetSubItems(FilePath);
+                //    });
+                //});   
+                //GetSubItems(FilePath);
+
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                    ItemsToSearch.Add(new DirectoryViewModel(directory));
                 }
 
                 foreach (var fileInfo in directoryInfo.GetFiles())
                 {
                     DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                    ItemsToSearch.Add(new FileViewModel(fileInfo));
                 }
             }
             catch (UnauthorizedAccessException) { }
         }
+
+        //private async void GetSubItems(string path)
+        //{
+        //    try
+        //    {
+        //        foreach (var directory in Directory.EnumerateDirectories(path))
+        //        {
+        //            ItemsToSearch.Add(new DirectoryViewModel(directory));
+        //            //GetSubItems(directory); виснет, если перебирать все папки
+        //        }
+        //        foreach (var file in Directory.EnumerateFiles(path))
+        //        {
+        //            ItemsToSearch.Add(new FileViewModel(file));
+        //        }
+        //    }
+        //    catch (UnauthorizedAccessException) { }
+        //}
         #endregion
 
         #region WatcherEvents        
