@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 using FileExplorer.ViewModels;
@@ -20,8 +21,9 @@ namespace FileExplorer.Views
         public MainWindow()
         {
             InitializeComponent();            
-            DataContext = new MainWindowViewModel(new SynchronizationHelper());          
+            DataContext = new MainWindowViewModel(new SynchronizationHelper());
 
+            this.Tapped += ClearSearchTextBox;
             //ReplaceCommand = new DelegateCommand(Replace);
         }
 
@@ -126,10 +128,14 @@ namespace FileExplorer.Views
                 quick_access.IsVisible = false;
 
                 main_panel.SetValue(Grid.ColumnProperty, 0);
-                main_panel.SetValue(Grid.ColumnSpanProperty, 5);
-                background.SetValue(Grid.ColumnProperty, 0);
-                background.SetValue(Grid.ColumnSpanProperty, 5);
-                background.Margin = new Avalonia.Thickness(0,0,0,0);
+                if (info.IsVisible == true)
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 4);
+                }
+                else
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 6);
+                }              
             }
             else
             {
@@ -137,10 +143,15 @@ namespace FileExplorer.Views
                 quick_access.IsVisible = true;
 
                 main_panel.SetValue(Grid.ColumnProperty, 3);
-                main_panel.SetValue(Grid.ColumnSpanProperty, 2);
-                background.SetValue(Grid.ColumnProperty, 3);
-                background.SetValue(Grid.ColumnSpanProperty, 2);
-                background.Margin = new Avalonia.Thickness(2, 0, 0, 0);
+                if (info.IsVisible == true)
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 1);
+                }
+                else
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 3);
+                }
+                
             }
         }
         public void InformationPanel(object sender, RoutedEventArgs routedEventArgs)
@@ -148,12 +159,26 @@ namespace FileExplorer.Views
             if (info.IsVisible == false)
             {
                 info.IsVisible = true;
-                main_panel.SetValue(Grid.ColumnSpanProperty, 1);
+                if (quick_access.IsVisible == true && tree.IsVisible == true)
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 1);
+                }
+                else
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 4);
+                }                
             }
             else
             {
                 info.IsVisible = false;
-                main_panel.SetValue(Grid.ColumnSpanProperty, 2);
+                if (quick_access.IsVisible == true && tree.IsVisible == true)
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 3);
+                }
+                else
+                {
+                    main_panel.SetValue(Grid.ColumnSpanProperty, 6);
+                }
             }
         }
         #endregion
@@ -209,6 +234,13 @@ namespace FileExplorer.Views
             window.Show(this);
             
             //window.Show();
+        }
+        #endregion
+
+        #region Search
+        private void ClearSearchTextBox(object sender, RoutedEventArgs routedEventArgs) 
+        {
+            searchBox.Clear();
         }
         #endregion
 

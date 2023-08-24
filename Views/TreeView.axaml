@@ -10,17 +10,22 @@
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 	</UserControl.Resources>
 
- 	<TreeView Items="{Binding CurrentDirectoryItem.TreeItems}"
+	<Border CornerRadius="3">
+		<Border.Background>
+			<SolidColorBrush Color="Black" Opacity="0.7"/>
+		</Border.Background>
+		<TreeView Items="{Binding CurrentDirectoryItem.TreeItems}"
 					  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 					  Width="240" HorizontalAlignment="Left"
 					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-				
-				<TreeView.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Subfolders}">
-						<TextBlock Text="{Binding Name}" FontSize="14"
-								   VerticalAlignment="Center" TextWrapping="Wrap"/>					
-					</TreeDataTemplate>
-				</TreeView.ItemTemplate>
-				
-	</TreeView>		
+
+			<TreeView.ItemTemplate>
+				<TreeDataTemplate ItemsSource="{Binding Subfolders}">
+					<TextBlock Text="{Binding Name}" FontSize="14"
+							   VerticalAlignment="Center" TextWrapping="Wrap"/>
+				</TreeDataTemplate>
+			</TreeView.ItemTemplate>
+
+		</TreeView>
+	</Border> 		
 </UserControl>

@@ -13,9 +13,7 @@
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="FileExplorer">
-	<!--WindowState="Maximized"
-		WindowStartupLocation="CenterScreen">-->	
-
+	
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
 	</Window.Title>
@@ -26,23 +24,24 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="33"/>
-			<RowDefinition Height="33"/>
-			<RowDefinition Height="0.8*"/>
-			<RowDefinition Height="*"/>
+			<RowDefinition Height="33"/>    <!--0-->
+			<RowDefinition Height="33"/>    <!--1-->
+			<RowDefinition Height="0.8*"/>  <!--2-->
+			<RowDefinition Height="*"/>     <!--3-->
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="80"/>
-			<ColumnDefinition Width="80"/>
-			<ColumnDefinition Width="80"/>			
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="250"/>
-			<ColumnDefinition Width="250"/>
+			<ColumnDefinition Width="80"/>  <!--0--> 
+			<ColumnDefinition Width="80"/>  <!--1-->
+			<ColumnDefinition Width="80"/>  <!--2-->
+			<ColumnDefinition Width="*"/>   <!--3-->
+			<ColumnDefinition Width="170"/> <!--4-->
+			<ColumnDefinition Width="80"/>  <!--5-->
+			<!--<ColumnDefinition Width="150"/> --><!--6-->
 		</Grid.ColumnDefinitions>		
 
 		<!--Background-->
 		<Border Grid.Row="2" Grid.RowSpan="2"
-				Grid.Column="0" Grid.ColumnSpan="5"
+				Grid.Column="0" Grid.ColumnSpan="6"
 				CornerRadius="3" Margin="2,0,0,0"
 				x:Name="background">
 			<Border.Background>
@@ -51,7 +50,7 @@
 			</Border.Background>
 		</Border>		
 		
-		<!--Buttons-->
+		<!--Buttons <-, ⇧, ->-->
 		<Grid Grid.Row="1" Grid.Column="0">
 			<Button Content="&lt;-" Background="#574656" Width="80"
 					HorizontalContentAlignment="Center"
@@ -64,7 +63,7 @@
 		</Grid>
 		
 		<Grid Grid.Row="1" Grid.Column="2">
-			<Button Content="-&gt;" Background="#574656"	Width="80"
+			<Button Content="-&gt;" Background="#574656" Width="80"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />
 		</Grid>		
@@ -198,9 +197,11 @@
 				 Margin="2,5,0,5" Text=""
 				 Background="#0D1F22" BorderThickness="0.5" 
 				 BorderBrush="#5C5C5C" x:Name="searchBox"
-				  Watermark="{Binding CurrentDirectoryItem.CurrentSearchDirectory}"/>
+				 Watermark="{Binding CurrentDirectoryItem.CurrentSearchDirectory}"
+				 Tapped="ClearSearchTextBox"
+				 IsEnabled="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
 		
-		<ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="5"
+		<!--<ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="6"
 				 Background="Transparent"
 				 Items="{Binding CurrentDirectoryItem.ItemsToSearch}"
 				 x:Name="searchList">
@@ -210,7 +211,16 @@
 							   FontSize="14"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-		</ListBox>
+		</ListBox>-->
+
+		<Button Grid.Row="0" Grid.Column="5" Width="80" Height="32"
+				Content="Найти" HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				BorderThickness="0.5" BorderBrush="DimGray"
+				Background="#17223B" CornerRadius="4" Margin="2,1,0,0.5"
+				Command="{Binding CurrentDirectoryItem.Search}"
+				CommandParameter="{Binding Text, ElementName=searchBox}"
+				IsEnabled="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
 
 		<!--QuickAccess-->
 		<Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
@@ -218,23 +228,12 @@
 			<Border.Background>
 				<SolidColorBrush Color="Black" Opacity="0.5"/>
 			</Border.Background>
-
-			<!--<ListBox Name="QuickPanel" 
-				Items="{Binding QuickDirectoryItem.QuickAccessItems}"
-				SelectedItem="{Binding QuickDirectoryItem.SelectFileEntity}"
-				Background="Transparent">-->
+			
 			<ListBox Name="QuickPanel" 
 				Items="{Binding CurrentDirectoryItem.QuickAccessItems}"
 				SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-				Background="Transparent">
+				Background="Transparent">				
 				
-				<!--<i:Interaction.Behaviors>
-					<ia:EventTriggerBehavior EventName="DoubleTapped">
-						<ia:InvokeCommandAction
-							Command="{Binding CurrentDirectoryItem.OpenCommand}"
-							CommandParameter="{Binding QuickDirectoryItem.SelectFileEntity}"/>
-					</ia:EventTriggerBehavior>
-				</i:Interaction.Behaviors>-->
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="DoubleTapped">
 						<ia:InvokeCommandAction
@@ -250,8 +249,7 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
-							<DrawingPresenter Drawing="{Binding ., 
-										  Converter={StaticResource FileEntityResource}}"
+							<DrawingPresenter Drawing="{Binding ., Converter={StaticResource FileEntityResource}}"
 											  HorizontalAlignment="Left"
 											  VerticalAlignment="Center">
 							</DrawingPresenter>
@@ -264,17 +262,15 @@
 		</Border>
 
 		<!--Information Panel-->
-		<Border Grid.Row="2" Grid.RowSpan="2" Grid.Column="4"
-				CornerRadius="3" BorderThickness="0.5"
-				BorderBrush="DimGray" Width="250" x:Name="info"
+		<Border Grid.Row="2" Grid.RowSpan="2" 
+				Grid.Column="4" Grid.ColumnSpan="2"
+				CornerRadius="3" Width="250" x:Name="info"
 				IsVisible="false">
 
 			<Border.Background>
-				<SolidColorBrush Color="#375355" Opacity="0.5"/>
+				<SolidColorBrush Color="Black" Opacity="0.5"/>
 			</Border.Background>
 
-			<!--<ListBox Background="Transparent"
-			 Items="{Binding InformationItem.InformationItems}">-->
 			<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.InformationItems}">
 
@@ -336,30 +332,7 @@
 		</Border>
 
 		<!--Tree View-->
-		<Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
-				CornerRadius="3">
-			<Border.Background>
-				<SolidColorBrush Color="Black" Opacity="0.7"/>
-			</Border.Background>
-			
-			<!--<TreeView Items="{Binding TreeDirectoryItem.TreeItems}"
-					  SelectedItem="{Binding TreeDirectoryItem.SelectFileEntity}"
-					  Width="240" HorizontalAlignment="Left"
-					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">--><!--
-			<TreeView Items="{Binding CurrentDirectoryItem.TreeItems}"
-					  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-					  Width="240" HorizontalAlignment="Left"
-					  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-				
-				<TreeView.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Subfolders}">
-						<TextBlock Text="{Binding Name}" FontSize="14"
-								   VerticalAlignment="Center" TextWrapping="Wrap"/>
-					</TreeDataTemplate>
-				</TreeView.ItemTemplate>
-				
-			</TreeView>-->
-
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">					
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
@@ -371,10 +344,10 @@
 			<ContentControl>
 				<tree:TreeView Name="tree" IsVisible="true"/>
 			</ContentControl>
-		</Border>
+		</Grid>
 		
 		<!--Main Panel-->
-		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
+		<Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3"
 				CornerRadius="3" Background="Black" Margin="2,3,0,2"
 				BorderThickness="0.5" BorderBrush="DimGray">
 			<TextBlock Grid.Row="1" Grid.Column="3"
@@ -383,7 +356,7 @@
 				   VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Border>		
 
-		<Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
+		<Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3"
 			  Grid.RowSpan="2" x:Name="main_panel">
 
 			<i:Interaction.Behaviors>
@@ -393,15 +366,7 @@
 						CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
-
-			<!--<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="Tapped">
-					<ia:InvokeCommandAction
-						Command="{Binding InformationItem.AddToInformationCommand}"
-						CommandParameter="{Binding 
-						CurrentDirectoryItem.SelectFileEntity}"/>
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>-->
+			
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="Tapped">
 					<ia:InvokeCommandAction
@@ -474,42 +439,50 @@
 			
 			<ContentControl>				
 				<views:TilesView Name="tiles" 
-								 IsVisible="true" IsEnabled="true"/>
+								 IsVisible="true" 
+								 IsEnabled="true"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:TabsView Name="tabs" 
-								IsVisible="false" IsEnabled="false"/>
+								IsVisible="false" 
+								IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:ListView Name="list" 
-								IsVisible="false" IsEnabled="false"/>
+								IsVisible="false" 
+								IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:SmallIconsView Name="small_icons" 
-									  IsVisible="false" IsEnabled="false"/>
+									  IsVisible="false" 
+									  IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:RegularIconsView Name="regular_icons" 
-										IsVisible="false" IsEnabled="false"/>
+										IsVisible="false" 
+										IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:LargeIconsView Name="large_icons" 
-									  IsVisible="false" IsEnabled="false"/>
+									  IsVisible="false" 
+									  IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:LargestIconsView Name="largest_icons" 
-										IsVisible="false" IsEnabled="false"/>
+										IsVisible="false" 
+										IsEnabled="false"/>
 			</ContentControl>
 
 			<ContentControl>
 				<views:ContentView Name="content_view" 
-								   IsVisible="false" IsEnabled="false"/>
+								   IsVisible="false" 
+								   IsEnabled="false"/>
 			</ContentControl>
 			
 		</Grid>	

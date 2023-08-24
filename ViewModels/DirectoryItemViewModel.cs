@@ -60,8 +60,8 @@ namespace FileExplorer.ViewModels
                 name = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
-        } 
-        
+        }
+
         private string currentSearchDirectory;
         public string CurrentSearchDirectory
         {
@@ -71,7 +71,7 @@ namespace FileExplorer.ViewModels
                 currentSearchDirectory = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentSearchDirectory)));
             }
-        }       
+        }
 
         private bool directoryWithLogicalDrives;
         public bool DirectoryWithLogicalDrives
@@ -86,7 +86,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region BufferProperties
-        private List<string> ItemBuffer = new(); 
+        private List<string> ItemBuffer = new();
         #endregion
 
         #region Collections
@@ -123,7 +123,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<FileEntityViewModel> quickAccessItems = new();  
+        private ObservableCollection<FileEntityViewModel> quickAccessItems = new();
         public ObservableCollection<FileEntityViewModel> QuickAccessItems
         {
             get => quickAccessItems;
@@ -190,7 +190,7 @@ namespace FileExplorer.ViewModels
             _synchronizationHelper = synchronizationHelper;
 
             Name = _history.Current.DirectoryPathName;
-            FilePath = _history.Current.DirectoryPath;  
+            FilePath = _history.Current.DirectoryPath;
 
             OpenCommand = new DelegateCommand(Open);
             AddToQuickAccessCommand = new DelegateCommand(AddToQuickAccess);
@@ -215,12 +215,14 @@ namespace FileExplorer.ViewModels
             MoveForwardCommand = new DelegateCommand(OnMoveForward, OnCanMoveForward);
             MoveUpCommand = new DelegateCommand(OnMoveUp, OnCanMoveUp);
 
+            SearchCommand = new DelegateCommand(Search);
+
             OpenDirectory();
             OpenTree();
 
             _history.HistoryChanged += History_HistoryChanged;
 
-            QuickAccessItems = new ObservableCollection<FileEntityViewModel>();            
+            QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
             ReadQuickAccessItem();
 
             Collections.Add(QuickAccessItems);
@@ -234,7 +236,7 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        
+
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
             MoveBackCommand?.RaiseCanExecuteChanged();
@@ -288,13 +290,15 @@ namespace FileExplorer.ViewModels
         public DelegateCommand MoveForwardCommand { get; }
         public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой   
 
+        public DelegateCommand SearchCommand { get; }
+
         #region OpenDirectory
         private void Open(object parameter)
         {
             if (parameter is DirectoryViewModel directoryViewModel)
             {
                 FilePath = directoryViewModel.FullName;
-                Name = "Мой компьютер - " + directoryViewModel.Name;                
+                Name = "Мой компьютер - " + directoryViewModel.Name;
 
                 _history.Add(FilePath, Name);
 
@@ -305,7 +309,7 @@ namespace FileExplorer.ViewModels
                 new Process
                 {
                     StartInfo = new ProcessStartInfo(fileViewModel.FullName)
-                    { 
+                    {
                         UseShellExecute = true
                     }
                 }.Start();
@@ -314,20 +318,20 @@ namespace FileExplorer.ViewModels
             //{
             //    throw new ArgumentNullException(nameof(parameter));
             //}
-        }        
+        }
         private void OpenDirectory()
         {
             DirectoriesAndFiles.Clear();
             if (Name == "Мой компьютер")
             {
-                CurrentSearchDirectory = "Выберете папку для поиска";
+                CurrentSearchDirectory = "Для поиска зайдите в локальный диск, введите текст и нажмите кнопку 'Найти'";
             }
             else
             {
                 char[] charsToTrim = { '\\', ':' };
                 CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
             }
-                
+
 
             if (Name == "Мой компьютер")
             {
@@ -337,7 +341,7 @@ namespace FileExplorer.ViewModels
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
                 }
                 return;
-            }            
+            }
 
             DirectoryWithLogicalDrives = false;
             var directoryInfo = new DirectoryInfo(FilePath);
@@ -496,7 +500,7 @@ namespace FileExplorer.ViewModels
                     FileInfo fileInfo = new FileInfo(e.FullPath);
                     QuickAccessFileItems.Add(new FileViewModel(fileInfo));
                 }
-            }            
+            }
         }
 
         private async void OnDeleted(object sender, FileSystemEventArgs e)
@@ -513,7 +517,7 @@ namespace FileExplorer.ViewModels
         {
             foreach (var collection in Collections)
             {
-                foreach(var item in collection)
+                foreach (var item in collection)
                 {
                     if (item.FullName == e.FullPath)
                     {
@@ -543,7 +547,7 @@ namespace FileExplorer.ViewModels
         }
 
         private async void OnRenamed(object sender, RenamedEventArgs e)
-        {           
+        {
             await Task.Run(() =>
             {
                 _synchronizationHelper.InvokeAsync(() =>
@@ -591,7 +595,7 @@ namespace FileExplorer.ViewModels
 
         #region Copy&CutAndPaste
         bool cutItem = false;
-        
+
         private void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
@@ -602,7 +606,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }
         private void AddToItemBuffer(string path)
-        {          
+        {
             ItemBuffer.Add(path);
 
             FileAttributes attributes = System.IO.File.GetAttributes(path);
@@ -622,21 +626,21 @@ namespace FileExplorer.ViewModels
                         ItemBuffer.Add(file);
                     }
                 }
-            }           
+            }
         }
         private void Cut(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
                 cutItem = true;
-                Copy(parameter);                
+                Copy(parameter);
                 //DirectoriesAndFiles.Remove(item); //сделать полупрозрачным?            
             }
             else { throw new Exception(); }
         }
 
         private string GetNameOfCopiedItem(DirectoryInfo directoryInfo, string name, int extention = 0)
-        {            
+        {
             var dirs = directoryInfo.EnumerateDirectories();
             var files = directoryInfo.EnumerateFiles();
 
@@ -653,7 +657,7 @@ namespace FileExplorer.ViewModels
                 }
                 foreach (var f in files)
                 {
-                    if (name == f.Name[..^extention]) 
+                    if (name == f.Name[..^extention])
                     {
                         name = name + " —" + " копия";
                         copy = true;
@@ -685,7 +689,7 @@ namespace FileExplorer.ViewModels
             if (parameter is string directory && directory != "Мой компьютер")
             {
                 foreach (string itemPath in ItemBuffer)
-                {    
+                {
                     if (itemPath == ItemBuffer[0]) //корневая директория / одиночный файл
                     {
                         DirectoryInfo directoryInfo = new DirectoryInfo(directory);
@@ -700,11 +704,11 @@ namespace FileExplorer.ViewModels
 
                             mainDirectory = pastedFolder.FullName;
 
-                            pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " " 
+                            pastedFolder.DateOfChange = directoryInfo.LastWriteTime.ToShortDateString() + " "
                                 + directoryInfo.LastWriteTime.ToShortTimeString();
                             DirectoriesAndFiles.Add(pastedFolder);
                             Directory.CreateDirectory(pastedFolder.FullName);
-                        }                       
+                        }
                         else
                         {
                             var fileInfo = new FileInfo(directory);
@@ -714,10 +718,10 @@ namespace FileExplorer.ViewModels
                             pureName = pureName.Substring(0, pureName.Length - extention.Length);
 
                             pastedFile.Name = GetNameOfCopiedItem(directoryInfo, pureName, extention.Length) + extention;
-                            pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;                            
-                            pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " 
+                            pastedFile.FullName = fileInfo.FullName + @"\" + pastedFile.Name;
+                            pastedFile.DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " "
                                 + fileInfo.CreationTime.ToShortTimeString();
-                            pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " 
+                            pastedFile.DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " "
                                 + fileInfo.LastWriteTime.ToShortTimeString();
                             DirectoriesAndFiles.Add(pastedFile);
 
@@ -740,7 +744,7 @@ namespace FileExplorer.ViewModels
                         Delete(ItemBuffer[0]);
                         cutItem = false;
                     }
-                }                          
+                }
             }
             else { throw new Exception(); }
         }
@@ -750,11 +754,11 @@ namespace FileExplorer.ViewModels
         private void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
-            {                
+            {
                 FilePath = item.FullName;
                 DirectoryInfo di = new DirectoryInfo(FilePath);
                 if (item is DirectoryViewModel)
-                {                                   
+                {
                     foreach (FileInfo file in di.EnumerateFiles())
                     {
                         file.Delete();
@@ -764,17 +768,17 @@ namespace FileExplorer.ViewModels
                         dir.Delete(true);
                     }
 
-                    Directory.Delete(FilePath);                    
-                }                
+                    Directory.Delete(FilePath);
+                }
                 else if (item is FileViewModel)
                 {
                     System.IO.File.Delete(FilePath);
                 }
 
-                DirectoriesAndFiles.Remove(item);                
+                DirectoriesAndFiles.Remove(item);
             }
             else { throw new Exception(); }
-        }        
+        }
         private void Delete(string path)
         {
             DirectoryInfo di = new DirectoryInfo(path);
@@ -787,7 +791,7 @@ namespace FileExplorer.ViewModels
                 dir.Delete(true);
             }
             Directory.Delete(path);
-        }        
+        }
 
         private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)   
         #endregion 
@@ -805,11 +809,11 @@ namespace FileExplorer.ViewModels
                     //{
                     var directoryInfo = new DirectoryInfo(oldPath);
                     directoryInfo.Attributes = FileAttributes.Normal;
-                        DirectoriesAndFiles.Remove(item);
-                        Directory.Move(oldPath, newPath);
+                    DirectoriesAndFiles.Remove(item);
+                    Directory.Move(oldPath, newPath);
                     //}
                     //catch (Exception) { }
-                }                    
+                }
                 //else if (item is FileViewModel)
                 //{ 
                 //    FileInfo fileInfo = new FileInfo(FilePath);
@@ -827,7 +831,7 @@ namespace FileExplorer.ViewModels
         {
             if (parameter is FileEntityViewModel item)
             {
-                FilePath = item.FullName;                
+                FilePath = item.FullName;
                 //if (item is DirectoryViewModel)
 
                 //else if (item is FileViewModel)
@@ -844,14 +848,14 @@ namespace FileExplorer.ViewModels
 
         #region Add&Remove_QuickAccess 
         JsonSerializerOptions options = new JsonSerializerOptions()
-        { 
+        {
             AllowTrailingCommas = true,
             WriteIndented = true,
             IncludeFields = true,
         };
 
         private void AddToQuickAccess(object parameter)
-        {      
+        {
             if (parameter is DirectoryViewModel fol_item)
             {
                 foreach (var item in QuickAccessItems)
@@ -891,7 +895,7 @@ namespace FileExplorer.ViewModels
                         QuickAccessItems.Add(item);
                         QuickAccessDirectoryItems.Add(item);
                     }
-                }                
+                }
             }
             if (quickAccessFileInfo.Length > 2)
             {
@@ -908,12 +912,12 @@ namespace FileExplorer.ViewModels
             }
         }
         private void RemoveFromQuickAccess(object parameter)
-        {            
+        {
             if (parameter is DirectoryViewModel fol_item)
             {
                 foreach (var item in QuickAccessItems)
                 {
-                    if (item.FullName == fol_item.FullName) 
+                    if (item.FullName == fol_item.FullName)
                     {
                         QuickAccessItems.Remove(fol_item);
                         QuickAccessDirectoryItems.Remove(fol_item);
@@ -924,7 +928,7 @@ namespace FileExplorer.ViewModels
 
                         return;
                     }
-                } 
+                }
             }
             else if (parameter is FileViewModel file_item)
             {
@@ -941,7 +945,7 @@ namespace FileExplorer.ViewModels
 
                         return;
                     }
-                }                
+                }
             }
             //else { throw new Exception(); }
         }
@@ -989,7 +993,7 @@ namespace FileExplorer.ViewModels
                 }
                 else if (theLastSort == "type")
                 {
-                    SortByType(parameter);  
+                    SortByType(parameter);
                 }
                 else if (theLastSort == "size")
                 {
@@ -1019,7 +1023,7 @@ namespace FileExplorer.ViewModels
             catch (Exception e) { }
         }
 
-        private void SortByName(object parameter) 
+        private void SortByName(object parameter)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
@@ -1029,7 +1033,7 @@ namespace FileExplorer.ViewModels
                 var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
                 AddSortedItems(dirs, files);
             }
-            if (MainWindow.desc == true) 
+            if (MainWindow.desc == true)
             {
                 var dirs = directoryInfo.EnumerateDirectories().OrderByDescending(d => d.Name);
                 var files = directoryInfo.EnumerateFiles().OrderByDescending(d => d.Name);
@@ -1038,7 +1042,7 @@ namespace FileExplorer.ViewModels
             theLastSort = "name";
         }
 
-        private void SortByDateOfChange(object parameter) 
+        private void SortByDateOfChange(object parameter)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
@@ -1085,11 +1089,11 @@ namespace FileExplorer.ViewModels
         //    }
         //    catch (Exception e) { return 0; }
         //}
-        
+
         private void SortBySize(object parameter) //доделать
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
-            
+
             List<FileInfo> fileInfos = directoryInfo.GetFiles().ToList();
 
             var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name); //Не удается корректно подсчитать размер директории            
@@ -1141,9 +1145,9 @@ namespace FileExplorer.ViewModels
         private void CreateNewFolder(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
-            {                
+            {
                 var directoryInfo = new DirectoryInfo(directory);
-                System.IO.File.SetAttributes(directory, FileAttributes.Normal);                
+                System.IO.File.SetAttributes(directory, FileAttributes.Normal);
 
                 var newFolder = new DirectoryViewModel(directory);
                 DirectoriesAndFiles.Add(newFolder);
@@ -1152,7 +1156,7 @@ namespace FileExplorer.ViewModels
                 newFolder.FullName = directoryInfo.FullName + @"\" + newFolder.Name;
                 newFolder.IsSystemFolder = false;
                 newFolder.Type = "Папка с файлами";
-                
+
                 Directory.CreateDirectory(newFolder.FullName);
             }
         }
@@ -1183,7 +1187,7 @@ namespace FileExplorer.ViewModels
             TreeItems = new ObservableCollection<FileEntityViewModel>();
 
             foreach (var logicalDrive in Directory.GetLogicalDrives())
-            {                
+            {
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.FullName = System.IO.Path.GetFullPath(logicalDrive);
                 await Task.Run(() =>
@@ -1195,7 +1199,7 @@ namespace FileExplorer.ViewModels
                 });
                 //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
                 //root.Subfolders = GetSubfolders(logicalDrive);
-                TreeItems.Add(root);                
+                TreeItems.Add(root);
             }
         }
 
@@ -1273,6 +1277,26 @@ namespace FileExplorer.ViewModels
             OpenDirectory();
         }
         private bool OnCanMoveUp(object obj) => _history.CanMoveUp;
+        #endregion
+
+        #region Search
+        private void Search(object parameter)
+        {
+            if (parameter != null)
+            {
+                DirectoriesAndFiles.Clear();
+                FilePath = "Результаты поиска в " + FilePath;
+                foreach (var item in ItemsToSearch)
+                {
+                    if (item.Name.Contains(parameter.ToString()))
+                    {
+                        DirectoriesAndFiles.Add(item);
+                    }
+                }
+                _history.Add(FilePath, Name);
+            }
+            else throw new ArgumentNullException(nameof(parameter));
+        }
         #endregion
         #endregion
     }
