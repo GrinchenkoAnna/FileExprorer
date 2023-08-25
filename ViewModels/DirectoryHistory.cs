@@ -1,5 +1,9 @@
 ﻿using Avalonia.Input;
 
+using DynamicData;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,19 +42,20 @@ namespace FileExplorer.ViewModels
 
         public void Add(string filePath, string name)
         {
-            var node  = new DirectoryNode(filePath, name);
-
-            Current.NextNode = node;
+            var node = new DirectoryNode(filePath, name);
+            Current.NextNode = node;           
             node.PreviousNode = Current;
-            node.UpNode = _head;
-            Current = node;
+            if (node.PreviousNode.DirectoryPath.Length < node.DirectoryPath.Length)
+            {
+                node.UpNode = Current;
+            }
+            Current = node;                     
 
             RaiseHistoryChanged();
         }
 
         public void MoveBack()
-        {     
-            //Current.NextNode = Current;
+        {            
             var prev = Current.PreviousNode;
             Current = prev;
 

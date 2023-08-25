@@ -328,8 +328,11 @@ namespace FileExplorer.ViewModels
             }
             else
             {
-                char[] charsToTrim = { '\\', ':' };
-                CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
+                if (Name.Contains("Мой Компьютер"))
+                {
+                    char[] charsToTrim = { '\\', ':' };
+                    CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
+                }              
             }
 
 
