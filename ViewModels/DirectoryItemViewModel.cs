@@ -1,36 +1,48 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Controls.Generators;
+
+using FileExplorer.Views;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Linq;
-using static System.Net.WebRequestMethods;
-using System.Reflection;
-using System.Collections.Generic;
-using FileExplorer.Views;
-using DynamicData.Experimental;
-using System.Net.Http.Headers;
-using Avalonia.Controls.Shapes;
-using DynamicData;
-using System.Reflection.Metadata;
-using System.Data.Common;
-using Microsoft.VisualBasic;
-using SkiaSharp;
+
+using static FileExplorer.ViewModels.DirectoryItemViewModel;
 
 namespace FileExplorer.ViewModels
 {
-    public partial class DirectoryItemViewModel : ListBox, INotifyPropertyChanged
+    public partial class DirectoryItemViewModel : INotifyPropertyChanged
     {
         //private BackgroundWorker _backgroundWorker;
 
         private readonly IDirectoryHistory _history;
-
         private readonly ISynchronizationHelper _synchronizationHelper;
+
+        public DelegateCommand OpenCommand { get; }
+        public DelegateCommand AddToQuickAccessCommand { get; }
+        public DelegateCommand RemoveFromQuickAccessCommand { get; }
+        public DelegateCommand CopyCommand { get; }
+        public DelegateCommand CutCommand { get; }
+        public DelegateCommand PasteCommand { get; }
+        public DelegateCommand DeleteCommand { get; }
+        public DelegateCommand RenameCommand { get; }
+        public DelegateCommand CreateNewFolderCommand { get; }
+        public DelegateCommand ShowItemPropertiesCommand { get; }
+        public DelegateCommand AddToInformationCommand { get; }
+        public DelegateCommand SortByNameCommand { get; }
+        public DelegateCommand SortByDateOfChangeCommand { get; }
+        public DelegateCommand SortByTypeCommand { get; }
+        public DelegateCommand SortBySizeCommand { get; }
+        public DelegateCommand RefreshSortCommand { get; }
+        public DelegateCommand MoveBackCommand { get; }
+        public DelegateCommand MoveForwardCommand { get; }
+        public DelegateCommand MoveUpCommand { get; }
+        public DelegateCommand SearchCommand { get; }
 
         private const string QuickAccessFolderName = "ViewModels\\quickAccessFolders.json";
         private const string QuickAccessFileName = "ViewModels\\quickAccessFiles.json";
@@ -40,7 +52,7 @@ namespace FileExplorer.ViewModels
         #region EventProperties
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string filePath;
+        protected string filePath;
         public string FilePath
         {
             get => filePath;
@@ -180,12 +192,12 @@ namespace FileExplorer.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemsToSearch)));
             }
         }
-        private List<ObservableCollection<FileEntityViewModel>> Collections = new();
+        protected List<ObservableCollection<FileEntityViewModel>> Collections = new();
         #endregion
 
         #region Constructor
         public DirectoryItemViewModel(ISynchronizationHelper synchronizationHelper)
-        {
+        {  
             _history = new DirectoryHistory("Мой компьютер", "Мой компьютер");
             _synchronizationHelper = synchronizationHelper;
 
@@ -228,70 +240,16 @@ namespace FileExplorer.ViewModels
             Collections.Add(QuickAccessItems);
             Collections.Add(DirectoriesAndFiles);
             Collections.Add(TreeItems);
-            Collections.Add(ItemsToSearch);
-
-            //OpenBranchCommand = new DelegateCommand(OpenBranch);
-            //KeyNavigationCommand = new DelegateCommand(KeyNavigation);
-            //_history.KeyPress += KeyPressed;           
+            Collections.Add(ItemsToSearch);                      
         }
         #endregion
-
 
         private void History_HistoryChanged(object? sender, EventArgs e)
         {
             MoveBackCommand?.RaiseCanExecuteChanged();
             MoveUpCommand?.RaiseCanExecuteChanged();
             MoveForwardCommand?.RaiseCanExecuteChanged();
-        }
-
-        #region KeyNavigation
-        //public DelegateCommand OpenBranchCommand { get; }
-        //public DelegateCommand KeyNavigationCommand { get; }
-
-        //private Key pressed = Key.Enter;
-        //public void KeyPressed(object? sender, KeyEventArgs e)
-        //{
-        //    if (e.Key == Key.Enter)
-        //    {
-        //        pressed = Key.Enter;
-        //    }
-        //}
-        //private void KeyNavigation(object parameter)
-        //{
-        //    if (pressed == Key.Enter)
-        //    {
-        //        Open(parameter);
-        //    }
-
-        //}
-        #endregion
-
-        #region Commands
-        public DelegateCommand OpenCommand { get; }
-        public DelegateCommand AddToQuickAccessCommand { get; }
-        public DelegateCommand RemoveFromQuickAccessCommand { get; }
-        public DelegateCommand CopyCommand { get; }
-        public DelegateCommand CutCommand { get; }
-        public DelegateCommand PasteCommand { get; }
-        public DelegateCommand DeleteCommand { get; }
-        public DelegateCommand RenameCommand { get; }
-        public DelegateCommand CreateNewFolderCommand { get; }
-
-        public DelegateCommand ShowItemPropertiesCommand { get; }
-
-        public DelegateCommand AddToInformationCommand { get; }
-        public DelegateCommand SortByNameCommand { get; }
-        public DelegateCommand SortByDateOfChangeCommand { get; }
-        public DelegateCommand SortByTypeCommand { get; }
-        public DelegateCommand SortBySizeCommand { get; }
-        public DelegateCommand RefreshSortCommand { get; }
-
-        public DelegateCommand MoveBackCommand { get; }
-        public DelegateCommand MoveForwardCommand { get; }
-        public DelegateCommand MoveUpCommand { get; } //разобраться с этой командой   
-
-        public DelegateCommand SearchCommand { get; }
-
+        }  
         #region OpenDirectory
         private void Open(object parameter)
         {
@@ -314,28 +272,15 @@ namespace FileExplorer.ViewModels
                     }
                 }.Start();
             }
+            
             //else if (parameter == null)
             //{
             //    throw new ArgumentNullException(nameof(parameter));
             //}
         }
-        private void OpenDirectory()
+        protected void OpenDirectory()
         {
-            DirectoriesAndFiles.Clear();
-            if (Name == "Мой компьютер")
-            {
-                CurrentSearchDirectory = "Для поиска зайдите в локальный диск, введите текст и нажмите кнопку 'Найти'";
-            }
-            else
-            {
-                if (Name.Contains("Мой Компьютер"))
-                {
-                    char[] charsToTrim = { '\\', ':' };
-                    CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
-                }              
-            }
-
-
+            DirectoriesAndFiles.Clear();            
             if (Name == "Мой компьютер")
             {
                 DirectoryWithLogicalDrives = true;
@@ -343,256 +288,61 @@ namespace FileExplorer.ViewModels
                 {
                     DirectoriesAndFiles.Add(new DirectoryViewModel(logicalDrive));
                 }
+                CurrentSearchDirectory = "Для поиска зайдите в локальный диск, введите текст и нажмите кнопку 'Найти'";
+
                 return;
-            }
-
-            DirectoryWithLogicalDrives = false;
-            var directoryInfo = new DirectoryInfo(FilePath);
-
-            FileSystemWatcher watcher = new FileSystemWatcher(FilePath);
-            watcher.Path = FilePath;
-            watcher.NotifyFilter = NotifyFilters.Attributes
-                | NotifyFilters.CreationTime
-                | NotifyFilters.DirectoryName
-                | NotifyFilters.FileName
-                | NotifyFilters.LastWrite
-                | NotifyFilters.LastAccess
-                | NotifyFilters.Size;
-
-            watcher.Filter = "*.*";
-            watcher.IncludeSubdirectories = true;
-
-            watcher.Created += OnCreated;
-            watcher.Changed += OnChanged;
-            watcher.Deleted += OnDeleted;
-            watcher.Renamed += OnRenamed;
-
-            watcher.EnableRaisingEvents = true;
-            watcher.InternalBufferSize = 4096;
-
-            try
-            {
-                ItemsToSearch.Clear();
-                //await Task.Run(() =>
-                //{
-                //    _synchronizationHelper.InvokeAsync(() =>
-                //    {
-                //        GetSubItems(FilePath);
-                //    });
-                //});   
-                //GetSubItems(FilePath);
-
-                foreach (var directory in directoryInfo.GetDirectories())
-                {
-                    DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
-                    ItemsToSearch.Add(new DirectoryViewModel(directory));
-                }
-
-                foreach (var fileInfo in directoryInfo.GetFiles())
-                {
-                    DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
-                    ItemsToSearch.Add(new FileViewModel(fileInfo));
-                }
-            }
-            catch (UnauthorizedAccessException) { }
-        }
-
-        //private async void GetSubItems(string path)
-        //{
-        //    try
-        //    {
-        //        foreach (var directory in Directory.EnumerateDirectories(path))
-        //        {
-        //            ItemsToSearch.Add(new DirectoryViewModel(directory));
-        //            //GetSubItems(directory); виснет, если перебирать все папки
-        //        }
-        //        foreach (var file in Directory.EnumerateFiles(path))
-        //        {
-        //            ItemsToSearch.Add(new FileViewModel(file));
-        //        }
-        //    }
-        //    catch (UnauthorizedAccessException) { }
-        //}
-        #endregion
-
-        #region WatcherEvents        
-        private async void OnCreated(object sender, FileSystemEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                _synchronizationHelper.InvokeAsync(() =>
-                {
-                    AddItemFromSystem(e);
-                });
-            });
-        }
-        private async Task AddItemFromSystem(FileSystemEventArgs e)
-        {
-            FileAttributes attr = System.IO.File.GetAttributes(e.FullPath);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                foreach (var item in DirectoriesAndFiles)
-                {
-                    if (item.FullName == e.FullPath) { return; }
-                }
-                DirectoryViewModel newDir = new DirectoryViewModel(e.Name);
-                DirectoriesAndFiles.Add(newDir);
-                newDir.FullName = e.FullPath;
             }
             else
             {
-                if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
-                {
-                    foreach (var item in DirectoriesAndFiles)
-                    {
-                        if (item.FullName == e.FullPath) { return; }
-                    }
-                    FileViewModel newFile = new FileViewModel(e.Name);
-                    DirectoriesAndFiles.Add(newFile);
-                    newFile.FullName = e.FullPath;
-                }
-            }
-        }
+                char[] charsToTrim = { '\\', ':' };
+                CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
 
-        private async void OnChanged(object sender, FileSystemEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                _synchronizationHelper.InvokeAsync(() =>
+                var watcher = new Watcher(_synchronizationHelper, FilePath);
+                DirectoryInfo directoryInfo = watcher.StartWatcher();
+
+                try
                 {
-                    ChangedItemFromSystem(e);
-                });
-            });
-        }
-        private async Task ChangedItemFromSystem(FileSystemEventArgs e)
-        {
-            foreach (var collection in Collections)
-            {
-                foreach (var item in collection)
-                {
-                    if (item.FullName == e.FullPath)
+                    ItemsToSearch.Clear();
+                    //await Task.Run(() =>
+                    //{
+                    //    _synchronizationHelper.InvokeAsync(() =>
+                    //    {
+                    //        GetSubItems(FilePath);
+                    //    });
+                    //});   
+                    //GetSubItems(FilePath);               
+
+                    foreach (var directory in directoryInfo.GetDirectories())
                     {
-                        collection.Remove(item);
-                        if (item is DirectoryViewModel)
-                        {
-                            DirectoryInfo directoryInfo = new DirectoryInfo(e.FullPath);
-                            collection.Add(new DirectoryViewModel(directoryInfo));
-                        }
-                        if (item is FileViewModel)
-                        {
-                            FileInfo fileInfo = new FileInfo(e.FullPath);
-                            collection.Add(new FileViewModel(fileInfo));
-                        }
+                        DirectoriesAndFiles.Add(new DirectoryViewModel(directory));
+                        ItemsToSearch.Add(new DirectoryViewModel(directory));
+                    }
+
+                    foreach (var fileInfo in directoryInfo.GetFiles())
+                    {
+                        DirectoriesAndFiles.Add(new FileViewModel(fileInfo));
+                        ItemsToSearch.Add(new FileViewModel(fileInfo));
                     }
                 }
-            }
-            foreach (var item in QuickAccessDirectoryItems)
-            {
-                if (item.FullName == e.FullPath)
-                {
-                    QuickAccessDirectoryItems.Remove(item);
-                    DirectoryInfo directoryInfo = new DirectoryInfo(e.FullPath);
-                    QuickAccessDirectoryItems.Add(new DirectoryViewModel(directoryInfo));
-                }
-            }
-            foreach (var item in QuickAccessFileItems)
-            {
-                if (item.FullName == e.FullPath)
-                {
-                    QuickAccessFileItems.Remove(item);
-                    FileInfo fileInfo = new FileInfo(e.FullPath);
-                    QuickAccessFileItems.Add(new FileViewModel(fileInfo));
-                }
-            }
-        }
-
-        private async void OnDeleted(object sender, FileSystemEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                _synchronizationHelper.InvokeAsync(() =>
-                {
-                    DeletedItemFromSystem(e);
-                });
-            });
-        }
-        private async Task DeletedItemFromSystem(FileSystemEventArgs e)
-        {
-            foreach (var collection in Collections)
-            {
-                foreach (var item in collection)
-                {
-                    if (item.FullName == e.FullPath)
-                    {
-                        collection.Remove(item);
-                    }
-                }
-            }
-            foreach (var item in QuickAccessDirectoryItems)
-            {
-                if (item.FullName == e.FullPath)
-                {
-                    QuickAccessDirectoryItems.Remove(item);
-                }
-            }
-            foreach (var item in QuickAccessFileItems)
-            {
-                if (item.FullName == e.FullPath)
-                {
-                    QuickAccessFileItems.Remove(item);
-                }
+                catch (UnauthorizedAccessException) { }
             }
 
-            //тупое обновление страницы
-            OnMoveBack(e.FullPath);
-            OnMoveForward(e.FullPath);
-            OpenDirectory();
-        }
-
-        private async void OnRenamed(object sender, RenamedEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                _synchronizationHelper.InvokeAsync(() =>
-                {
-                    RenamedItemFromSystem(e);
-                });
-            });
-        }
-        private async Task RenamedItemFromSystem(RenamedEventArgs e)
-        {
-            foreach (var collection in Collections)
-            {
-                foreach (var item in collection)
-                {
-                    if (item.FullName == e.OldFullPath)
-                    {
-                        item.FullName = e.FullPath;
-                        item.Name = e.Name;
-                    }
-                }
-            }
-            foreach (var item in QuickAccessDirectoryItems)
-            {
-                if (item.FullName == e.OldFullPath)
-                {
-                    item.FullName = e.FullPath;
-                    item.Name = e.Name;
-                }
-            }
-            foreach (var item in QuickAccessFileItems)
-            {
-                if (item.FullName == e.OldFullPath)
-                {
-                    item.FullName = e.FullPath;
-                    item.Name = e.Name;
-                }
-            }
-
-            //тупое обновление страницы
-            OnMoveBack(e.FullPath);
-            OnMoveForward(e.FullPath);
-            OpenDirectory();
+            //private async void GetSubItems(string path)
+            //{
+            //    try
+            //    {
+            //        foreach (var directory in Directory.EnumerateDirectories(path))
+            //        {
+            //            ItemsToSearch.Add(new DirectoryViewModel(directory));
+            //            //GetSubItems(directory); виснет, если перебирать все папки
+            //        }
+            //        foreach (var file in Directory.EnumerateFiles(path))
+            //        {
+            //            ItemsToSearch.Add(new FileViewModel(file));
+            //        }
+            //    }
+            //    catch (UnauthorizedAccessException) { }
+            //}           
         }
         #endregion
 
@@ -1245,7 +995,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Buttons
-        private void OnMoveBack(object obj)
+        protected void OnMoveBack(object obj)
         {
             _history.MoveBack();
 
@@ -1257,7 +1007,7 @@ namespace FileExplorer.ViewModels
         }
         private bool OnCanMoveBack(object obj) => _history.CanMoveBack;
 
-        private void OnMoveForward(object obj)
+        protected void OnMoveForward(object obj)
         {
             _history.MoveForward();
 
@@ -1269,7 +1019,7 @@ namespace FileExplorer.ViewModels
         }
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
 
-        private void OnMoveUp(object obj)
+        protected void OnMoveUp(object obj)
         {
             _history.MoveUp();
 
@@ -1300,7 +1050,6 @@ namespace FileExplorer.ViewModels
             }
             else throw new ArgumentNullException(nameof(parameter));
         }
-        #endregion
         #endregion
     }
 }

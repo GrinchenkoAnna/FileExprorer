@@ -21,7 +21,7 @@ namespace FileExplorer.ViewModels
     public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged 
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        private readonly ISynchronizationHelper _synchronizationHelper;
+        protected ISynchronizationHelper _synchronizationHelper;
 
         private string path;
         public string Path
