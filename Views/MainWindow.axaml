@@ -13,7 +13,7 @@
         x:Class="FileExplorer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="FileExplorer">
-	
+
 	<Window.Title>
 		<Binding Path="CurrentDirectoryItem.Name"/>
 	</Window.Title>
@@ -21,6 +21,12 @@
 	<Window.Resources>
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 	</Window.Resources>
+
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Enter"
+					Command="{Binding CurrentDirectoryItem.OpenCommand}"
+					CommandParameter="{Binding CurrentDirectoryItem.SelectFileEntity}"/>
+	</Window.KeyBindings>
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -332,7 +338,8 @@
 		</Border>
 
 		<!--Tree View-->
-		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">					
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
 					<ia:InvokeCommandAction
@@ -374,7 +381,7 @@
 						CommandParameter="{Binding 
 						CurrentDirectoryItem.SelectFileEntity}"/>
 				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
+			</i:Interaction.Behaviors>		
 
 			<Grid.ContextMenu>
 				<ContextMenu>

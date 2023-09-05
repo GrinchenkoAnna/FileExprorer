@@ -8,6 +8,7 @@ using FileExplorer.Views.Pages;
 
 using ReactiveUI;
 
+using System;
 using System.ComponentModel;
 using System.IO;
 
@@ -24,9 +25,8 @@ namespace FileExplorer.Views
             DataContext = new MainWindowViewModel(new SynchronizationHelper());
 
             this.Tapped += ClearSearchTextBox;
-            //ReplaceCommand = new DelegateCommand(Replace);
         }
-
+        
         #region Views
         public void SwitchToTabsView(object sender, RoutedEventArgs routedEventArgs)
         {
@@ -245,7 +245,7 @@ namespace FileExplorer.Views
         #endregion
 
         #region Selection
-
+      
         //private void SelectAllItems(object sender, RoutedEventArgs routedEventArgs)
         //{
         //    foreach (var item in content.Items)

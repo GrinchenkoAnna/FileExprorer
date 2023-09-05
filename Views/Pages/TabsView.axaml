@@ -14,7 +14,7 @@
 			  SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
 			  CanUserResizeColumns="false"
 			  GridLinesVisibility="All"
-			  Margin="10,0,0,0" x:Name="content">
+			  Margin="10,0,0,0" x:Name="content">		
 
 		<!--<DataGrid.ContextMenu>
 			<ContextMenu IsVisible="False">

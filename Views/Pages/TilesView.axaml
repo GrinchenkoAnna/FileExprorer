@@ -3,25 +3,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"		
 			 xmlns:local="clr-namespace:FileExplorer.ViewModels;assembly=FileExplorer"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileExplorer.Views.Pages.TilesView">
 	
 	<UserControl.Resources>
 		<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
-	</UserControl.Resources>
+	</UserControl.Resources>	
 
 	<ListBox Background="Transparent"
 			 Items="{Binding CurrentDirectoryItem.DirectoriesAndFiles}"
 			 SelectedItem="{Binding CurrentDirectoryItem.SelectFileEntity}"
-			 SelectionMode="Multiple" x:Name="content">			
-			
+			 SelectionMode="Multiple" x:Name="content"
+			 SelectedIndex="0">
+		
 			<ListBox.Resources>
 				<local:FileEntityToImageConverter x:Key="FileEntityResource"/>
 			</ListBox.Resources>			
 			
 			<ListBox.ItemTemplate>
 				<DataTemplate>					
-					<StackPanel Orientation="Horizontal" Width="210" Height="120">
+					<StackPanel Orientation="Horizontal" Width="210" Height="120" >
 						
 						<StackPanel.ContextMenu>
 							<ContextMenu>
@@ -75,9 +78,10 @@
 			
 			<ListBox.ItemsPanel>
 				<ItemsPanelTemplate>
-					<WrapPanel Orientation="Horizontal"/>
+					<WrapPanel Orientation="Horizontal" />
 				</ItemsPanelTemplate>
 			</ListBox.ItemsPanel>
+		
 		</ListBox>
 
 </UserControl>

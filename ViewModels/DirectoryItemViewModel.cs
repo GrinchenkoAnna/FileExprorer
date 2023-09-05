@@ -251,7 +251,7 @@ namespace FileExplorer.ViewModels
             MoveForwardCommand?.RaiseCanExecuteChanged();
         }  
         #region OpenDirectory
-        private void Open(object parameter)
+        public void Open(object parameter)
         {
             if (parameter is DirectoryViewModel directoryViewModel)
             {
@@ -294,6 +294,8 @@ namespace FileExplorer.ViewModels
             }
             else
             {
+                DirectoryWithLogicalDrives = false;
+
                 char[] charsToTrim = { '\\', ':' };
                 CurrentSearchDirectory = "Поиск в " + Name.Substring(16).Trim(charsToTrim) + " ";
 
