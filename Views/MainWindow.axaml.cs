@@ -9,6 +9,7 @@ using FileExplorer.Views.Pages;
 using ReactiveUI;
 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 
@@ -19,102 +20,220 @@ namespace FileExplorer.Views
         public static bool asc = true; 
         public static bool desc = false;
 
+        ObservableCollection<CheckBox> views_CheckBoxes = new ObservableCollection<CheckBox>();
+        public ObservableCollection<CheckBox> Views_CheckBoxes
+        {
+            get { return views_CheckBoxes; }
+            set { views_CheckBoxes = value; }
+        }
+        ObservableCollection<CheckBox> sort_CheckBoxes = new ObservableCollection<CheckBox>();
+        public ObservableCollection<CheckBox> Sort_CheckBoxes
+        {
+            get { return sort_CheckBoxes; }
+            set { sort_CheckBoxes = value; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();            
             DataContext = new MainWindowViewModel(new SynchronizationHelper());
 
             this.Tapped += ClearSearchTextBox;
+
+            FillCheckBoxCollection();            
         }
-        
+
+        private void FillCheckBoxCollection()
+        {
+            Views_CheckBoxes.Add(checkbox_tabs_view);
+            Views_CheckBoxes.Add(checkbox_tiles_view);
+            Views_CheckBoxes.Add(checkbox_list_view);
+            Views_CheckBoxes.Add(checkbox_small_view);
+            Views_CheckBoxes.Add(checkbox_regular_view);
+            Views_CheckBoxes.Add(checkbox_large_view);
+            Views_CheckBoxes.Add(checkbox_largest_view);
+            Views_CheckBoxes.Add(checkbox_content_view);
+
+            Views_CheckBoxes.Add(context_checkbox_tabs_view);
+            Views_CheckBoxes.Add(context_checkbox_tiles_view);
+            Views_CheckBoxes.Add(context_checkbox_list_view);
+            Views_CheckBoxes.Add(context_checkbox_small_view);
+            Views_CheckBoxes.Add(context_checkbox_regular_view);
+            Views_CheckBoxes.Add(context_checkbox_large_view);
+            Views_CheckBoxes.Add(context_checkbox_largest_view);
+            Views_CheckBoxes.Add(context_checkbox_content_view);
+
+            Sort_CheckBoxes.Add(sort_name);
+            Sort_CheckBoxes.Add(sort_date);
+            Sort_CheckBoxes.Add(sort_type);
+            Sort_CheckBoxes.Add(sort_size);
+
+            Sort_CheckBoxes.Add(context_sort_name);
+            Sort_CheckBoxes.Add(context_sort_date);
+            Sort_CheckBoxes.Add(context_sort_type);
+            Sort_CheckBoxes.Add(context_sort_size);
+        }
+
         #region Views
         public void SwitchToTabsView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = true; tabs.IsEnabled = true;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
-            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
-            largest_icons.IsEnabled = false; largest_icons.IsVisible = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            tabs.IsVisible = true;           tabs.IsEnabled = true;           
+            tiles.IsVisible = false;         tiles.IsEnabled = false;         
+            list.IsVisible = false;          list.IsEnabled = false;          
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;   
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false; 
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;   
+            largest_icons.IsEnabled = false; largest_icons.IsVisible = false; 
+            content_view.IsVisible = false;  content_view.IsEnabled = false;  
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_tabs_view || checkBox == context_checkbox_tabs_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; } 
+            }
         }
         public void SwitchToTilesView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = true; tiles.IsEnabled = true;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
-            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
-            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;          
+            tiles.IsVisible = true;          tiles.IsEnabled = true;          
+            list.IsVisible = false;          list.IsEnabled = false;          
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;   
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false; 
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;   
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false; 
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_tiles_view || checkBox == context_checkbox_tiles_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToListView(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = true; list.IsEnabled = true;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
-            regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
-            largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;          
+            tiles.IsVisible = false;         tiles.IsEnabled = false;         
+            list.IsVisible = true;           list.IsEnabled = true;           
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;   
+            regular_icons.IsVisible = false; regular_icons.IsEnabled = false; 
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;   
+            largest_icons.IsVisible = false; largest_icons.IsEnabled = false; 
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_list_view || checkBox == context_checkbox_list_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToSmallIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = true; small_icons.IsEnabled = true;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;
+            tiles.IsVisible = false;         tiles.IsEnabled = false;
+            list.IsVisible = false;          list.IsEnabled = false;
+            small_icons.IsVisible = true;    small_icons.IsEnabled = true;
             regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;
             largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_small_view || checkBox == context_checkbox_small_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToRegularIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
-            regular_icons.IsVisible = true; regular_icons.IsEnabled = true;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;
+            tiles.IsVisible = false;         tiles.IsEnabled = false;
+            list.IsVisible = false;          list.IsEnabled = false;
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;
+            regular_icons.IsVisible = true;  regular_icons.IsEnabled = true;
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;
             largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_regular_view || checkBox == context_checkbox_regular_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToLargeIcons(object sender, RoutedEventArgs routedEventArgs)  
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;
+            tiles.IsVisible = false;         tiles.IsEnabled = false;
+            list.IsVisible = false;          list.IsEnabled = false;
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;
             regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = true; large_icons.IsEnabled = true;
+            large_icons.IsVisible = true;    large_icons.IsEnabled = true;
             largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_large_view || checkBox == context_checkbox_large_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToLargestIcons(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;
+            tiles.IsVisible = false;         tiles.IsEnabled = false;
+            list.IsVisible = false;          list.IsEnabled = false;
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;
             regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
-            largest_icons.IsVisible = true; largest_icons.IsEnabled = true;
-            content_view.IsVisible = false; content_view.IsEnabled = false;
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;
+            largest_icons.IsVisible = true;  largest_icons.IsEnabled = true;
+            content_view.IsVisible = false;  content_view.IsEnabled = false;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_largest_view || checkBox == context_checkbox_largest_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void SwitchToContent(object sender, RoutedEventArgs routedEventArgs)
         {
-            tabs.IsVisible = false; tabs.IsEnabled = false;
-            tiles.IsVisible = false; tiles.IsEnabled = false;
-            list.IsVisible = false; list.IsEnabled = false;
-            small_icons.IsVisible = false; small_icons.IsEnabled = false;
+            tabs.IsVisible = false;          tabs.IsEnabled = false;
+            tiles.IsVisible = false;         tiles.IsEnabled = false;
+            list.IsVisible = false;          list.IsEnabled = false;
+            small_icons.IsVisible = false;   small_icons.IsEnabled = false;
             regular_icons.IsVisible = false; regular_icons.IsEnabled = false;
-            large_icons.IsVisible = false; large_icons.IsEnabled = false;
+            large_icons.IsVisible = false;   large_icons.IsEnabled = false;
             largest_icons.IsVisible = false; largest_icons.IsEnabled = false;
-            content_view.IsVisible = true; content_view.IsEnabled = true;
+            content_view.IsVisible = true;   content_view.IsEnabled = true;
+
+            foreach (CheckBox checkBox in Views_CheckBoxes)
+            {
+                if (checkBox == checkbox_content_view || checkBox == context_checkbox_content_view) 
+                { 
+                    checkBox.IsChecked = true; 
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
 
         #endregion
@@ -186,36 +305,72 @@ namespace FileExplorer.Views
         #region Menu
         public void ChangeSortingModeToName(object sender, RoutedEventArgs routedEventArgs)
         {
-            sort_name.IsChecked = true; context_sort_name.IsChecked = true; 
-            sort_date.IsChecked = false; context_sort_date.IsChecked = false;
-            sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            sort_size.IsChecked = false; context_sort_size.IsChecked = false;
+            //sort_name.IsChecked = true;  context_sort_name.IsChecked = true; 
+            //sort_date.IsChecked = false; context_sort_date.IsChecked = false;
+            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
+            //sort_size.IsChecked = false; context_sort_size.IsChecked = false;
+
+            foreach (CheckBox checkBox in Sort_CheckBoxes)
+            {
+                if (checkBox == sort_name || checkBox == context_sort_name)
+                {
+                    checkBox.IsChecked = true;
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void ChangeSortingModeToDateOfChange(object sender, RoutedEventArgs routedEventArgs)
         {
-            sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            sort_date.IsChecked = true; context_sort_date.IsChecked = true; 
-            sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            sort_size.IsChecked = false; context_sort_size.IsChecked = false; 
+            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
+            //sort_date.IsChecked = true;  context_sort_date.IsChecked = true; 
+            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
+            //sort_size.IsChecked = false; context_sort_size.IsChecked = false;
+
+            foreach (CheckBox checkBox in Sort_CheckBoxes)
+            {
+                if (checkBox == sort_date || checkBox == context_sort_date)
+                {
+                    checkBox.IsChecked = true;
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void ChangeSortingModeToType(object sender, RoutedEventArgs routedEventArgs)
         {
-            sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
-            sort_type.IsChecked = true; context_sort_type.IsChecked = true; 
-            sort_size.IsChecked = false; context_sort_size.IsChecked = false; 
+            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
+            //sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
+            //sort_type.IsChecked = true;  context_sort_type.IsChecked = true; 
+            //sort_size.IsChecked = false; context_sort_size.IsChecked = false; 
+
+            foreach (CheckBox checkBox in Sort_CheckBoxes)
+            {
+                if (checkBox == sort_type || checkBox == context_sort_type)
+                {
+                    checkBox.IsChecked = true;
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         public void ChangeSortingModeToSize(object sender, RoutedEventArgs routedEventArgs)
         {
-            sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
-            sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            sort_size.IsChecked = true; context_sort_size.IsChecked = true; 
+            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
+            //sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
+            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
+            //sort_size.IsChecked = true;  context_sort_size.IsChecked = true; 
+
+            foreach (CheckBox checkBox in Sort_CheckBoxes)
+            {
+                if (checkBox == sort_size || checkBox == context_sort_size)
+                {
+                    checkBox.IsChecked = true;
+                }
+                else { checkBox.IsChecked = false; }
+            }
         }
         
         public void ChangeSortingModeToAscending(object sender, RoutedEventArgs routedEventArgs)
         {
-            ascending.IsChecked = true; context_ascending.IsChecked = true; asc = true;
+            ascending.IsChecked = true;   context_ascending.IsChecked = true;   asc = true;
             descending.IsChecked = false; context_descending.IsChecked = false; desc = false;
 
         }

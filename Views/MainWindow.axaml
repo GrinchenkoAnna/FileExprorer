@@ -147,21 +147,29 @@
 							  IsChecked="false"
 							  Click="InformationPanel"/>
 					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"
+						<CheckBox Content="Огромные значки" x:Name="checkbox_largest_view"
+								  IsChecked="false"
 								  Click="SwitchToLargestIcons"/>
-						<MenuItem Header="Крупные значки"
+						<CheckBox Content="Крупные значки" x:Name="checkbox_large_view"
+								  IsChecked="false"
 								  Click="SwitchToLargeIcons"/>
-						<MenuItem Header="Обычные значки"
+						<CheckBox Content="Обычные значки" x:Name="checkbox_regular_view"
+								  IsChecked="false"
 								  Click="SwitchToRegularIcons"/>
-						<MenuItem Header="Мелкие значки"
+						<CheckBox Content="Мелкие значки" x:Name="checkbox_small_view"
+								  IsChecked="false"
 								  Click="SwitchToSmallIcons"/>
-						<MenuItem Header="Список"
+						<CheckBox Content="Список" x:Name="checkbox_list_view"
+								  IsChecked="false"
 								  Click="SwitchToListView"/>
-						<MenuItem Header="Плитка"
+						<CheckBox Content="Плитка" x:Name="checkbox_tiles_view"
+								  IsChecked="true"
 								  Click="SwitchToTilesView"/>
-						<MenuItem Header="Таблица"
+						<CheckBox Content="Таблица" x:Name="checkbox_tabs_view"
+								  IsChecked="false"
 								  Click="SwitchToTabsView"/>
-						<MenuItem Header="Содержимое"
+						<CheckBox Content="Содержимое" x:Name="checkbox_content_view"
+								  IsChecked="false"
 								  Click="SwitchToContent"/>
 					</MenuItem>
 					<MenuItem Header="Сортировка"
@@ -386,21 +394,29 @@
 			<Grid.ContextMenu>
 				<ContextMenu>
 					<MenuItem Header="Вид">
-						<MenuItem Header="Огромные значки"
+						<CheckBox Content="Огромные значки" x:Name="context_checkbox_largest_view"
+								  IsChecked="false"
 								  Click="SwitchToLargestIcons"/>
-						<MenuItem Header="Крупные значки"
+						<CheckBox Content="Крупные значки" x:Name="context_checkbox_large_view"
+								  IsChecked="false"
 								  Click="SwitchToLargeIcons"/>
-						<MenuItem Header="Обычные значки"
+						<CheckBox Content="Обычные значки" x:Name="context_checkbox_regular_view"
+								  IsChecked="false"
 								  Click="SwitchToRegularIcons"/>
-						<MenuItem Header="Мелкие значки"
+						<CheckBox Content="Мелкие значки" x:Name="context_checkbox_small_view"
+								  IsChecked="false"
 								  Click="SwitchToSmallIcons"/>
-						<MenuItem Header="Список"
+						<CheckBox Content="Список" x:Name="context_checkbox_list_view"
+								  IsChecked="false"
 								  Click="SwitchToListView"/>
-						<MenuItem Header="Плитка"
+						<CheckBox Content="Плитка" x:Name="context_checkbox_tiles_view"
+								  IsChecked="true"
 								  Click="SwitchToTilesView"/>
-						<MenuItem Header="Таблица"
+						<CheckBox Content="Таблица" x:Name="context_checkbox_tabs_view"
+								  IsChecked="false"
 								  Click="SwitchToTabsView"/>
-						<MenuItem Header="Содержимое"
+						<CheckBox Content="Содержимое" x:Name="context_checkbox_content_view"
+								  IsChecked="false"
 								  Click="SwitchToContent"/>
 					</MenuItem>
 					
