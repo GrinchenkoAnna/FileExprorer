@@ -40,10 +40,10 @@ namespace FileExplorer.Views
 
             this.Tapped += ClearSearchTextBox;
 
-            FillCheckBoxCollection();            
+            FillCheckBoxCollections();            
         }
 
-        private void FillCheckBoxCollection()
+        private void FillCheckBoxCollections()
         {
             Views_CheckBoxes.Add(checkbox_tabs_view);
             Views_CheckBoxes.Add(checkbox_tiles_view);
@@ -235,13 +235,13 @@ namespace FileExplorer.Views
                 else { checkBox.IsChecked = false; }
             }
         }
-
         #endregion
 
         #region Panels
         public void NavigationPanel(object sender, RoutedEventArgs routedEventArgs)
         {
-            if (quick_access.IsVisible == true && tree.IsVisible == true)
+            //if (quick_access.IsVisible == true && tree.IsVisible == true)
+            if(navigation_panel.IsChecked == false)
             {
                 tree.IsVisible = false;
                 quick_access.IsVisible = false;
@@ -254,7 +254,8 @@ namespace FileExplorer.Views
                 else
                 {
                     main_panel.SetValue(Grid.ColumnSpanProperty, 6);
-                }              
+                }
+                return;
             }
             else
             {
@@ -270,7 +271,7 @@ namespace FileExplorer.Views
                 {
                     main_panel.SetValue(Grid.ColumnSpanProperty, 3);
                 }
-                
+                return;
             }
         }
         public void InformationPanel(object sender, RoutedEventArgs routedEventArgs)
@@ -305,11 +306,6 @@ namespace FileExplorer.Views
         #region Menu
         public void ChangeSortingModeToName(object sender, RoutedEventArgs routedEventArgs)
         {
-            //sort_name.IsChecked = true;  context_sort_name.IsChecked = true; 
-            //sort_date.IsChecked = false; context_sort_date.IsChecked = false;
-            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            //sort_size.IsChecked = false; context_sort_size.IsChecked = false;
-
             foreach (CheckBox checkBox in Sort_CheckBoxes)
             {
                 if (checkBox == sort_name || checkBox == context_sort_name)
@@ -321,11 +317,6 @@ namespace FileExplorer.Views
         }
         public void ChangeSortingModeToDateOfChange(object sender, RoutedEventArgs routedEventArgs)
         {
-            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            //sort_date.IsChecked = true;  context_sort_date.IsChecked = true; 
-            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            //sort_size.IsChecked = false; context_sort_size.IsChecked = false;
-
             foreach (CheckBox checkBox in Sort_CheckBoxes)
             {
                 if (checkBox == sort_date || checkBox == context_sort_date)
@@ -337,10 +328,6 @@ namespace FileExplorer.Views
         }
         public void ChangeSortingModeToType(object sender, RoutedEventArgs routedEventArgs)
         {
-            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            //sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
-            //sort_type.IsChecked = true;  context_sort_type.IsChecked = true; 
-            //sort_size.IsChecked = false; context_sort_size.IsChecked = false; 
 
             foreach (CheckBox checkBox in Sort_CheckBoxes)
             {
@@ -353,11 +340,6 @@ namespace FileExplorer.Views
         }
         public void ChangeSortingModeToSize(object sender, RoutedEventArgs routedEventArgs)
         {
-            //sort_name.IsChecked = false; context_sort_name.IsChecked = false; 
-            //sort_date.IsChecked = false; context_sort_date.IsChecked = false; 
-            //sort_type.IsChecked = false; context_sort_type.IsChecked = false; 
-            //sort_size.IsChecked = true;  context_sort_size.IsChecked = true; 
-
             foreach (CheckBox checkBox in Sort_CheckBoxes)
             {
                 if (checkBox == sort_size || checkBox == context_sort_size)

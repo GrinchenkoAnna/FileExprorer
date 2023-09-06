@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorer", "FileExplorer.csproj", "{4CBD2528-0E44-4D04-BED3-190771876F02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileExplorer", "FileExplorer.csproj", "{4CBD2528-0E44-4D04-BED3-190771876F02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFileExplorer", "..\TestFileExplorer\TestFileExplorer.csproj", "{A01B3564-0230-46EC-998F-31190BF9BD00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4CBD2528-0E44-4D04-BED3-190771876F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CBD2528-0E44-4D04-BED3-190771876F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CBD2528-0E44-4D04-BED3-190771876F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A01B3564-0230-46EC-998F-31190BF9BD00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A01B3564-0230-46EC-998F-31190BF9BD00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A01B3564-0230-46EC-998F-31190BF9BD00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A01B3564-0230-46EC-998F-31190BF9BD00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

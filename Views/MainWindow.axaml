@@ -58,18 +58,21 @@
 		
 		<!--Buttons <-, ⇧, ->-->
 		<Grid Grid.Row="1" Grid.Column="0">
-			<Button Content="&lt;-" Background="#574656" Width="80"
+			<Button Content="&lt;-" x:Name="button_back"
+					Background="#574656" Width="80"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveBackCommand}" />			
 		</Grid>
 		<Grid Grid.Row="1" Grid.Column="1">
-			<Button Content="⇧" Background="#443643" Width="80"
+			<Button Content="⇧" x:Name="button_up"
+					Background="#443643" Width="80"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveUpCommand}" />			
 		</Grid>
 		
 		<Grid Grid.Row="1" Grid.Column="2">
-			<Button Content="-&gt;" Background="#574656" Width="80"
+			<Button Content="-&gt;" x:Name="button_forward"
+					Background="#574656" Width="80"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CurrentDirectoryItem.MoveForwardCommand}" />
 		</Grid>		
@@ -77,7 +80,7 @@
 		<!--Menu-->
 		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
 			<Menu>
-				<MenuItem HorizontalAlignment="Stretch"
+				<MenuItem x:Name="menuitem_main" HorizontalAlignment="Stretch"
 						  Margin="0,0,1,0" Width="119"
 						  Background="#583437" CornerRadius="4">
 					<MenuItem.Header>
@@ -133,7 +136,8 @@
 							  Click="ReverseItemsSelection"/>-->
 				</MenuItem>
 
-				<MenuItem HorizontalAlignment="Stretch"
+				<MenuItem x:Name="menuitem_view"
+					HorizontalAlignment="Stretch"
 						  Margin="1,0,0,0" Width="119"
 						  Background="#583437" CornerRadius="4">
 					<MenuItem.Header>
@@ -141,9 +145,11 @@
 								   VerticalAlignment="Center"/>
 					</MenuItem.Header>
 					<CheckBox Content="Область навигации"
+							  x:Name="navigation_panel"
 							  IsChecked="true"
 							  Click="NavigationPanel"/>
 					<CheckBox Content="Область сведений"
+							  x:Name="information_panel"
 							  IsChecked="false"
 							  Click="InformationPanel"/>
 					<MenuItem Header="Вид">
