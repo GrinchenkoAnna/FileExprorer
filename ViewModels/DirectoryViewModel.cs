@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileExplorer.ViewModels
 {
-    public sealed class DirectoryViewModel : FileEntityViewModel
+    public class DirectoryViewModel : FileEntityViewModel
     {
         public DirectoryViewModel() { }
         public DirectoryViewModel(string directoryName) : base(directoryName) 

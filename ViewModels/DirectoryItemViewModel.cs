@@ -21,7 +21,7 @@ namespace FileExplorer.ViewModels
         //private BackgroundWorker _backgroundWorker;
 
         private readonly IDirectoryHistory _history;
-        private readonly ISynchronizationHelper _synchronizationHelper;
+        public ISynchronizationHelper _synchronizationHelper;
 
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }

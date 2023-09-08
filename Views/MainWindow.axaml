@@ -352,7 +352,7 @@
 		</Border>
 
 		<!--Tree View-->
-		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="tree_view">
 
 			<i:Interaction.Behaviors>
 				<ia:EventTriggerBehavior EventName="DoubleTapped">
@@ -362,8 +362,8 @@
 				</ia:EventTriggerBehavior>
 			</i:Interaction.Behaviors>
 
-			<ContentControl>
-				<tree:TreeView Name="tree" IsVisible="true"/>
+			<ContentControl x:Name="tree_content_control">
+				<tree:TreeView x:Name="tree" IsVisible="true"/>
 			</ContentControl>
 		</Grid>
 		
