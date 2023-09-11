@@ -98,7 +98,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region BufferProperties
-        private List<string> ItemBuffer = new();
+        public List<string> ItemBuffer = new();
         #endregion
 
         #region Collections
@@ -351,11 +351,14 @@ namespace FileExplorer.ViewModels
         #region Copy&CutAndPaste
         bool cutItem = false;
 
-        private void Copy(object parameter)
+        public void Copy(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
-                ItemBuffer.Clear();
+                if (ItemBuffer.Count != 0)
+                {
+                    ItemBuffer.Clear();
+                }
                 AddToItemBuffer(item.FullName);
             }
             else { throw new Exception(); }
@@ -383,7 +386,7 @@ namespace FileExplorer.ViewModels
                 }
             }
         }
-        private void Cut(object parameter)
+        public void Cut(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
@@ -438,7 +441,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private async void Paste(object parameter) // добавить try-catch??
+        public async void Paste(object parameter) // добавить try-catch??
         {
             string mainDirectory = ""; //новое имя корневой директории
             if (parameter is string directory && directory != "Мой компьютер")
