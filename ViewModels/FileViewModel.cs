@@ -8,7 +8,22 @@ namespace FileExplorer.ViewModels
     public sealed class FileViewModel : FileEntityViewModel
     {
         public FileViewModel() { }
-        public FileViewModel(string name) : base(name) { }
+        public FileViewModel(string name) : base(name) 
+        {
+            FullName = name;
+
+            FileInfo fileInfo = new FileInfo(name);
+            DateOfChange = fileInfo.LastWriteTime.ToShortDateString() + " " + fileInfo.LastWriteTime.ToShortTimeString();
+            DateOfCreation = fileInfo.CreationTime.ToShortDateString() + " " + fileInfo.CreationTime.ToShortTimeString();
+            if (fileInfo.GetType().ToString() == "System.IO.FileInfo")
+            {
+                Type = GetFileType(fileInfo);
+                IsSystemFolder = false;
+                IsRoot = false;
+            }
+            Size = ConvertValue(fileInfo.Length);
+            NumberOfItems = 0;
+        }
 
         public FileViewModel(FileInfo fileInfo) : base(fileInfo.Name) 
         { 

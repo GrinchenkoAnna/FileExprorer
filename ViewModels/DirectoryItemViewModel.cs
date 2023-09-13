@@ -509,7 +509,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Delete   
-        private void Delete(object parameter)
+        public void Delete(object parameter)
         {
             if (parameter is FileEntityViewModel item)
             {
@@ -526,7 +526,7 @@ namespace FileExplorer.ViewModels
                         dir.Delete(true);
                     }
 
-                    Directory.Delete(FilePath);
+                    Directory.Delete(FilePath, true);
                 }
                 else if (item is FileViewModel)
                 {
@@ -537,7 +537,7 @@ namespace FileExplorer.ViewModels
             }
             else { throw new Exception(); }
         }
-        private void Delete(string path)
+        public void Delete(string path)
         {
             DirectoryInfo di = new DirectoryInfo(path);
             foreach (FileInfo file in di.EnumerateFiles())
@@ -548,7 +548,10 @@ namespace FileExplorer.ViewModels
             {
                 dir.Delete(true);
             }
-            Directory.Delete(path);
+            Directory.Delete(path, true);
+
+            var itemToRemove = DirectoriesAndFiles.Single(i => i.FullName == path);
+            DirectoriesAndFiles.Remove(itemToRemove);
         }
 
         private bool OnCanDelete(object obj) => _history.CanDelete; //возможно, не нужно (опция скрыта, когда на гл. экране только лог. диски)   
@@ -612,7 +615,7 @@ namespace FileExplorer.ViewModels
             IncludeFields = true,
         };
 
-        private void AddToQuickAccess(object parameter)
+        public void AddToQuickAccess(object parameter)
         {
             if (parameter is DirectoryViewModel fol_item)
             {
@@ -669,7 +672,7 @@ namespace FileExplorer.ViewModels
                 }
             }
         }
-        private void RemoveFromQuickAccess(object parameter)
+        public void RemoveFromQuickAccess(object parameter)
         {
             if (parameter is DirectoryViewModel fol_item)
             {
