@@ -712,9 +712,8 @@ namespace FileExplorer.ViewModels
         }
         #endregion
 
-        #region InformationPanel
-        private string theLastSort = "name";
-        private void AddToInformation(object parameter)
+        #region InformationPanel        
+        public void AddToInformation(object parameter)
         {
             if (InformationItems.Count != 0)
             {
@@ -740,6 +739,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Sorting
+        private string theLastSort = "name";
         private void RefreshSort(object parameter)
         {
             if (parameter is string)
@@ -765,7 +765,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }
 
-        private void AddSortedItems(IOrderedEnumerable<DirectoryInfo> directories, IOrderedEnumerable<FileInfo> files)
+        public void AddSortedItems(IOrderedEnumerable<DirectoryInfo> directories, IOrderedEnumerable<FileInfo> files)
         {
             DirectoriesAndFiles.Clear();
 
@@ -784,7 +784,7 @@ namespace FileExplorer.ViewModels
             catch (Exception e) { }
         }
 
-        private void SortByName(object parameter)
+        public void SortByName(object parameter)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
@@ -803,7 +803,7 @@ namespace FileExplorer.ViewModels
             theLastSort = "name";
         }
 
-        private void SortByDateOfChange(object parameter)
+        public void SortByDateOfChange(object parameter)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
 
