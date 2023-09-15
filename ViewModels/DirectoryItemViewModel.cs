@@ -21,7 +21,7 @@ namespace FileExplorer.ViewModels
         //private BackgroundWorker _backgroundWorker;
 
         private readonly IDirectoryHistory _history;
-        public ISynchronizationHelper _synchronizationHelper;
+        public ISynchronizationHelper? _synchronizationHelper;
 
         public DelegateCommand OpenCommand { get; }
         public DelegateCommand AddToQuickAccessCommand { get; }
@@ -903,7 +903,7 @@ namespace FileExplorer.ViewModels
             if (counter != 1) counter = 1;
             return name;
         }
-        private void CreateNewFolder(object parameter)
+        public void CreateNewFolder(object parameter)
         {
             if (parameter is string directory && directory != "Мой компьютер")
             {
@@ -942,7 +942,7 @@ namespace FileExplorer.ViewModels
         {
             Task InvokeAsync(Action action);
         }
-        private async Task OpenTree()
+        public async Task OpenTree()
         //private void OpenTree()
         {
             TreeItems = new ObservableCollection<FileEntityViewModel>();
@@ -951,14 +951,14 @@ namespace FileExplorer.ViewModels
             {
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.FullName = System.IO.Path.GetFullPath(logicalDrive);
-                await Task.Run(() =>
-                {
-                    _synchronizationHelper.InvokeAsync(() =>
-                    {
-                        root.Subfolders = GetSubfolders(logicalDrive);
-                    });
-                });
-                //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
+                //await Task.Run(() =>
+                //{
+                //    _synchronizationHelper.InvokeAsync(() =>
+                //    {
+                //        root.Subfolders = GetSubfolders(logicalDrive);
+                //    });
+                //});
+                await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
                 //root.Subfolders = GetSubfolders(logicalDrive);
                 TreeItems.Add(root);
             }
