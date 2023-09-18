@@ -278,7 +278,7 @@ namespace FileExplorer.ViewModels
             //    throw new ArgumentNullException(nameof(parameter));
             //}
         }
-        protected void OpenDirectory()
+        public void OpenDirectory()
         {
             DirectoriesAndFiles.Clear();            
             if (Name == "Мой компьютер")
@@ -951,6 +951,7 @@ namespace FileExplorer.ViewModels
             {
                 FileEntityViewModel root = new FileEntityViewModel(logicalDrive);
                 root.FullName = System.IO.Path.GetFullPath(logicalDrive);
+                TreeItems.Add(root);
                 //await Task.Run(() =>
                 //{
                 //    _synchronizationHelper.InvokeAsync(() =>
@@ -959,8 +960,7 @@ namespace FileExplorer.ViewModels
                 //    });
                 //});
                 await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
-                //root.Subfolders = GetSubfolders(logicalDrive);
-                TreeItems.Add(root);
+                //root.Subfolders = GetSubfolders(logicalDrive);                
             }
         }
 
@@ -974,25 +974,20 @@ namespace FileExplorer.ViewModels
                     foreach (var dir in Directory.EnumerateDirectories(strPath))
                     {
                         FileEntityViewModel thisnode = new FileEntityViewModel(dir);
-                        if (((System.IO.File.GetAttributes(dir) & (FileAttributes.System | FileAttributes.Hidden))
-                            != (FileAttributes.System | FileAttributes.Hidden)) && Directory.Exists(dir))
-                        {
-                            thisnode.Name = System.IO.Path.GetFileName(dir);
-                            thisnode.FullName = System.IO.Path.GetFullPath(dir);
-                            subfolders.Add(thisnode);
-                            //try { thisnode.Subfolders = GetSubfolders(dir); }
-                            //catch (UnauthorizedAccessException) { }
-                        }
+
+                        thisnode.Name = System.IO.Path.GetFileName(dir);
+                        thisnode.FullName = System.IO.Path.GetFullPath(dir);
+                        subfolders.Add(thisnode);
+                        //try { thisnode.Subfolders = GetSubfolders(dir); }
+                        //catch (UnauthorizedAccessException) { }
                     }
                     foreach (var file in Directory.GetFiles(strPath))
                     {
                         FileEntityViewModel thisnode = new FileEntityViewModel(file);
-                        if ((System.IO.File.GetAttributes(file) & (FileAttributes.System | FileAttributes.Hidden))
-                            != (FileAttributes.System | FileAttributes.Hidden))
-                        {
-                            thisnode.Name = System.IO.Path.GetFileName(file);
-                            subfolders.Add(thisnode);
-                        }
+
+                        thisnode.Name = System.IO.Path.GetFileName(file);
+                        thisnode.FullName = System.IO.Path.GetFullPath(file);
+                        subfolders.Add(thisnode);
                     }
                 }
             }
@@ -1003,7 +998,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Buttons
-        protected void OnMoveBack(object obj)
+        public void OnMoveBack(object obj)
         {
             _history.MoveBack();
 
@@ -1015,7 +1010,7 @@ namespace FileExplorer.ViewModels
         }
         private bool OnCanMoveBack(object obj) => _history.CanMoveBack;
 
-        protected void OnMoveForward(object obj)
+        public void OnMoveForward(object obj)
         {
             _history.MoveForward();
 
@@ -1027,7 +1022,7 @@ namespace FileExplorer.ViewModels
         }
         private bool OnCanMoveForward(object obj) => _history.CanMoveForward;
 
-        protected void OnMoveUp(object obj)
+        public void OnMoveUp(object obj)
         {
             _history.MoveUp();
 
