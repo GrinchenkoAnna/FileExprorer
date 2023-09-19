@@ -1036,7 +1036,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Search
-        private void Search(object parameter)
+        public void Search(object parameter)
         {
             if (parameter != null)
             {
