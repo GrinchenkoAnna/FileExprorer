@@ -964,7 +964,7 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        private ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
+        public ObservableCollection<FileEntityViewModel> GetSubfolders(string strPath)
         {
             ObservableCollection<FileEntityViewModel> subfolders = new();
             try
