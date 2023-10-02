@@ -739,8 +739,8 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region Sorting
-        private string theLastSort = "name";
-        private void RefreshSort(object parameter)
+        public string theLastSort = "name";
+        public void RefreshSort(object parameter)
         {
             if (parameter is string)
             {
@@ -760,7 +760,7 @@ namespace FileExplorer.ViewModels
                 {
                     SortBySize(parameter);
                 }
-                else { throw new Exception(); }
+                else { }
             }
             else { throw new Exception(); }
         }
@@ -873,7 +873,7 @@ namespace FileExplorer.ViewModels
         #endregion
 
         #region NewFolder
-        private string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
+        public string GetNameOfNewFolder(DirectoryInfo directoryInfo, string name)
         {
             var dirs = directoryInfo.EnumerateDirectories();
             var files = directoryInfo.EnumerateFiles();
@@ -942,8 +942,8 @@ namespace FileExplorer.ViewModels
         {
             Task InvokeAsync(Action action);
         }
-        public async Task OpenTree()
-        //private void OpenTree()
+        //public async Task OpenTree()
+        public void OpenTree()
         {
             TreeItems = new ObservableCollection<FileEntityViewModel>();
 
@@ -959,8 +959,8 @@ namespace FileExplorer.ViewModels
                 //        root.Subfolders = GetSubfolders(logicalDrive);
                 //    });
                 //});
-                await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
-                //root.Subfolders = GetSubfolders(logicalDrive);                
+                //await Task.Run(() => root.Subfolders = GetSubfolders(logicalDrive));
+                root.Subfolders = GetSubfolders(logicalDrive);                
             }
         }
 
