@@ -363,21 +363,21 @@ namespace FileExplorer.ViewModels
             }
             else { throw new Exception(); }
         }
-        private void AddToItemBuffer(string path)
+        public void AddToItemBuffer(string path)
         {
             ItemBuffer.Add(path);
 
             FileAttributes attributes = System.IO.File.GetAttributes(path);
             if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) //директория
             {
-                if (Directory.EnumerateDirectories(path).Count() != 0)
+                if (Directory.EnumerateDirectories(path).Any())
                 {
                     foreach (string dir in Directory.EnumerateDirectories(path))
                     {
                         AddToItemBuffer(dir);
                     }
                 }
-                if (Directory.EnumerateFiles(path).Count() != 0)
+                if (Directory.EnumerateFiles(path).Any())
                 {
                     foreach (string file in Directory.EnumerateFiles(path))
                     {
@@ -397,7 +397,7 @@ namespace FileExplorer.ViewModels
             else { throw new Exception(); }
         }
 
-        private string GetNameOfCopiedItem(DirectoryInfo directoryInfo, string name, int extention = 0)
+        public string GetNameOfCopiedItem(DirectoryInfo directoryInfo, string name, int extention = 0)
         {
             var dirs = directoryInfo.EnumerateDirectories();
             var files = directoryInfo.EnumerateFiles();
@@ -426,7 +426,7 @@ namespace FileExplorer.ViewModels
             return name;
         }
 
-        private async Task PasteSubitems(string oldPath, string beginningOfNewPath)
+        public async Task PasteSubitems(string oldPath, string beginningOfNewPath)
         {
             string newPath = oldPath.Replace(ItemBuffer[0], beginningOfNewPath);
 
