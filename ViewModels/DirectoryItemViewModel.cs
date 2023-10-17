@@ -235,6 +235,8 @@ namespace FileExplorer.ViewModels
             _history.HistoryChanged += History_HistoryChanged;
 
             QuickAccessItems = new ObservableCollection<FileEntityViewModel>();
+            QuickAccessDirectoryItems = new ObservableCollection<DirectoryViewModel>();
+            QuickAccessFileItems = new ObservableCollection<FileViewModel>();
             ReadQuickAccessItem();
 
             Collections.Add(QuickAccessItems);
@@ -639,11 +641,29 @@ namespace FileExplorer.ViewModels
                 string file_itemJson = JsonSerializer.Serialize<ObservableCollection<FileViewModel>>(QuickAccessFileItems, options);
                 System.IO.File.WriteAllText(QuickAccessFileName, file_itemJson);
             }
+        }        
+
+        private void AddDefaultFolders(string folder, string name)
+        {
+            bool copy = false;
+            
+            DirectoryViewModel default_folder = new DirectoryViewModel(folder);
+            default_folder.Name = name;
+            foreach (var item in QuickAccessItems)
+            {
+                if (item.FullName == folder) { copy = true; }
+            }
+            if (copy) { copy = false; }
+            else
+            {
+                QuickAccessItems.Add(default_folder);
+                QuickAccessDirectoryItems.Add(default_folder);
+            }
         }
         private void ReadQuickAccessItem()
         {
             if (!quickAccessFolderInfo.Exists) { quickAccessFolderInfo.Create(); }
-            if (!quickAccessFolderInfo.Exists) { quickAccessFolderInfo.Create(); }
+            if (!quickAccessFileInfo.Exists) { quickAccessFileInfo.Create(); }
 
             if (quickAccessFolderInfo.Length > 2)
             {
@@ -657,7 +677,7 @@ namespace FileExplorer.ViewModels
                         QuickAccessDirectoryItems.Add(item);
                     }
                 }
-            }
+            }    
             if (quickAccessFileInfo.Length > 2)
             {
                 string file_dataJson = System.IO.File.ReadAllText(QuickAccessFileName);
@@ -671,6 +691,10 @@ namespace FileExplorer.ViewModels
                     }
                 }
             }
+            AddDefaultFolders(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Документы");
+            AddDefaultFolders(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Изображения");
+            AddDefaultFolders(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Рабочий стол");
+            AddDefaultFolders(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads", "Загрузки");
         }
         public void RemoveFromQuickAccess(object parameter)
         {

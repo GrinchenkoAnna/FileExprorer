@@ -12,6 +12,8 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Remove="Assets\folder.png" />
     <None Remove=".gitignore" />
+    <None Remove="ViewModels\quickAccessFiles.json" />
+    <None Remove="ViewModels\quickAccessFolders.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +30,15 @@
     <PackageReference Include="Avalonia.Xaml.Interactions" Version="0.10.19" />
     <PackageReference Include="Avalonia.Xaml.Interactivity" Version="0.10.19" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="ViewModels\quickAccessFiles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewModels\quickAccessFolders.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,14 +60,5 @@
     <Compile Update="Views\TreeView.axaml.cs">
       <DependentUpon>TreeView.axaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="ViewModels\quickAccessFiles.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ViewModels\quickAccessFolders.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
