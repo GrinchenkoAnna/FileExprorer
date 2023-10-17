@@ -196,17 +196,21 @@
 								  Command="{Binding CurrentDirectoryItem.SortByTypeCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 						<CheckBox Content="Размер" x:Name="sort_size"
-								  IsChecked="false"
+								  IsChecked="false"								  
 								  Click="ChangeSortingModeToSize"
 								  Command="{Binding CurrentDirectoryItem.SortBySizeCommand}"
 								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 
 						<CheckBox Content="По возрастанию" x:Name="ascending"
 								  IsChecked="true"
-								  Click="ChangeSortingModeToAscending"/>
+								  Click="ChangeSortingModeToAscending"
+								  Command="{Binding CurrentDirectoryItem.RefreshSortCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 						<CheckBox Content="По убыванию" x:Name="descending"
 								  IsChecked="false"
-								  Click="ChangeSortingModeToDescending"/>
+								  Click="ChangeSortingModeToDescending"
+								  Command="{Binding CurrentDirectoryItem.RefreshSortCommand}"
+								  CommandParameter="{Binding CurrentDirectoryItem.FilePath}"/>
 					</MenuItem>
 				</MenuItem>
 			</Menu>
@@ -219,19 +223,7 @@
 				 BorderBrush="#5C5C5C" x:Name="searchBox"
 				 Watermark="{Binding CurrentDirectoryItem.CurrentSearchDirectory}"
 				 Tapped="ClearSearchTextBox"
-				 IsEnabled="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>
-		
-		<!--<ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="6"
-				 Background="Transparent"
-				 Items="{Binding CurrentDirectoryItem.ItemsToSearch}"
-				 x:Name="searchList">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Name}" TextWrapping="Wrap"
-							   FontSize="14"/>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>-->
+				 IsEnabled="{Binding !CurrentDirectoryItem.DirectoryWithLogicalDrives}"/>		
 
 		<Button Grid.Row="0" Grid.Column="5" Width="80" Height="32"
 				Content="Найти" HorizontalContentAlignment="Center"

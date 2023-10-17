@@ -643,7 +643,7 @@ namespace FileExplorer.ViewModels
             }
         }        
 
-        private void AddDefaultFolders(string folder, string name)
+        public void AddDefaultFolders(string folder, string name)
         {
             bool copy = false;
             
@@ -810,10 +810,11 @@ namespace FileExplorer.ViewModels
 
         public void SortByName(object parameter)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString());
-
-            if (MainWindow.asc == true)
+            DirectoryInfo directoryInfo = new DirectoryInfo(parameter.ToString()); ;
+            
+            if (MainWindow.asc == true) 
             {
+                
                 var dirs = directoryInfo.EnumerateDirectories().OrderBy(d => d.Name);
                 var files = directoryInfo.EnumerateFiles().OrderBy(d => d.Name);
                 AddSortedItems(dirs, files);
